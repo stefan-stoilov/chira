@@ -47,6 +47,9 @@ importers:
       '@t3-oss/env-nextjs':
         specifier: ^0.10.1
         version: 0.10.1(typescript@5.7.2)(zod@3.24.1)
+      '@tanstack/react-query':
+        specifier: ^5.62.11
+        version: 5.62.11(react@18.3.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -80,6 +83,9 @@ importers:
       react-hook-form:
         specifier: ^7.54.2
         version: 7.54.2(react@18.3.1)
+      react-icons:
+        specifier: ^5.4.0
+        version: 5.4.0(react@18.3.1)
       recharts:
         specifier: ^2.15.0
         version: 2.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -99,6 +105,9 @@ importers:
         specifier: ^3.24.1
         version: 3.24.1
     devDependencies:
+      '@tanstack/eslint-plugin-query':
+        specifier: ^5.62.9
+        version: 5.62.9(eslint@8.57.1)(typescript@5.7.2)
       '@types/eslint':
         specifier: ^8.56.10
         version: 8.56.12
@@ -730,6 +739,19 @@ packages:
     peerDependenciesMeta:
       typescript:
         optional: true
+
+  '@tanstack/eslint-plugin-query@5.62.9':
+    resolution: {integrity: sha512-F3onhTcpBj7zQDo0NVtZwZQKRFx8BwpSabMJybl9no3+dFHUurvNMrH5M/6KNpkdDCf3zyHWadruZL6636B8Fw==}
+    peerDependencies:
+      eslint: ^8.57.0 || ^9.0.0
+
+  '@tanstack/query-core@5.62.9':
+    resolution: {integrity: sha512-lwePd8hNYhyQ4nM/iRQ+Wz2cDtspGeZZHFZmCzHJ7mfKXt+9S301fULiY2IR2byJYY6Z03T427E5PoVfMexHjw==}
+
+  '@tanstack/react-query@5.62.11':
+    resolution: {integrity: sha512-Xb1nw0cYMdtFmwkvH9+y5yYFhXvLRCnXoqlzSw7UkqtCVFq3cG8q+rHZ2Yz1XrC+/ysUaTqbLKJqk95mCgC1oQ==}
+    peerDependencies:
+      react: ^18 || ^19
 
   '@types/d3-array@3.2.1':
     resolution: {integrity: sha512-Y2Jn2idRrLzUfAKV2LyRImR+y4oa2AntrgID95SHJxuMUrkNXmanDSed71sRNZysveJVt1hLLemQZIady0FpEg==}
@@ -1978,6 +2000,11 @@ packages:
     peerDependencies:
       react: ^16.8.0 || ^17 || ^18 || ^19
 
+  react-icons@5.4.0:
+    resolution: {integrity: sha512-7eltJxgVt7X64oHh6wSWNwwbKTCtMfK35hcjvJS0yxEAhPM8oUKdS3+kqaW1vicIltw+kR2unHaa12S9pPALoQ==}
+    peerDependencies:
+      react: '*'
+
   react-is@16.13.1:
     resolution: {integrity: sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==}
 
@@ -2973,6 +3000,21 @@ snapshots:
       zod: 3.24.1
     optionalDependencies:
       typescript: 5.7.2
+
+  '@tanstack/eslint-plugin-query@5.62.9(eslint@8.57.1)(typescript@5.7.2)':
+    dependencies:
+      '@typescript-eslint/utils': 8.19.0(eslint@8.57.1)(typescript@5.7.2)
+      eslint: 8.57.1
+    transitivePeerDependencies:
+      - supports-color
+      - typescript
+
+  '@tanstack/query-core@5.62.9': {}
+
+  '@tanstack/react-query@5.62.11(react@18.3.1)':
+    dependencies:
+      '@tanstack/query-core': 5.62.9
+      react: 18.3.1
 
   '@types/d3-array@3.2.1': {}
 
@@ -4358,6 +4400,10 @@ snapshots:
       scheduler: 0.23.2
 
   react-hook-form@7.54.2(react@18.3.1):
+    dependencies:
+      react: 18.3.1
+
+  react-icons@5.4.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
