@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
+import { signInSchema, type SignInSchema } from "@/features/auth/schemas";
+import { useSignIn } from "@/features/auth/api";
+
 import {
   Form,
   FormControl,
@@ -14,23 +17,14 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  signInSchema,
-  type SignInSchema,
-} from "@/features/auth/schemas/sign-in";
 import { Button } from "@/components/ui/button";
 
 export function SignInForm() {
+  const { mutate, isPending } = useSignIn();
   const form = useForm<SignInSchema>({
     resolver: zodResolver(signInSchema),
   });
-  const [validation, setValidation] = useState<{
-    status: "idle" | "pending" | "error" | "success";
-    message: string;
-  }>({
-    status: "idle",
-    message: "",
-  });
+
   const [shouldShowPassword, setShouldShowPassword] = useState(false);
 
   const togglePasswordVisibility = (
@@ -41,12 +35,7 @@ export function SignInForm() {
   };
 
   const submit = async (data: SignInSchema) => {
-    setValidation({ status: "pending", message: "" });
-    await new Promise(() => {
-      setTimeout(() => {}, 2000);
-    });
-    console.log(data);
-    setValidation((prev) => ({ ...prev, status: "success" }));
+    mutate({ json: data });
   };
 
   return (
@@ -61,7 +50,7 @@ export function SignInForm() {
               <FormControl>
                 <Input
                   {...field}
-                  disabled={validation.status === "pending"}
+                  disabled={isPending}
                   type="email"
                   placeholder="your.email@example.com"
                 />
@@ -80,7 +69,7 @@ export function SignInForm() {
               <FormControl>
                 <Input
                   {...field}
-                  disabled={validation.status === "pending"}
+                  disabled={isPending}
                   type={shouldShowPassword ? "text" : "password"}
                   placeholder="Password"
                   className="pr-9"
@@ -110,12 +99,10 @@ export function SignInForm() {
           )}
         />
 
-        <Button disabled={validation.status === "pending"} className="w-full">
+        <Button disabled={isPending} className="w-full">
           Sign In
         </Button>
       </form>
     </Form>
   );
 }
-
-export default SignInForm;
