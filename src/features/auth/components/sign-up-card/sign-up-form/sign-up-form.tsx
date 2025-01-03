@@ -5,6 +5,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeOff, Eye } from "lucide-react";
 import Link from "next/link";
 
+import { signUpSchema, type SignUpSchema } from "@/features/auth/schemas";
+import { useSignUp } from "@/features/auth/api";
+
 import {
   Form,
   FormControl,
@@ -14,25 +17,15 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  signUpSchema,
-  type SignUpSchema,
-} from "@/features/auth/schemas/sign-up";
 import { Button } from "@/components/ui/button";
 
 export function SignUpForm() {
+  const { mutate, isPending } = useSignUp();
   const form = useForm<SignUpSchema>({
     resolver: zodResolver(signUpSchema),
   });
-  const [validation, setValidation] = useState<{
-    status: "idle" | "pending" | "error" | "success";
-    message: string;
-  }>({
-    status: "idle",
-    message: "",
-  });
-  const [shouldShowPassword, setShouldShowPassword] = useState(false);
 
+  const [shouldShowPassword, setShouldShowPassword] = useState(false);
   const togglePasswordVisibility = (
     e: React.MouseEvent<HTMLButtonElement, globalThis.MouseEvent>,
   ) => {
@@ -41,12 +34,7 @@ export function SignUpForm() {
   };
 
   const submit = async (data: SignUpSchema) => {
-    setValidation({ status: "pending", message: "" });
-    await new Promise(() => {
-      setTimeout(() => {}, 2000);
-    });
-    console.log(data);
-    setValidation((prev) => ({ ...prev, status: "success" }));
+    mutate({ json: data });
   };
 
   return (
@@ -61,7 +49,7 @@ export function SignUpForm() {
               <FormControl>
                 <Input
                   {...field}
-                  disabled={validation.status === "pending"}
+                  disabled={isPending}
                   type="text"
                   placeholder="Name"
                 />
@@ -80,7 +68,7 @@ export function SignUpForm() {
               <FormControl>
                 <Input
                   {...field}
-                  disabled={validation.status === "pending"}
+                  disabled={isPending}
                   type="email"
                   placeholder="your.email@example.com"
                 />
@@ -99,7 +87,7 @@ export function SignUpForm() {
               <FormControl>
                 <Input
                   {...field}
-                  disabled={validation.status === "pending"}
+                  disabled={isPending}
                   type={shouldShowPassword ? "text" : "password"}
                   placeholder="Password"
                   className="pr-9"
@@ -133,7 +121,7 @@ export function SignUpForm() {
           )}
         />
 
-        <Button disabled={validation.status === "pending"} className="w-full">
+        <Button disabled={isPending} className="w-full">
           Sign Up
         </Button>
       </form>
