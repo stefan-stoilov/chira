@@ -25,12 +25,8 @@ export function UserButton() {
     );
   }
 
-  if (user === null) {
-    return <p>No user found</p>;
-  }
-
-  if (typeof user === "undefined") {
-    return <p>No user - undef</p>;
+  if (!user) {
+    return null;
   }
 
   const { email, name } = user;

@@ -1,10 +1,12 @@
 import { type Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 
+import "@/styles/globals.css";
+
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import "@/styles/globals.css";
 import { ThemeToggle } from "@/components/ui/theme-toggle";
+import { Toaster } from "@/components/ui/sonner";
 
 export const metadata: Metadata = {
   title: "Chira",
@@ -26,6 +28,7 @@ export default function RootLayout({
         >
           <QueryProvider>
             {children}
+            <Toaster richColors closeButton />
             <div className="fixed bottom-4 right-4">
               <ThemeToggle />
             </div>
