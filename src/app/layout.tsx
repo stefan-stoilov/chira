@@ -4,6 +4,7 @@ import { GeistSans } from "geist/font/sans";
 import { QueryProvider } from "@/components/providers/query-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import "@/styles/globals.css";
+import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 export const metadata: Metadata = {
   title: "Chira",
@@ -23,7 +24,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            {children}
+            <div className="fixed bottom-4 right-4">
+              <ThemeToggle />
+            </div>
+          </QueryProvider>
         </ThemeProvider>
       </body>
     </html>

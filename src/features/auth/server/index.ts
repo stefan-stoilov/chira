@@ -59,4 +59,16 @@ const app = new Hono()
     return c.json({ success: true });
   });
 
+// .get("/test", async (c) => {
+//   setCookie(c, SESSION_COOKIE, "session.secret", {
+//     path: "/",
+//     secure: true,
+//     httpOnly: true,
+//     sameSite: "Strict",
+//     maxAge: 60 * 60 * 24 * 30,
+//   });
+
+//   return c.json({ success: true });
+// });
+
 export default app;

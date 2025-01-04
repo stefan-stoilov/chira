@@ -4,13 +4,13 @@ import { env } from "@/env";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 
-import { Client, Account, Storage, Databases } from "node-appwrite";
+import { Client, Account } from "node-appwrite";
 import type {
   Account as AccountType,
-  Databases as DatabasesType,
-  Storage as StorageType,
+  // Databases as DatabasesType,
+  // Storage as StorageType,
   Models as ModelsType,
-  Users as UsersType,
+  // Users as UsersType,
 } from "node-appwrite";
 
 import { SESSION_COOKIE } from "@/features/auth/constants";
@@ -18,9 +18,9 @@ import { SESSION_COOKIE } from "@/features/auth/constants";
 export const sessionMiddleware = createMiddleware<{
   Variables: {
     account: AccountType;
-    databases: DatabasesType;
-    storage: StorageType;
-    users: UsersType;
+    // databases: DatabasesType;
+    // storage: StorageType;
+    // users: UsersType;
     user: ModelsType.User<ModelsType.Preferences>;
   };
 }>(async (c, next) => {
@@ -37,14 +37,10 @@ export const sessionMiddleware = createMiddleware<{
   client.setSession(sessionCookie);
 
   const account = new Account(client);
-  const databases = new Databases(client);
-  const storage = new Storage(client);
 
   const user = await account.get();
 
   c.set("account", account);
-  c.set("databases", databases);
-  c.set("storage", storage);
   c.set("user", user);
 
   await next();
