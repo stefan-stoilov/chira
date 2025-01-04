@@ -1,23 +1,21 @@
-import type { InferRequestType, InferResponseType } from "hono";
+import type { InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { client } from "@/lib/rpc";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.auth)["sign-in"]["$post"]
->;
-type RequestType = InferRequestType<
-  (typeof client.api.auth)["sign-in"]["$post"]
+  (typeof client.api.auth)["sign-out"]["$post"]
 >;
 
-export function useSignIn() {
+export function useSignOut() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json }) => {
-      const res = await client.api.auth["sign-in"].$post({ json });
+  const mutation = useMutation<ResponseType, Error>({
+    mutationFn: async () => {
+      const res = await client.api.auth["sign-out"].$post();
+
       return await res.json();
     },
     onSuccess: () => {
@@ -27,7 +25,7 @@ export function useSignIn() {
       router.refresh();
     },
     onError: () => {
-      toast.error("Invalid credentials.");
+      toast.error("Something went wrong.");
     },
   });
 

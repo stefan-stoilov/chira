@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ThemeToggle } from "@/components/ui/theme-toggle";
 
 function Layout({ children }: PropsWithChildren) {
   const pathname = usePathname();
@@ -21,10 +20,6 @@ function Layout({ children }: PropsWithChildren) {
                 {pathname === "/sign-in" ? "Sign Up" : "Sign In"}
               </Link>
             </Button>
-          </div>
-
-          <div className="fixed bottom-4 right-4">
-            <ThemeToggle />
           </div>
         </nav>
         <div className="flex w-full flex-col items-center pt-4 md:pt-14">
