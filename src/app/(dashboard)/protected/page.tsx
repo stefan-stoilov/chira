@@ -1,11 +1,5 @@
-import { UserButton } from "@/components/common";
-
 async function Page() {
-  return (
-    <div>
-      <UserButton />
-    </div>
-  );
+  return <div>Protected </div>;
 }
 
 export default Page;
