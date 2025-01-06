@@ -21,7 +21,7 @@ export const env = createEnv({
     NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string().url(),
     NEXT_PUBLIC_APPWRITE_PROJECT: z.string(),
 
-    NEXT_PUBLIC_MOCK_API_PORT: z.string().default("8080"),
+    NEXT_PUBLIC_MOCK_API_ENDPOINT: z.string().default("8080"),
     NEXT_PUBLIC_ENABLE_API_MOCKING: z
       .string()
       .default("false")
@@ -40,7 +40,7 @@ export const env = createEnv({
     NEXT_PUBLIC_APPWRITE_PROJECT: process.env.NEXT_PUBLIC_APPWRITE_PROJECT,
     NEXT_APPWRITE_KEY: process.env.NEXT_APPWRITE_KEY,
 
-    NEXT_PUBLIC_MOCK_API_PORT: process.env.NEXT_PUBLIC_MOCK_API_PORT,
+    NEXT_PUBLIC_MOCK_API_ENDPOINT: process.env.NEXT_PUBLIC_MOCK_API_ENDPOINT,
     NEXT_PUBLIC_ENABLE_API_MOCKING: process.env.NEXT_PUBLIC_ENABLE_API_MOCKING,
   },
   /**

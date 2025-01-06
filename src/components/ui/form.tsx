@@ -163,6 +163,7 @@ const FormMessage = React.forwardRef<
         error && "text-destructive",
         className,
       )}
+      {...(error ? { role: "alert" } : {})}
       {...props}
     >
       {body}

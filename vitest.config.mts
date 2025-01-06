@@ -9,4 +9,5 @@ export default defineConfig({
     environment: "jsdom",
     setupFiles: "./src/tests/setup-tests.ts",
   },
+  envPrefix: ["NEXT_PUBLIC_"],
 });

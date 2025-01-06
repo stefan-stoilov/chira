@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeOff, Eye } from "lucide-react";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
 
 import { signInSchema, type SignInSchema } from "@/features/auth/schemas";
@@ -40,7 +41,11 @@ export function SignInForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(submit)} className="space-y-4">
+      <form
+        role="form"
+        onSubmit={form.handleSubmit(submit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="email"
@@ -81,7 +86,11 @@ export function SignInForm() {
                   variant={"ghost"}
                   className="flex h-7 w-7 items-center justify-center p-0"
                   onClick={togglePasswordVisibility}
+                  data-testid="toggle-password-visibility"
                 >
+                  <VisuallyHidden.Root>
+                    {shouldShowPassword ? "Hide password" : "Show password"}
+                  </VisuallyHidden.Root>
                   {shouldShowPassword ? <EyeOff /> : <Eye />}
                 </Button>
               </div>
@@ -99,7 +108,7 @@ export function SignInForm() {
           )}
         />
 
-        <Button disabled={isPending} className="w-full">
+        <Button type="submit" disabled={isPending} className="w-full">
           Sign In
         </Button>
       </form>
