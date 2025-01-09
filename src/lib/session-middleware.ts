@@ -4,7 +4,7 @@ import { env } from "@/env";
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
 
-import { Client, Account } from "node-appwrite";
+import { Client, Account, AppwriteException } from "node-appwrite";
 import type {
   Account as AccountType,
   // Databases as DatabasesType,
@@ -36,12 +36,19 @@ export const sessionMiddleware = createMiddleware<{
 
   client.setSession(sessionCookie);
 
-  const account = new Account(client);
+  try {
+    const account = new Account(client);
+    const user = await account.get();
 
-  const user = await account.get();
-
-  c.set("account", account);
-  c.set("user", user);
+    c.set("account", account);
+    c.set("user", user);
+  } catch (error) {
+    if (error instanceof AppwriteException) {
+      return c.json({ error: error.message }, 500);
+    } else {
+      return c.json({ error: "Unexpected error occurred" }, 500);
+    }
+  }
 
   await next();
 });

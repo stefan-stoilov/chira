@@ -16,7 +16,13 @@ export function useSignUp() {
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
       const res = await rpc.api.auth["sign-up"].$post({ json });
-      return await res.json();
+
+      if (!res.ok) {
+        throw new Error("Failed to sign in!");
+      }
+
+      const data = await res.json();
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -24,8 +30,8 @@ export function useSignUp() {
       });
       router.refresh();
     },
-    onError: () => {
-      toast.error("Failed to register!");
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 

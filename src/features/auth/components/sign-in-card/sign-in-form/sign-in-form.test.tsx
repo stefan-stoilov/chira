@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { SignInForm } from "./sign-in-form";
 import userEvent from "@testing-library/user-event";
 
@@ -72,13 +72,4 @@ describe("Sign in form test", () => {
     });
     expect(mutate).toHaveBeenCalledTimes(1);
   });
-
-  // ("Should toggle password visibility when the correct button is clicked", async () => {
-  //   const { togglePassword, password } = setUp();
-  //   const user = userEvent.setup();
-  //   await user.type(password, "1234");
-  //   await user.click(togglePassword);
-
-  //   screen.getByText("1234");
-  // });
 });

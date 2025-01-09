@@ -39,7 +39,11 @@ export function SignUpForm() {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(submit)} className="space-y-4">
+      <form
+        role="form"
+        onSubmit={form.handleSubmit(submit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -99,6 +103,7 @@ export function SignUpForm() {
                   variant={"ghost"}
                   className="flex h-7 w-7 items-center justify-center p-0"
                   onClick={togglePasswordVisibility}
+                  data-testid="toggle-password-visibility"
                 >
                   {shouldShowPassword ? <EyeOff /> : <Eye />}
                 </Button>

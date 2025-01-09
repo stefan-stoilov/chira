@@ -16,6 +16,10 @@ export function useSignOut() {
     mutationFn: async () => {
       const res = await rpc.api.auth["sign-out"].$post();
 
+      if (!res.ok) {
+        throw Error("Unexpected error occurred, could not sign out.");
+      }
+
       return await res.json();
     },
     onSuccess: () => {
@@ -24,8 +28,8 @@ export function useSignOut() {
       });
       router.refresh();
     },
-    onError: () => {
-      toast.error("Something went wrong.");
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 

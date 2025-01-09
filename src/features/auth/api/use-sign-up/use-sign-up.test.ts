@@ -3,13 +3,13 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper } from "@/tests/utils";
 import { env } from "@/env";
-import { useSignIn } from "./use-sign-in";
+import { useSignUp } from "./use-sign-up";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/sign-in`;
+const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/sign-up`;
 
 const refresh = vi.fn();
 
-vi.mock("next/navigation", () => {
+vi.mock("next/navigation", async () => {
   return {
     useRouter: () => {
       return {
@@ -23,7 +23,7 @@ vi.mock("@/lib/rpc", () => {
   const rpc = {
     api: {
       auth: {
-        "sign-in": {
+        "sign-up": {
           $post: async () => {
             return await fetch(API_ENDPOINT, { method: "POST" });
           },
@@ -31,47 +31,41 @@ vi.mock("@/lib/rpc", () => {
       },
     },
   };
-
   return { rpc };
 });
 
-describe("useSignIn hook test", () => {
+describe("useSingIn hook test", () => {
   it("Should fail when server responds with an error.", async () => {
     server.use(
-      http.post(API_ENDPOINT, async () => {
-        return HttpResponse.json({ error: "Error" }, { status: 401 });
+      http.post(API_ENDPOINT, () => {
+        return HttpResponse.json({ error: "Error" }, { status: 500 });
       }),
     );
 
-    const { result } = renderHook(() => useSignIn(), {
-      wrapper: QueryWrapper,
-    });
+    const { result } = renderHook(() => useSignUp(), { wrapper: QueryWrapper });
 
     await act(async () => {
       result.current.mutate({
-        json: { email: "test@test.com", password: "test" },
+        json: { email: "test@test.com", password: "Test1234", name: "Test" },
       });
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-    expect(result.current.isSuccess).toBe(false);
-    expect(refresh).toHaveBeenCalledTimes(0);
+    console.log(result.current.failureReason);
   });
 
   it("Should NOT fail when server responds with success.", async () => {
     server.use(
-      http.post(API_ENDPOINT, async () => {
+      http.post(API_ENDPOINT, () => {
         return HttpResponse.json({ success: true }, { status: 200 });
       }),
     );
 
-    const { result } = renderHook(() => useSignIn(), {
-      wrapper: QueryWrapper,
-    });
+    const { result } = renderHook(() => useSignUp(), { wrapper: QueryWrapper });
 
     await act(async () => {
       result.current.mutate({
-        json: { email: "test@test.com", password: "test" },
+        json: { email: "test@test.com", password: "Test1234", name: "Test" },
       });
     });
 

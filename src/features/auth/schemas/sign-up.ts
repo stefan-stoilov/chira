@@ -10,9 +10,13 @@ const passwordRegex =
   /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
 
 export const signUpSchema = z.object({
-  name: z.string().trim().min(2, {
-    message: "Name is required and should be at least 2 characters in length",
-  }),
+  name: z
+    .string({
+      message:
+        "Name is required and should be at least 2 characters in length.",
+    })
+    .trim()
+    .min(2),
   email: z.string().email(),
   password: z.string().regex(passwordRegex, {
     message:

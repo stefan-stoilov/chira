@@ -7,15 +7,13 @@ import { useCurrentUser } from "./use-current-user";
 
 const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/current`;
 
-vi.mock("@/lib/rpc", async () => {
+vi.mock("@/lib/rpc", () => {
   const rpc = {
     api: {
       auth: {
         current: {
           $get: async () => {
-            return await fetch(API_ENDPOINT, {
-              method: "GET",
-            });
+            return await fetch(API_ENDPOINT, { method: "GET" });
           },
         },
       },
@@ -40,7 +38,7 @@ describe("useCurrentUser hook test", () => {
       wrapper: QueryWrapper,
     });
 
-    await waitFor(() => expect(result.current.data).toBeFalsy());
+    await waitFor(() => expect(result.current.data).toBe(null));
   });
 
   it("Should NOT fail when server responds with success", async () => {

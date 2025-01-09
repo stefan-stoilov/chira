@@ -3,9 +3,9 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper } from "@/tests/utils";
 import { env } from "@/env";
-import { useSignIn } from "./use-sign-in";
+import { useSignOut } from "./use-sign-out";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/sign-in`;
+const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/sign-out`;
 
 const refresh = vi.fn();
 
@@ -23,7 +23,7 @@ vi.mock("@/lib/rpc", () => {
   const rpc = {
     api: {
       auth: {
-        "sign-in": {
+        "sign-out": {
           $post: async () => {
             return await fetch(API_ENDPOINT, { method: "POST" });
           },
@@ -35,22 +35,20 @@ vi.mock("@/lib/rpc", () => {
   return { rpc };
 });
 
-describe("useSignIn hook test", () => {
+describe("useSignOut hook test", () => {
   it("Should fail when server responds with an error.", async () => {
     server.use(
-      http.post(API_ENDPOINT, async () => {
-        return HttpResponse.json({ error: "Error" }, { status: 401 });
+      http.post(API_ENDPOINT, () => {
+        return HttpResponse.json({ error: "Error" }, { status: 500 });
       }),
     );
 
-    const { result } = renderHook(() => useSignIn(), {
+    const { result } = renderHook(() => useSignOut(), {
       wrapper: QueryWrapper,
     });
 
     await act(async () => {
-      result.current.mutate({
-        json: { email: "test@test.com", password: "test" },
-      });
+      result.current.mutate();
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
@@ -60,19 +58,17 @@ describe("useSignIn hook test", () => {
 
   it("Should NOT fail when server responds with success.", async () => {
     server.use(
-      http.post(API_ENDPOINT, async () => {
+      http.post(API_ENDPOINT, () => {
         return HttpResponse.json({ success: true }, { status: 200 });
       }),
     );
 
-    const { result } = renderHook(() => useSignIn(), {
+    const { result } = renderHook(() => useSignOut(), {
       wrapper: QueryWrapper,
     });
 
     await act(async () => {
-      result.current.mutate({
-        json: { email: "test@test.com", password: "test" },
-      });
+      result.current.mutate();
     });
 
     await waitFor(() => expect(result.current.isError).toBe(false));
