@@ -17,8 +17,8 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string().url(),
+    NEXT_PUBLIC_APP_URL: z.string(),
+    NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string(),
     NEXT_PUBLIC_APPWRITE_PROJECT: z.string(),
 
     NEXT_PUBLIC_MOCK_API_ENDPOINT: z.string().default("8080"),
