@@ -7,7 +7,7 @@
     "build": "next build",
     "check": "next lint && tsc --noEmit",
     "dev": "next dev --turbo",
-    "test": "vitest",
+    "test": "env NODE_ENV=test vitest",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "preview": "next build && next start",
