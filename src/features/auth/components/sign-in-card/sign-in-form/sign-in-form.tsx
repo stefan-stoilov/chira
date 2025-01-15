@@ -42,7 +42,7 @@ export function SignInForm() {
   return (
     <Form {...form}>
       <form
-        role="form"
+        name="Sign in form"
         onSubmit={form.handleSubmit(submit)}
         className="space-y-4"
       >

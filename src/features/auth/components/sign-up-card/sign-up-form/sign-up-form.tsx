@@ -40,7 +40,7 @@ export function SignUpForm() {
   return (
     <Form {...form}>
       <form
-        role="form"
+        name="Sign up form"
         onSubmit={form.handleSubmit(submit)}
         className="space-y-4"
       >
