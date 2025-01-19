@@ -17,9 +17,12 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_APP_URL: z.string().url(),
-    NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string().url(),
+    NEXT_PUBLIC_APP_URL: z.string(),
+    NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string(),
     NEXT_PUBLIC_APPWRITE_PROJECT: z.string(),
+    NEXT_PUBLIC_APPWRITE_DATABASE_ID: z.string(),
+    NEXT_PUBLIC_APPWRITE_WORKSPACES_ID: z.string(),
+    NEXT_PUBLIC_MOCK_API_ENDPOINT: z.string(),
   },
 
   /**
@@ -31,7 +34,15 @@ export const env = createEnv({
     NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
     NEXT_PUBLIC_APPWRITE_ENDPOINT: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
     NEXT_PUBLIC_APPWRITE_PROJECT: process.env.NEXT_PUBLIC_APPWRITE_PROJECT,
+
+    NEXT_PUBLIC_APPWRITE_DATABASE_ID:
+      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+    NEXT_PUBLIC_APPWRITE_WORKSPACES_ID:
+      process.env.NEXT_PUBLIC_APPWRITE_WORKSPACES_ID,
+
     NEXT_APPWRITE_KEY: process.env.NEXT_APPWRITE_KEY,
+
+    NEXT_PUBLIC_MOCK_API_ENDPOINT: process.env.NEXT_PUBLIC_MOCK_API_ENDPOINT,
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation. This is especially

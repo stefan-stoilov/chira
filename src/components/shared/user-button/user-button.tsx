@@ -58,11 +58,11 @@ export function UserButton() {
             </AvatarFallback>
           </Avatar>
 
-          <div className="flex flex-col items-center justify-center">
-            <p className="text-sm font-medium text-neutral-900">
+          <div className="flex flex-col items-center justify-center gap-1">
+            <p className="text-sm font-medium text-foreground">
               {name ?? "User"}
             </p>
-            <p className="text-xs text-neutral-500">{email}</p>
+            <p className="text-xs text-muted-foreground">{email}</p>
           </div>
 
           <Separator className="mb-1" />

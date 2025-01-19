@@ -1,11 +1,11 @@
 import type { InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { client } from "@/lib/rpc";
+import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.auth)["sign-out"]["$post"]
+  (typeof rpc.api.auth)["sign-out"]["$post"]
 >;
 
 export function useSignOut() {
@@ -14,7 +14,11 @@ export function useSignOut() {
 
   const mutation = useMutation<ResponseType, Error>({
     mutationFn: async () => {
-      const res = await client.api.auth["sign-out"].$post();
+      const res = await rpc.api.auth["sign-out"].$post();
+
+      if (!res.ok) {
+        throw Error("Unexpected error occurred, could not sign out.");
+      }
 
       return await res.json();
     },
@@ -24,8 +28,8 @@ export function useSignOut() {
       });
       router.refresh();
     },
-    onError: () => {
-      toast.error("Something went wrong.");
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 

@@ -1,7 +1,7 @@
 import { Hono } from "hono";
 import { setCookie, deleteCookie } from "hono/cookie";
 import { zValidator } from "@hono/zod-validator";
-import { ID } from "node-appwrite";
+import { AppwriteException, ID } from "node-appwrite";
 
 import { createAdminClient } from "@/lib/appwrite";
 import { sessionMiddleware } from "@/lib/session-middleware";
@@ -18,35 +18,51 @@ const app = new Hono()
   .post("/sign-in", zValidator("json", signInSchema), async (c) => {
     const { email, password } = c.req.valid("json");
 
-    const { account } = await createAdminClient();
-    const session = await account.createEmailPasswordSession(email, password);
+    try {
+      const { account } = await createAdminClient();
+      const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, SESSION_COOKIE, session.secret, {
-      path: "/",
-      secure: true,
-      httpOnly: true,
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      setCookie(c, SESSION_COOKIE, session.secret, {
+        path: "/",
+        secure: true,
+        httpOnly: true,
+        sameSite: "Strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        return c.json({ error: error.message }, 401);
+      } else {
+        return c.json({ error: "Unauthorized" }, 401);
+      }
+    }
 
-    return c.json({ success: true });
+    return c.json({ success: true }, 200);
   })
 
   .post("/sign-up", zValidator("json", signUpSchema), async (c) => {
     const { name, email, password } = c.req.valid("json");
 
-    const { account } = await createAdminClient();
-    await account.create(ID.unique(), email, password, name);
+    try {
+      const { account } = await createAdminClient();
+      await account.create(ID.unique(), email, password, name);
 
-    const session = await account.createEmailPasswordSession(email, password);
+      const session = await account.createEmailPasswordSession(email, password);
 
-    setCookie(c, SESSION_COOKIE, session.secret, {
-      path: "/",
-      secure: true,
-      httpOnly: true,
-      sameSite: "Strict",
-      maxAge: 60 * 60 * 24 * 30,
-    });
+      setCookie(c, SESSION_COOKIE, session.secret, {
+        path: "/",
+        secure: true,
+        httpOnly: true,
+        sameSite: "Strict",
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    } catch (error) {
+      if (error instanceof AppwriteException) {
+        return c.json({ error: error.message }, 500);
+      } else {
+        return c.json({ error: "Unexpected error occurred" }, 500);
+      }
+    }
 
     return c.json({ success: true });
   })

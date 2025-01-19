@@ -1,24 +1,28 @@
 import type { InferRequestType, InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { client } from "@/lib/rpc";
+import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
 
 type ResponseType = InferResponseType<
-  (typeof client.api.auth)["sign-in"]["$post"]
+  (typeof rpc.api.auth)["sign-up"]["$post"]
 >;
-type RequestType = InferRequestType<
-  (typeof client.api.auth)["sign-in"]["$post"]
->;
+type RequestType = InferRequestType<(typeof rpc.api.auth)["sign-up"]["$post"]>;
 
-export function useSignIn() {
+export function useSignUp() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async ({ json }) => {
-      const res = await client.api.auth["sign-in"].$post({ json });
-      return await res.json();
+      const res = await rpc.api.auth["sign-up"].$post({ json });
+
+      if (!res.ok) {
+        throw new Error("Failed to sign in!");
+      }
+
+      const data = await res.json();
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -26,8 +30,8 @@ export function useSignIn() {
       });
       router.refresh();
     },
-    onError: () => {
-      toast.error("Invalid credentials.");
+    onError: (err) => {
+      toast.error(err.message);
     },
   });
 

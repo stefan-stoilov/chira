@@ -27,7 +27,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+
+    "types": ["vitest/globals"]
   },
   "include": [
     ".eslintrc.cjs",
@@ -36,6 +38,7 @@
     "**/*.tsx",
     "**/*.cjs",
     "**/*.js",
+    "**/*.mts",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
