@@ -12,6 +12,7 @@ import { useSignIn } from "@/features/auth/api";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -52,6 +53,7 @@ export function SignInForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
+              <FormDescription hidden>Email input</FormDescription>
               <FormControl>
                 <Input
                   {...field}
@@ -71,6 +73,7 @@ export function SignInForm() {
           render={({ field }) => (
             <FormItem className="relative">
               <FormLabel>Password</FormLabel>
+              <FormDescription hidden>Password input</FormDescription>
               <FormControl>
                 <Input
                   {...field}

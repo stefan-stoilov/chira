@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { EyeOff, Eye } from "lucide-react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
 
 import { signUpSchema, type SignUpSchema } from "@/features/auth/schemas";
@@ -11,6 +12,7 @@ import { useSignUp } from "@/features/auth/api";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -50,6 +52,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Name</FormLabel>
+              <FormDescription hidden>Name input</FormDescription>
               <FormControl>
                 <Input
                   {...field}
@@ -69,6 +72,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Email</FormLabel>
+              <FormDescription hidden>Email input</FormDescription>
               <FormControl>
                 <Input
                   {...field}
@@ -88,6 +92,7 @@ export function SignUpForm() {
           render={({ field }) => (
             <FormItem className="relative">
               <FormLabel>Password</FormLabel>
+              <FormDescription hidden>Password input</FormDescription>
               <FormControl>
                 <Input
                   {...field}
@@ -105,7 +110,17 @@ export function SignUpForm() {
                   onClick={togglePasswordVisibility}
                   data-testid="toggle-password-visibility"
                 >
-                  {shouldShowPassword ? <EyeOff /> : <Eye />}
+                  {shouldShowPassword ? (
+                    <>
+                      <VisuallyHidden>Show password</VisuallyHidden>
+                      <EyeOff />
+                    </>
+                  ) : (
+                    <>
+                      <VisuallyHidden>Hide password</VisuallyHidden>
+                      <Eye />
+                    </>
+                  )}
                 </Button>
               </div>
 

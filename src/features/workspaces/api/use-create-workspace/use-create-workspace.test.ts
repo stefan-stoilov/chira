@@ -47,7 +47,7 @@ describe("useCreateWorkspace hook test", () => {
 
     await act(async () => {
       result.current.mutate({
-        json: { name: "Test" },
+        form: { name: "Test" },
       });
     });
 
@@ -68,7 +68,7 @@ describe("useCreateWorkspace hook test", () => {
 
     await act(async () => {
       result.current.mutate({
-        json: { name: "Test" },
+        form: { name: "Test" },
       });
     });
 

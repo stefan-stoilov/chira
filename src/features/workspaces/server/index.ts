@@ -5,17 +5,38 @@ import { AppwriteException, ID } from "node-appwrite";
 
 import { env } from "@/env";
 import { sessionMiddleware } from "@/lib/session-middleware";
-import { createWorkspaceSchema } from "../schemas";
+import { createWorkspaceServerSchema } from "../schemas";
 
 const app = new Hono().post(
   "/",
-  zValidator("json", createWorkspaceSchema),
+  zValidator("form", createWorkspaceServerSchema),
   sessionMiddleware,
   async (c) => {
     const databases = c.get("databases");
+    const storage = c.get("storage");
     const user = c.get("user");
 
-    const { name } = c.req.valid("json");
+    const { name, image, fileName } = c.req.valid("form");
+
+    let uploadedImgUrl: string | undefined;
+
+    if (image instanceof Blob) {
+      const file = await storage.createFile(
+        env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
+        ID.unique(),
+        new File([image], fileName || "unnamed", {
+          type: image.type,
+          lastModified: Date.now(),
+        }),
+      );
+
+      const arrayBuffer = await storage.getFilePreview(
+        env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
+        file.$id,
+      );
+
+      uploadedImgUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+    }
 
     try {
       const workspace = await databases.createDocument(
@@ -25,6 +46,7 @@ const app = new Hono().post(
         {
           name,
           userId: user.$id,
+          imageUrl: uploadedImgUrl,
         },
       );
 

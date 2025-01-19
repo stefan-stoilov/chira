@@ -15,6 +15,7 @@ const config = {
   ],
   rules: {
     "@typescript-eslint/no-floating-promises": "off",
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
     "@typescript-eslint/no-empty-function": "warn",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
