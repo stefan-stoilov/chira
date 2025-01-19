@@ -19,4 +19,4 @@ export const authRoutes = new Set(["/sign-in", "/sign-up"]);
 /**
  * The default redirect path after successful login.
  */
-export const DEFAULT_LOGIN_REDIRECT = "/protected";
+export const DEFAULT_LOGIN_REDIRECT = "/dashboard";

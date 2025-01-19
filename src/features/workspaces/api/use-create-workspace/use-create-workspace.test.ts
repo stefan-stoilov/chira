@@ -3,13 +3,13 @@ import { renderHook, act, waitFor } from "@testing-library/react";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper } from "@/tests/utils";
 import { env } from "@/env";
-import { useSignUp } from "./use-sign-up";
+import { useCreateWorkspace } from "./use-create-workspace";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/sign-up`;
+const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces`;
 
 const refresh = vi.fn();
 
-vi.mock("next/navigation", async () => {
+vi.mock("next/navigation", () => {
   return {
     useRouter: () => {
       return {
@@ -22,19 +22,18 @@ vi.mock("next/navigation", async () => {
 vi.mock("@/lib/rpc", () => {
   const rpc = {
     api: {
-      auth: {
-        "sign-up": {
-          $post: async () => {
-            return await fetch(API_ENDPOINT, { method: "POST" });
-          },
+      workspaces: {
+        $post: async () => {
+          return await fetch(API_ENDPOINT, { method: "POST" });
         },
       },
     },
   };
+
   return { rpc };
 });
 
-describe("useSignIn hook test", () => {
+describe("useCreateWorkspace hook test", () => {
   it("Should fail when server responds with an error.", async () => {
     server.use(
       http.post(API_ENDPOINT, () => {
@@ -42,11 +41,13 @@ describe("useSignIn hook test", () => {
       }),
     );
 
-    const { result } = renderHook(() => useSignUp(), { wrapper: QueryWrapper });
+    const { result } = renderHook(() => useCreateWorkspace(), {
+      wrapper: QueryWrapper,
+    });
 
     await act(async () => {
       result.current.mutate({
-        json: { email: "test@test.com", password: "Test1234", name: "Test" },
+        json: { name: "Test" },
       });
     });
 
@@ -61,11 +62,13 @@ describe("useSignIn hook test", () => {
       }),
     );
 
-    const { result } = renderHook(() => useSignUp(), { wrapper: QueryWrapper });
+    const { result } = renderHook(() => useCreateWorkspace(), {
+      wrapper: QueryWrapper,
+    });
 
     await act(async () => {
       result.current.mutate({
-        json: { email: "test@test.com", password: "Test1234", name: "Test" },
+        json: { name: "Test" },
       });
     });
 
