@@ -3,7 +3,10 @@ import { env } from "@/env";
 
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-
+import type {
+  ClientErrorStatusCode,
+  ServerErrorStatusCode,
+} from "hono/utils/http-status";
 import {
   Client,
   Account,
@@ -54,9 +57,12 @@ export const sessionMiddleware = createMiddleware<{
     c.set("storage", storage);
   } catch (error) {
     if (error instanceof AppwriteException) {
-      return c.json({ error: error.message }, 500);
+      return c.json(
+        { error: error.message },
+        error.code as ClientErrorStatusCode | ServerErrorStatusCode,
+      );
     } else {
-      return c.json({ error: "Unexpected error occurred" }, 500);
+      return c.json({ error: "Unexpected error." }, 500);
     }
   }
 

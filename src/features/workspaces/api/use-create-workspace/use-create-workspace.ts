@@ -27,7 +27,7 @@ export function useCreateWorkspace() {
     onSuccess: () => {
       toast.success("Workspace created.");
       queryClient.invalidateQueries({
-        queryKey: ["currentUser"],
+        queryKey: ["workspaces"],
       });
       router.refresh();
     },
