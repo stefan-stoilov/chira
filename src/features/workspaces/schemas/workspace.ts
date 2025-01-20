@@ -8,9 +8,23 @@ export const createWorkspaceSchema = z.object({
       z.string().transform((value) => (value === "" ? undefined : value)),
     ])
     .optional(),
+  fileName: z.string().optional(),
 });
 
 export type CreateWorkspaceSchema = z.infer<typeof createWorkspaceSchema>;
+
+export const createWorkspaceServerSchema = z.object({
+  name: z.string({ message: "Workspace name is required." }).trim().min(1),
+  image: z
+    .union([
+      z.instanceof(Blob),
+      z.string().transform((value) => (value === "" ? undefined : value)),
+    ])
+    .optional(),
+  fileName: z.string().optional(),
+});
+
+export type CreateWorkspaceServerSchema = z.infer<typeof createWorkspaceSchema>;
 
 export const updateWorkspaceSchema = z.object({
   name: z

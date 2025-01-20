@@ -3,12 +3,21 @@ import { env } from "@/env";
 
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
-
-import { Client, Account, Databases, AppwriteException } from "node-appwrite";
+import type {
+  ClientErrorStatusCode,
+  ServerErrorStatusCode,
+} from "hono/utils/http-status";
+import {
+  Client,
+  Account,
+  Databases,
+  Storage,
+  AppwriteException,
+} from "node-appwrite";
 import type {
   Account as AccountType,
   Databases as DatabasesType,
-  // Storage as StorageType,
+  Storage as StorageType,
   Models as ModelsType,
   // Users as UsersType,
 } from "node-appwrite";
@@ -19,7 +28,7 @@ export const sessionMiddleware = createMiddleware<{
   Variables: {
     account: AccountType;
     databases: DatabasesType;
-    // storage: StorageType;
+    storage: StorageType;
     // users: UsersType;
     user: ModelsType.User<ModelsType.Preferences>;
   };
@@ -40,15 +49,20 @@ export const sessionMiddleware = createMiddleware<{
     const account = new Account(client);
     const user = await account.get();
     const databases = new Databases(client);
+    const storage = new Storage(client);
 
     c.set("account", account);
     c.set("user", user);
     c.set("databases", databases);
+    c.set("storage", storage);
   } catch (error) {
     if (error instanceof AppwriteException) {
-      return c.json({ error: error.message }, 500);
+      return c.json(
+        { error: error.message },
+        error.code as ClientErrorStatusCode | ServerErrorStatusCode,
+      );
     } else {
-      return c.json({ error: "Unexpected error occurred" }, 500);
+      return c.json({ error: "Unexpected error." }, 500);
     }
   }
 

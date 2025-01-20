@@ -1,6 +1,10 @@
 import { Hono } from "hono";
 import { setCookie, deleteCookie } from "hono/cookie";
 import { zValidator } from "@hono/zod-validator";
+import type {
+  ClientErrorStatusCode,
+  ServerErrorStatusCode,
+} from "hono/utils/http-status";
 import { AppwriteException, ID } from "node-appwrite";
 
 import { createAdminClient } from "@/lib/appwrite";
@@ -12,7 +16,7 @@ const app = new Hono()
   .get("/current", sessionMiddleware, (c) => {
     const user = c.get("user");
 
-    return c.json({ user });
+    return c.json({ user }, 200);
   })
 
   .post("/sign-in", zValidator("json", signInSchema), async (c) => {
@@ -31,9 +35,12 @@ const app = new Hono()
       });
     } catch (error) {
       if (error instanceof AppwriteException) {
-        return c.json({ error: error.message }, 401);
+        return c.json(
+          { error: error.message },
+          error.code as ClientErrorStatusCode | ServerErrorStatusCode,
+        );
       } else {
-        return c.json({ error: "Unauthorized" }, 401);
+        return c.json({ error: "Unexpected error." }, 500);
       }
     }
 
@@ -58,9 +65,12 @@ const app = new Hono()
       });
     } catch (error) {
       if (error instanceof AppwriteException) {
-        return c.json({ error: error.message }, 500);
+        return c.json(
+          { error: error.message },
+          error.code as ClientErrorStatusCode | ServerErrorStatusCode,
+        );
       } else {
-        return c.json({ error: "Unexpected error occurred" }, 500);
+        return c.json({ error: "Unexpected error." }, 500);
       }
     }
 

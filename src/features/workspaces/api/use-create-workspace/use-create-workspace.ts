@@ -13,8 +13,8 @@ export function useCreateWorkspace() {
   const router = useRouter();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ json }) => {
-      const res = await rpc.api.workspaces.$post({ json });
+    mutationFn: async ({ form }) => {
+      const res = await rpc.api.workspaces.$post({ form });
 
       if (!res.ok) {
         const message = (await res.json()).error || res.statusText;
@@ -27,7 +27,7 @@ export function useCreateWorkspace() {
     onSuccess: () => {
       toast.success("Workspace created.");
       queryClient.invalidateQueries({
-        queryKey: ["currentUser"],
+        queryKey: ["workspaces"],
       });
       router.refresh();
     },
