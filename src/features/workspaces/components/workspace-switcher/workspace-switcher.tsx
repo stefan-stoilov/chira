@@ -10,7 +10,7 @@ import {
 import { PlusCircle } from "lucide-react";
 
 export function WorkspaceSwitcher() {
-  const { data } = useWorkspaces();
+  const { data: workspaces } = useWorkspaces();
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -25,7 +25,7 @@ export function WorkspaceSwitcher() {
         </SelectTrigger>
 
         <SelectContent>
-          {data?.workspaces.documents.map(({ $id, name }) => (
+          {workspaces?.documents.map(({ $id, name }) => (
             <SelectItem key={$id} value={$id}>
               <div className="flex items-center justify-start gap-3 font-medium">
                 {/* <WorkspaceAvatar name={workspace.name} image={workspace.imageUrl} /> */}

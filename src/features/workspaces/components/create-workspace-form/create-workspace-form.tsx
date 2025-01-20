@@ -43,7 +43,7 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
   });
 
   const submit = (data: CreateWorkspaceSchema) => {
-    mutate({ form: data });
+    mutate({ form: { ...data } });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -60,6 +60,9 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
 
       form.setValue("image", file);
       form.setValue("fileName", file.name);
+    } else {
+      form.setValue("image", undefined);
+      form.setValue("fileName", undefined);
     }
   };
 

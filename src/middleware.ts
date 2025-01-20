@@ -1,12 +1,16 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
+
 import {
   authRoutes,
   publicRoutes,
   apiAuthPrefix,
+  apiDocPrefix,
+  apiReferencePrefix,
   DEFAULT_LOGIN_REDIRECT,
 } from "@/routes";
 import { getCurrentUser } from "@/lib/get-current-user";
+import { env } from "@/env";
 
 export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
@@ -15,7 +19,12 @@ export async function middleware(req: NextRequest) {
   const isAuthRoute = authRoutes.has(nextUrl.pathname);
   const isPublicRoute = publicRoutes.has(nextUrl.pathname);
 
-  if (isApiAuthRoute || isPublicRoute) return;
+  const isAccessibleDocRoute =
+    env.NODE_ENV !== "production" &&
+    (nextUrl.pathname.startsWith(apiDocPrefix) ||
+      nextUrl.pathname.startsWith(apiReferencePrefix));
+
+  if (isApiAuthRoute || isPublicRoute || isAccessibleDocRoute) return;
 
   const user = await getCurrentUser();
 

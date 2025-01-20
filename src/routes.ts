@@ -17,6 +17,18 @@ export const apiAuthPrefix = "/api/auth";
 export const authRoutes = new Set(["/sign-in", "/sign-up"]);
 
 /**
+ * The prefix for the API doc routes.
+ * Any route starting with this prefix is used for API documentation purposes.
+ */
+export const apiDocPrefix = "/api/doc";
+
+/**
+ * The prefix for the API reference routes.
+ * Any route starting with this prefix is used for API documentation purposes.
+ */
+export const apiReferencePrefix = "/api/reference";
+
+/**
  * The default redirect path after successful login.
  */
 export const DEFAULT_LOGIN_REDIRECT = "/dashboard";
