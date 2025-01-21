@@ -4,6 +4,7 @@ import { sessionMiddleware } from "@/server/middlewares";
 import {
   createSuccessSchema,
   createErrorMessageSchema,
+  createValidationErrorSchema,
   jsonContent,
   formContent,
 } from "@/server/lib/utils";
@@ -37,6 +38,10 @@ export const createWorkspace = createRoute({
   responses: {
     200: jsonContent(createSuccessSchema(), "Create Workspace"),
     401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
+    422: jsonContent(
+      createValidationErrorSchema(createWorkspaceServerSchema),
+      "The validation error(s)",
+    ),
     500: jsonContent(createErrorMessageSchema(), "Server error"),
   },
 });

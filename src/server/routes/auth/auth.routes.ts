@@ -4,6 +4,7 @@ import { sessionMiddleware } from "@/server/middlewares";
 import {
   createSuccessSchema,
   createErrorMessageSchema,
+  createValidationErrorSchema,
   jsonContent,
   jsonContentRequired,
 } from "@/server/lib/utils";
@@ -34,6 +35,10 @@ export const signIn = createRoute({
   responses: {
     200: jsonContent(createSuccessSchema(), "Sign in"),
     401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
+    422: jsonContent(
+      createValidationErrorSchema(signInSchema),
+      "The validation error(s)",
+    ),
     500: jsonContent(createErrorMessageSchema(), "Server error"),
   },
 });
@@ -50,6 +55,10 @@ export const signUp = createRoute({
   responses: {
     200: jsonContent(createSuccessSchema(), "Sign up"),
     401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
+    422: jsonContent(
+      createValidationErrorSchema(signUpSchema),
+      "The validation error(s)",
+    ),
     500: jsonContent(createErrorMessageSchema(), "Server error"),
   },
 });
@@ -63,6 +72,7 @@ export const signOut = createRoute({
   middleware: [sessionMiddleware] as const,
   responses: {
     200: jsonContent(createSuccessSchema(), "Sign Out"),
+    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
     500: jsonContent(createErrorMessageSchema(), "Server error"),
   },
 });
