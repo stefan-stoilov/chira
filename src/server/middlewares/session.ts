@@ -22,16 +22,18 @@ import type {
   // Users as UsersType,
 } from "node-appwrite";
 
-import { SESSION_COOKIE } from "@/features/auth/constants";
+import { SESSION_COOKIE } from "@/server/routes/auth/constants";
+
+export type SessionMiddlewareVariables = {
+  account: AccountType;
+  databases: DatabasesType;
+  storage: StorageType;
+  // users: UsersType;
+  user: ModelsType.User<ModelsType.Preferences>;
+};
 
 export const sessionMiddleware = createMiddleware<{
-  Variables: {
-    account: AccountType;
-    databases: DatabasesType;
-    storage: StorageType;
-    // users: UsersType;
-    user: ModelsType.User<ModelsType.Preferences>;
-  };
+  Variables: SessionMiddlewareVariables;
 }>(async (c, next) => {
   const client = new Client()
     .setEndpoint(env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
@@ -66,5 +68,5 @@ export const sessionMiddleware = createMiddleware<{
     }
   }
 
-  await next();
+  return next();
 });

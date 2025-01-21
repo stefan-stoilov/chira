@@ -12,8 +12,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 
 export function UserButton() {
-  const { data, isLoading } = useCurrentUser();
-  const user = data?.user;
+  const { data: user, isLoading } = useCurrentUser();
 
   const { mutate: signOut } = useSignOut();
 

@@ -17,7 +17,11 @@ export function useCreateWorkspace() {
       const res = await rpc.api.workspaces.$post({ form });
 
       if (!res.ok) {
-        const message = (await res.json()).error || res.statusText;
+        if (res.status === 422) {
+          throw new Error("Validation error(s).");
+        }
+
+        const message = (await res.json()).error;
         throw new Error(message);
       }
 

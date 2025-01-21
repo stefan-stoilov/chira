@@ -1,6 +1,7 @@
+import "server-only";
 import { cookies } from "next/headers";
 import { env } from "@/env";
-import { SESSION_COOKIE } from "@/features/auth/constants";
+import { SESSION_COOKIE } from "@/server/routes/auth/constants";
 import type { Models } from "node-appwrite";
 
 export async function getCurrentUser() {

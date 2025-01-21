@@ -18,8 +18,15 @@ export function useSignIn() {
       const res = await rpc.api.auth["sign-in"].$post({ json });
 
       if (!res.ok) {
-        const message = (await res.json()).error || res.statusText;
-        throw new Error(message);
+        if (res.status === 422) {
+          const message = (await res.json()).error;
+          throw new Error(
+            message.issues[0]?.message || "Invalid data provided.",
+          );
+        } else {
+          const message = (await res.json()).error;
+          throw new Error(message);
+        }
       }
 
       const data = await res.json();
