@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { WorkspaceAvatar } from "../workspace-avatar";
 import { PlusCircle } from "lucide-react";
 
 export function WorkspaceSwitcher() {
@@ -25,10 +26,10 @@ export function WorkspaceSwitcher() {
         </SelectTrigger>
 
         <SelectContent>
-          {workspaces?.documents.map(({ $id, name }) => (
+          {workspaces?.documents.map(({ $id, name, imageUrl }) => (
             <SelectItem key={$id} value={$id}>
               <div className="flex items-center justify-start gap-3 font-medium">
-                {/* <WorkspaceAvatar name={workspace.name} image={workspace.imageUrl} /> */}
+                <WorkspaceAvatar name={name} image={imageUrl} />
 
                 <span className="truncate">{name}</span>
               </div>
