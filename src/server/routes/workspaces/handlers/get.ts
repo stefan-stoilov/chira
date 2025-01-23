@@ -6,7 +6,7 @@ import type {
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares";
 import type { WorkspacesRoute } from "../workspaces.routes";
-import type { Workspace } from "../types";
+import type { Workspace } from "@/features/workspaces/types";
 
 import { env } from "@/env";
 
