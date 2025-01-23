@@ -8,6 +8,7 @@ import type { SessionMiddlewareVariables } from "@/server/middlewares";
 import type { CreateWorkspaceRoute } from "../workspaces.routes";
 
 import { env } from "@/env";
+import { MemberRole } from "@/features/members/types";
 
 export const create: AppRouteHandler<
   CreateWorkspaceRoute,
@@ -40,7 +41,7 @@ export const create: AppRouteHandler<
   }
 
   try {
-    await databases.createDocument(
+    const workspace = await databases.createDocument(
       env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
       env.NEXT_PUBLIC_APPWRITE_WORKSPACES_ID,
       ID.unique(),
@@ -48,6 +49,17 @@ export const create: AppRouteHandler<
         name,
         userId: user.$id,
         imageUrl: uploadedImgUrl,
+      },
+    );
+
+    await databases.createDocument(
+      env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
+      env.NEXT_PUBLIC_APPWRITE_MEMBERS_ID,
+      ID.unique(),
+      {
+        userId: user.$id,
+        workspace: workspace.$id,
+        role: MemberRole.ADMIN,
       },
     );
 
