@@ -52,7 +52,6 @@ describe("useCreateWorkspace hook test", () => {
     });
 
     await waitFor(() => expect(result.current.isError).toBe(true));
-    console.log(result.current.failureReason);
   });
 
   it("Should NOT fail when server responds with success.", async () => {
