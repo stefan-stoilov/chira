@@ -13,6 +13,7 @@ import {
 import { useCreateWorkspace } from "@/features/workspaces/api";
 
 import { cn } from "@/lib/utils";
+import { Loader } from "@/components/shared";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -204,8 +205,20 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
                 Cancel
               </Button>
 
-              <Button disabled={isPending} type="submit" size="lg">
-                Create workspace
+              <Button
+                disabled={isPending}
+                type="submit"
+                size="lg"
+                className="relative"
+              >
+                <span className={cn(isPending && "invisible")}>
+                  Create workspace
+                </span>
+                {isPending && (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <Loader />
+                  </div>
+                )}
               </Button>
             </div>
           </form>

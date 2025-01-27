@@ -7,7 +7,8 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Loader, LogOut } from "lucide-react";
+import { Loader } from "..";
+import { LogOut } from "lucide-react";
 
 const meta = {
   title: "Components/Shared/UserButton",
@@ -66,7 +67,7 @@ export const Loading: Story = {
   render() {
     return (
       <div className="flex size-10 items-center justify-center rounded-full border border-neutral-300 bg-neutral-200">
-        <Loader className="size-4 animate-spin text-muted-foreground" />
+        <Loader />
       </div>
     );
   },

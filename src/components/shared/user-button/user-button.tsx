@@ -1,5 +1,5 @@
 "use client";
-import { Loader, LogOut } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { useCurrentUser, useSignOut } from "@/features/auth/api";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -10,6 +10,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Separator } from "@/components/ui/separator";
+import { Loader } from "../";
 
 export function UserButton() {
   const { data: user, isLoading } = useCurrentUser();
@@ -19,7 +20,7 @@ export function UserButton() {
   if (isLoading) {
     return (
       <div className="flex size-10 items-center justify-center rounded-full border border-neutral-300 bg-neutral-200">
-        <Loader className="size-4 animate-spin text-muted-foreground" />
+        <Loader />
       </div>
     );
   }
@@ -47,7 +48,7 @@ export function UserButton() {
       <DropdownMenuContent
         align="end"
         side="bottom"
-        className="w-60"
+        className="w-60 bg-background"
         sideOffset={10}
       >
         <div className="flex flex-col items-center justify-center gap-2 rounded border border-muted px-2.5 py-4">

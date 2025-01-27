@@ -24,7 +24,7 @@ export function useSignOut() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["currentUser"],
+        queryKey: ["currentUser", "workspaces"],
       });
       router.refresh();
     },

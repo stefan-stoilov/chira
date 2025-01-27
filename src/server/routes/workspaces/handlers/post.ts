@@ -49,6 +49,7 @@ export const create: AppRouteHandler<
         name,
         userId: user.$id,
         imageUrl: uploadedImgUrl,
+        inviteCode: crypto.randomUUID(),
       },
     );
 
@@ -58,7 +59,7 @@ export const create: AppRouteHandler<
       ID.unique(),
       {
         userId: user.$id,
-        workspace: workspace.$id,
+        workspaceId: workspace.$id,
         role: MemberRole.ADMIN,
       },
     );

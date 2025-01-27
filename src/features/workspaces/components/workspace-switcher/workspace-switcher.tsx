@@ -1,4 +1,5 @@
 "use client";
+import { PlusCircle } from "lucide-react";
 import { useWorkspaces } from "@/features/workspaces/api";
 import {
   Select,
@@ -7,11 +8,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { WorkspaceAvatar } from "../workspace-avatar";
-import { PlusCircle } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import { WorkspaceAvatar } from "..";
+import { Loader } from "@/components/shared";
 
 export function WorkspaceSwitcher() {
-  const { data: workspaces } = useWorkspaces();
+  const { data: workspaces, isFetching } = useWorkspaces();
 
   return (
     <div className="flex flex-col gap-y-2">
@@ -26,6 +28,14 @@ export function WorkspaceSwitcher() {
         </SelectTrigger>
 
         <SelectContent>
+          {!workspaces && isFetching && (
+            <>
+              <Skeleton className="my-2 h-5 w-full rounded-md" />
+              <Skeleton className="my-2 h-5 w-full rounded-md" />
+              <Skeleton className="my-2 h-5 w-full rounded-md" />
+            </>
+          )}
+
           {workspaces?.documents.map(({ $id, name, imageUrl }) => (
             <SelectItem key={$id} value={$id}>
               <div className="flex items-center justify-start gap-3 font-medium">
@@ -35,6 +45,12 @@ export function WorkspaceSwitcher() {
               </div>
             </SelectItem>
           ))}
+
+          {workspaces && isFetching && (
+            <div className="flex h-8 w-full items-center justify-center">
+              <Loader />
+            </div>
+          )}
         </SelectContent>
       </Select>
     </div>
