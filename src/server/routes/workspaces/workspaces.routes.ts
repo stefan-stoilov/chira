@@ -2,13 +2,12 @@ import { createRoute } from "@hono/zod-openapi";
 
 import { sessionMiddleware } from "@/server/middlewares";
 import {
-  createSuccessSchema,
   createErrorMessageSchema,
   createValidationErrorSchema,
   jsonContent,
   formContent,
 } from "@/server/lib/utils";
-import { workspaceSchema } from "@/server/schemas";
+import { workspaceSchema, workspaceIdSchema } from "@/server/schemas";
 import { createWorkspaceServerSchema } from "@/features/workspaces/schemas";
 
 const tags = ["Workspaces"];
@@ -36,7 +35,7 @@ export const createWorkspace = createRoute({
   tags,
   middleware: [sessionMiddleware] as const,
   responses: {
-    200: jsonContent(createSuccessSchema(), "Create Workspace"),
+    200: jsonContent(workspaceIdSchema, "Create Workspace"),
     401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
     422: jsonContent(
       createValidationErrorSchema(createWorkspaceServerSchema),

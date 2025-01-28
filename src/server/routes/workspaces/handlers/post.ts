@@ -1,4 +1,5 @@
 import { AppwriteException, ID } from "node-appwrite";
+import { revalidatePath } from "next/cache";
 
 import type {
   AppMiddlewareVariables,
@@ -64,7 +65,9 @@ export const create: AppRouteHandler<
       },
     );
 
-    return c.json({ success: true }, 200);
+    revalidatePath("/dashboard", "page");
+
+    return c.json({ $id: workspace.$id }, 200);
   } catch (error) {
     if (error instanceof AppwriteException) {
       return c.json({ error: error.message }, 401);

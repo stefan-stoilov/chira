@@ -1,5 +1,4 @@
 import "server-only";
-import { env } from "@/env";
 
 import { getCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
@@ -7,13 +6,7 @@ import type {
   ClientErrorStatusCode,
   ServerErrorStatusCode,
 } from "hono/utils/http-status";
-import {
-  Client,
-  Account,
-  Databases,
-  Storage,
-  AppwriteException,
-} from "node-appwrite";
+import { Account, Databases, Storage, AppwriteException } from "node-appwrite";
 import type {
   Account as AccountType,
   Databases as DatabasesType,
@@ -23,6 +16,7 @@ import type {
 } from "node-appwrite";
 
 import { SESSION_COOKIE } from "@/server/routes/auth/constants";
+import { createClient } from "@/server/lib/appwrite";
 
 export type SessionMiddlewareVariables = {
   account: AccountType;
@@ -35,9 +29,7 @@ export type SessionMiddlewareVariables = {
 export const sessionMiddleware = createMiddleware<{
   Variables: SessionMiddlewareVariables;
 }>(async (c, next) => {
-  const client = new Client()
-    .setEndpoint(env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
-    .setProject(env.NEXT_PUBLIC_APPWRITE_PROJECT);
+  const client = createClient();
 
   const sessionCookie = getCookie(c, SESSION_COOKIE);
 

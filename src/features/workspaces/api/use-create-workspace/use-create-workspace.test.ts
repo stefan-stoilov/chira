@@ -7,13 +7,13 @@ import { useCreateWorkspace } from "./use-create-workspace";
 
 const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces`;
 
-const refresh = vi.fn();
+const push = vi.fn();
 
 vi.mock("next/navigation", () => {
   return {
     useRouter: () => {
       return {
-        refresh,
+        push,
       };
     },
   };
@@ -72,7 +72,6 @@ describe("useCreateWorkspace hook test", () => {
     });
 
     await waitFor(() => expect(result.current.isError).toBe(false));
-    expect(result.current.isSuccess).toBe(true);
-    expect(refresh).toHaveBeenCalledTimes(1);
+    expect(push).toHaveBeenCalledTimes(1);
   });
 });

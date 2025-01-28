@@ -17,3 +17,9 @@ export async function createAdminClient() {
     },
   };
 }
+
+export function createClient() {
+  return new Client()
+    .setEndpoint(env.NEXT_PUBLIC_APPWRITE_ENDPOINT)
+    .setProject(env.NEXT_PUBLIC_APPWRITE_PROJECT);
+}

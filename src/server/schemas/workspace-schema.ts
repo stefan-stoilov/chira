@@ -17,3 +17,7 @@ export const workspaceSchema = z.object({
     }),
   ),
 });
+
+export const workspaceIdSchema = z.object({
+  $id: z.string(),
+});
