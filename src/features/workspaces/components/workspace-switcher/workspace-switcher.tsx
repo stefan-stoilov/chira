@@ -51,9 +51,18 @@ export function WorkspaceSwitcher() {
         <SelectContent>
           {!workspaces && isFetching && (
             <>
-              <Skeleton className="my-2 h-5 w-full rounded-md" />
-              <Skeleton className="my-2 h-5 w-full rounded-md" />
-              <Skeleton className="my-2 h-5 w-full rounded-md" />
+              <Skeleton
+                className="my-2 h-5 w-full rounded-md"
+                data-testid="workspaces-skeleton"
+              />
+              <Skeleton
+                className="my-2 h-5 w-full rounded-md"
+                data-testid="workspaces-skeleton"
+              />
+              <Skeleton
+                className="my-2 h-5 w-full rounded-md"
+                data-testid="workspaces-skeleton"
+              />
             </>
           )}
 
@@ -68,7 +77,10 @@ export function WorkspaceSwitcher() {
           ))}
 
           {workspaces && isFetching && (
-            <div className="flex h-8 w-full items-center justify-center">
+            <div
+              className="flex h-8 w-full items-center justify-center"
+              data-testid="workspaces-loader"
+            >
               <Loader />
             </div>
           )}

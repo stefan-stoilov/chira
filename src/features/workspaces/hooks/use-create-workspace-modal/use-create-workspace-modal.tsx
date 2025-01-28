@@ -1,9 +1,11 @@
 import { useCallback } from "react";
 import { useQueryState, parseAsBoolean } from "nuqs";
 
+export const CREATE_WORKSPACE_SEARCH_PARAM = "create-workspace";
+
 export function useCreateWorkspaceModal() {
   const [isOpen, setIsOpen] = useQueryState(
-    "create-workspace",
+    CREATE_WORKSPACE_SEARCH_PARAM,
     parseAsBoolean.withOptions({ clearOnDefault: true }).withDefault(false),
   );
 
