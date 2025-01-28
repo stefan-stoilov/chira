@@ -33,7 +33,7 @@ export function ResponsiveModal({
   isOpen,
   onOpenChange,
 }: ResponsiveModalProps) {
-  const screenLg = useMediaQuery({ type: "min", breakpoint: "lg" });
+  const screenLg = useMediaQuery({ type: "min", breakpoint: "md" });
 
   return screenLg ? (
     <Dialog open={isOpen} onOpenChange={(value) => onOpenChange(value)}>
