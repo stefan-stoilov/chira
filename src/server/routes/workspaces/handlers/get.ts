@@ -5,11 +5,12 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares";
-import type { WorkspacesRoute } from "../workspaces.routes";
+import type { WorkspacesRoute, GetWorkspaceRoute } from "../workspaces.routes";
 import type { Workspace } from "@/features/workspaces/types";
 import type { Member } from "@/features/members/types";
 
 import { env } from "@/env";
+import { getWorkspace as getWorkspaceById } from "@/server/lib/get-workspace";
 
 export const get: AppRouteHandler<
   WorkspacesRoute,
@@ -46,4 +47,55 @@ export const get: AppRouteHandler<
       return c.json({ error: "Unexpected error." }, 500);
     }
   }
+};
+
+export const getWorkspaceHandler: AppRouteHandler<
+  GetWorkspaceRoute,
+  AppMiddlewareVariables<SessionMiddlewareVariables>
+> = async (c) => {
+  const databases = c.get("databases");
+  const { id: workspaceId } = c.req.valid("param");
+
+  let workspace: Workspace;
+
+  try {
+    workspace = await getWorkspaceById({
+      databases,
+      workspaceId,
+    });
+  } catch (error) {
+    if (error instanceof AppwriteException) {
+      if (error.code === 404) {
+        return c.json({ error: `${error.message}` }, 404);
+      }
+    }
+    return c.json({ error: "Unexpected error." }, 500);
+  }
+
+  const {
+    $id,
+    $collectionId,
+    $databaseId,
+    $createdAt,
+    $updatedAt,
+    $permissions,
+    name,
+    userId,
+    imageUrl,
+  } = workspace;
+
+  return c.json(
+    {
+      $id,
+      $collectionId,
+      $databaseId,
+      $createdAt,
+      $updatedAt,
+      $permissions,
+      name,
+      userId,
+      imageUrl,
+    },
+    200,
+  );
 };

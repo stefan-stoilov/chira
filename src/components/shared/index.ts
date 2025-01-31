@@ -6,3 +6,4 @@ export * from "./nav-list";
 export * from "./mobile-sidebar";
 export * from "./loader";
 export * from "./responsive-modal";
+export * from "./page-loader";

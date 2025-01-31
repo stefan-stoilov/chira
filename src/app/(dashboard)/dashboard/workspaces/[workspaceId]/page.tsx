@@ -1,16 +1,27 @@
-// import { redirect } from "next/navigation";
-// import { rpc } from "@/lib/rpc";
+"use client";
+import { PageLoader } from "@/components/shared";
+import { useWorkspace } from "@/features/workspaces/api";
 
-async function Page({ params }: { params: { workspaceId: string } }) {
-  // const res = await rpc.api.workspaces.$get();
+function Page({ params }: { params: { workspaceId: string } }) {
+  const { isLoading, isError, error, data } = useWorkspace(params.workspaceId);
 
-  // if (!res.ok) {
-  //   redirect("/sign-in");
-  // }
+  if (isLoading) return <PageLoader />;
 
-  // const { documents } = await res.json();
+  if (isError) {
+    const { cause, message } = error;
 
-  return <div>Workspace {params.workspaceId}</div>;
+    return (
+      <h1>
+        {cause} {message}
+      </h1>
+    );
+  }
+
+  return (
+    <div>
+      Workspace {data?.name} {data?.$id}
+    </div>
+  );
 }
 
 export default Page;
