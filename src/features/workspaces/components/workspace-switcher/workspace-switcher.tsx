@@ -3,11 +3,10 @@ import { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import { PlusCircle } from "lucide-react";
 
-import { useWorkspaces } from "@/features/workspaces/api";
-import {
-  useWorkspaceId,
-  useCreateWorkspaceModal,
-} from "@/features/workspaces/hooks";
+import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
+
 import {
   Select,
   SelectContent,
@@ -17,8 +16,8 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
-import { WorkspaceAvatar } from "..";
-import { Loader } from "@/components/shared";
+import { WorkspaceAvatar } from "../workspace-avatar";
+import { Loader } from "@/components/shared/loader";
 
 export function WorkspaceSwitcher() {
   const workspaceId = useWorkspaceId();

@@ -13,7 +13,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Sidebar } from "@/components/shared";
+import { Sidebar } from "@/components/shared/sidebar";
 
 export function MobileSidebar() {
   const [isOpen, setIsOpen] = useState(false);

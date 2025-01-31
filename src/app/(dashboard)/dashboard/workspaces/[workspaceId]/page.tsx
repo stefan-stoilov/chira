@@ -1,6 +1,6 @@
 "use client";
-import { PageLoader } from "@/components/shared";
-import { useWorkspace } from "@/features/workspaces/api";
+import { PageLoader } from "@/components/shared/page-loader";
+import { useWorkspace } from "@/features/workspaces/api/use-workspace";
 
 function Page({ params }: { params: { workspaceId: string } }) {
   const { isLoading, isError, error, data } = useWorkspace(params.workspaceId);

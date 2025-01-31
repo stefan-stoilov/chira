@@ -7,7 +7,7 @@ import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
 
 import { signUpSchema, type SignUpSchema } from "@/features/auth/schemas";
-import { useSignUp } from "@/features/auth/api";
+import { useSignUp } from "@/features/auth/api/use-sign-up";
 
 import {
   Form,

@@ -1,7 +1,7 @@
 "use client";
-import { useCreateWorkspaceModal } from "@/features/workspaces/hooks";
-import { CreateWorkspaceForm } from "..";
-import { ResponsiveModal } from "@/components/shared";
+import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
+import { CreateWorkspaceForm } from "../create-workspace-form";
+import { ResponsiveModal } from "@/components/shared/responsive-modal";
 
 /**
  * Modal that contains a form to create a new workspace.

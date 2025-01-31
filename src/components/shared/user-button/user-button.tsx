@@ -1,6 +1,7 @@
 "use client";
 import { LogOut } from "lucide-react";
-import { useCurrentUser, useSignOut } from "@/features/auth/api";
+import { useCurrentUser } from "@/features/auth/api/use-current-user";
+import { useSignOut } from "@/features/auth/api/use-sign-out";
 
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -10,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Loader } from "../";
+import { Loader } from "../loader";
 
 export function UserButton() {
   const { data: user, isLoading } = useCurrentUser();

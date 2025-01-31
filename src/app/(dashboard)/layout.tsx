@@ -1,7 +1,8 @@
 import { Suspense, type PropsWithChildren } from "react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
-import { Sidebar, Navbar } from "@/components/shared";
-import { CreateWorkspaceModal } from "@/features/workspaces/components";
+import { Sidebar } from "@/components/shared/sidebar";
+import { Navbar } from "@/components/shared/navbar";
+import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 
 function Layout({ children }: PropsWithChildren) {
   return (

@@ -1,5 +1,6 @@
-import { Logo, NavList } from "@/components/shared";
-import { WorkspaceSwitcher } from "@/features/workspaces/components";
+import { Logo } from "../logo";
+import { NavList } from "../nav-list";
+import { WorkspaceSwitcher } from "@/features/workspaces/components/workspace-switcher";
 import { Separator } from "@/components/ui/separator";
 
 export function Sidebar() {

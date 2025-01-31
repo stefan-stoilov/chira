@@ -6,7 +6,7 @@ const mutate = vi.fn();
 const cancel = vi.fn();
 
 function setUp(onCancel?: typeof cancel) {
-  vi.mock("@/features/workspaces/api", () => ({
+  vi.mock("@/features/workspaces/api/use-create-workspace", () => ({
     useCreateWorkspace: () => ({ mutate, isPending: false }),
   }));
 

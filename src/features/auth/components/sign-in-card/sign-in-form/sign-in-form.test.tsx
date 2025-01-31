@@ -4,7 +4,7 @@ import userEvent from "@testing-library/user-event";
 
 const mutate = vi.fn();
 
-vi.mock("@/features/auth/api", () => ({
+vi.mock("@/features/auth/api/use-sign-in", () => ({
   useSignIn: () => ({ mutate, isPending: false }),
 }));
 

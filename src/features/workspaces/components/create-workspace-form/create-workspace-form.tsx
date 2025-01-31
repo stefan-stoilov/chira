@@ -10,10 +10,10 @@ import {
   createWorkspaceSchema,
   type CreateWorkspaceSchema,
 } from "@/features/workspaces/schemas";
-import { useCreateWorkspace } from "@/features/workspaces/api";
+import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspace";
 
 import { cn } from "@/lib/utils";
-import { Loader } from "@/components/shared";
+import { Loader } from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";

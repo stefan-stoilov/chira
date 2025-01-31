@@ -8,9 +8,12 @@ vi.mock("next/navigation", () => ({
   useRouter: () => ({ push }),
 }));
 
-vi.mock("@/features/workspaces/hooks", () => ({
-  useWorkspaceId: () => vi.fn().mockReturnValue(undefined),
+vi.mock("@/features/workspaces/hooks/use-create-workspace-modal", () => ({
   useCreateWorkspaceModal: () => ({ open }),
+}));
+
+vi.mock("@/features/workspaces/hooks/use-workspace-id", () => ({
+  useWorkspaceId: () => vi.fn().mockReturnValue(undefined),
 }));
 
 /**
@@ -67,7 +70,7 @@ describe("WorkspaceSwitcher test", () => {
 
   it(`Should render skeletons when data for workspaces is being fetched and they are undefined. 
        Loader should not be visible when workspaces are undefined.`, async () => {
-    vi.mock("@/features/workspaces/api", () => ({
+    vi.mock("@/features/workspaces/api/use-workspaces", () => ({
       useWorkspaces: () =>
         vi.fn().mockReturnValue({ workspaces: undefined, isFetching: true }),
     }));
@@ -90,7 +93,7 @@ describe("WorkspaceSwitcher test", () => {
 
   it(`Should render loader when data for workspaces is defined and it is being re-fetched.
        Skeletons should not be visible when workspaces are defined.`, async () => {
-    vi.mock("@/features/workspaces/api", () => ({
+    vi.mock("@/features/workspaces/api/use-workspaces", () => ({
       useWorkspaces: () =>
         vi.fn().mockReturnValue({
           workspaces: { total: 0, documents: [] },
@@ -115,7 +118,7 @@ describe("WorkspaceSwitcher test", () => {
   });
 
   it(`Should render options when data for workspaces is defined and no skeletons and loader when data is not being re-fetched.`, async () => {
-    vi.mock("@/features/workspaces/api", () => ({
+    vi.mock("@/features/workspaces/api/use-workspaces", () => ({
       useWorkspaces: () =>
         vi.fn().mockReturnValue({
           workspaces: {
@@ -145,7 +148,7 @@ describe("WorkspaceSwitcher test", () => {
   it(`Should render options when data for workspaces is defined.
        No skeletons should be present when data is being re-fetched, while loader should be present.
        Should call router.push() when an option is selected.`, async () => {
-    vi.mock("@/features/workspaces/api", () => ({
+    vi.mock("@/features/workspaces/api/use-workspaces", () => ({
       useWorkspaces: () =>
         vi.fn().mockReturnValue({
           workspaces: {

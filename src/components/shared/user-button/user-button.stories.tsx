@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@radix-ui/react-dropdown-menu";
 import { Separator } from "@/components/ui/separator";
-import { Loader } from "..";
+import { Loader } from "../loader";
 import { LogOut } from "lucide-react";
 
 const meta = {

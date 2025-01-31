@@ -1,5 +1,6 @@
 "use client";
-import { MobileSidebar, UserButton } from "@/components/shared";
+import { MobileSidebar } from "../mobile-sidebar";
+import { UserButton } from "../user-button";
 
 export function Navbar() {
   return (
