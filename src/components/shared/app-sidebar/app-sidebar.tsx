@@ -9,7 +9,7 @@ import {
   SidebarSeparator,
 } from "@/components/ui/sidebar";
 import { Logo } from "../logo";
-import { NavList } from "../nav-list";
+import { WorkspaceNavigation } from "@/features/workspaces/components/workspace-navigation";
 import { WorkspaceSwitcher } from "@/features/workspaces/components/workspace-switcher";
 import { CreateWorkspaceButton } from "@/features/workspaces/components/create-workspace-modal";
 
@@ -18,8 +18,9 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarHeader>
         <Logo />
-        <SidebarSeparator className="my-4 bg-primary/20" />
       </SidebarHeader>
+
+      <SidebarSeparator className="bg-primary/20" />
 
       <SidebarContent>
         <SidebarGroup>
@@ -37,13 +38,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
 
-        <SidebarSeparator className="my-4 bg-primary/20" />
-
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <NavList />
-          </SidebarGroupContent>
-        </SidebarGroup>
+        <WorkspaceNavigation />
       </SidebarContent>
     </Sidebar>
   );

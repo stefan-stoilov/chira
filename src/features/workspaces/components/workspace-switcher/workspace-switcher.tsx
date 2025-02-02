@@ -29,7 +29,7 @@ export function WorkspaceSwitcher() {
   return (
     <div className="flex flex-col gap-y-2">
       <Select onValueChange={onSelect} value={workspaceId}>
-        <SelectTrigger className="w-full bg-background p-1 font-medium">
+        <SelectTrigger className="w-full bg-background p-1 font-medium dark:bg-background/50">
           <SelectValue placeholder="No workspace selected" />
         </SelectTrigger>
 
