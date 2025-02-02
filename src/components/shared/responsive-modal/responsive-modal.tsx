@@ -2,7 +2,7 @@ import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import type { PropsWithChildren } from "react";
 import type { Options } from "nuqs";
 
-import { useMediaQuery } from "@/hooks";
+import { useMediaQuery } from "@/hooks/use-media-query";
 import {
   Dialog,
   DialogContent,

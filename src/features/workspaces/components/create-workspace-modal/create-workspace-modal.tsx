@@ -1,21 +1,12 @@
 "use client";
+import { Suspense } from "react";
 import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
 import { CreateWorkspaceForm } from "../create-workspace-form";
 import { ResponsiveModal } from "@/components/shared/responsive-modal";
+import { Button } from "@/components/ui/button";
+import { PlusCircle } from "lucide-react";
 
-/**
- * Modal that contains a form to create a new workspace.
- *
- * @warning This component must be wrapped with Suspense to avoid Next.js errors because of the `nuqs` package.
- *
- * @example
- * ```tsx
- * <Suspense>
- *    <CreateWorkspaceModal />
- * </Suspense>
- * ```
- */
-export function CreateWorkspaceModal() {
+function Modal() {
   const { isOpen, setIsOpen, close } = useCreateWorkspaceModal();
 
   return (
@@ -27,5 +18,37 @@ export function CreateWorkspaceModal() {
     >
       <CreateWorkspaceForm onCancel={close} />
     </ResponsiveModal>
+  );
+}
+
+function ModalButton() {
+  const { open } = useCreateWorkspaceModal();
+
+  return (
+    <Button variant={"ghost"} className="px-3" onClick={() => open()}>
+      <CreateWorkspaceIcon />
+    </Button>
+  );
+}
+
+function CreateWorkspaceIcon() {
+  return (
+    <PlusCircle className="size-5 cursor-pointer text-muted-foreground transition hover:opacity-75" />
+  );
+}
+
+export function CreateWorkspaceModal() {
+  return (
+    <Suspense>
+      <Modal />
+    </Suspense>
+  );
+}
+
+export function CreateWorkspaceButton() {
+  return (
+    <Suspense fallback={<CreateWorkspaceIcon />}>
+      <ModalButton />
+    </Suspense>
   );
 }

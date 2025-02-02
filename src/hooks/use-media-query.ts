@@ -7,6 +7,7 @@ export type BreakpointsValuesType = {
   lg: number;
   xl: number;
   "2xl": number;
+  "3xl": number;
 };
 
 type MaxWidthType = `(max-width: ${number}px)`;
@@ -27,6 +28,7 @@ export const breakpoints: BreakpointsValuesType = {
   lg: 1024,
   xl: 1280,
   "2xl": 1536,
+  "3xl": 1920,
 };
 
 export const maxWidth: MaxWidthBreakpointsType = {
@@ -35,6 +37,7 @@ export const maxWidth: MaxWidthBreakpointsType = {
   lg: `(max-width: ${breakpoints.lg - 1}px)`,
   xl: `(max-width: ${breakpoints.xl - 1}px)`,
   "2xl": `(max-width: ${breakpoints["2xl"] - 1}px)`,
+  "3xl": `(max-width: ${breakpoints["3xl"] - 1}px)`,
 };
 
 export const minWidth: MinWidthBreakpointsType = {
@@ -43,6 +46,7 @@ export const minWidth: MinWidthBreakpointsType = {
   lg: `(min-width: ${breakpoints.lg}px)`,
   xl: `(min-width: ${breakpoints.xl}px)`,
   "2xl": `(min-width: ${breakpoints["2xl"]}px)`,
+  "3xl": `(min-width: ${breakpoints["3xl"]}px)`,
 };
 
 /**

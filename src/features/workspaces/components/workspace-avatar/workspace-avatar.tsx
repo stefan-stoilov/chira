@@ -34,7 +34,12 @@ export function WorkspaceAvatar({
   }
 
   return (
-    <Avatar className={cn("relative size-10 rounded-md bg-primary", className)}>
+    <Avatar
+      className={cn(
+        "min-size-10 relative block shrink-0 rounded-md bg-primary",
+        className,
+      )}
+    >
       <AvatarFallback className="inset-0 bg-primary text-lg font-semibold uppercase text-background">
         {name.charAt(0)}
       </AvatarFallback>

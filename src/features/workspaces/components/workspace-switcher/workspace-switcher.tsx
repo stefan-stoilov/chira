@@ -1,12 +1,9 @@
 "use client";
-import { Suspense } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { PlusCircle } from "lucide-react";
 
 import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
-import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
 
 import {
   Select,
@@ -31,24 +28,12 @@ export function WorkspaceSwitcher() {
 
   return (
     <div className="flex flex-col gap-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase text-muted-foreground">Workspaces</p>
-
-        <Suspense
-          fallback={
-            <PlusCircle className="size-5 cursor-pointer text-muted-foreground transition hover:opacity-75" />
-          }
-        >
-          <CreateWorkspaceButton />
-        </Suspense>
-      </div>
-
       <Select onValueChange={onSelect} value={workspaceId}>
         <SelectTrigger className="w-full bg-background p-1 font-medium">
           <SelectValue placeholder="No workspace selected" />
         </SelectTrigger>
 
-        <SelectContent>
+        <SelectContent className="w-[--radix-popper-anchor-width]">
           {!workspaces && isFetching && (
             <>
               <Skeleton
@@ -80,11 +65,17 @@ export function WorkspaceSwitcher() {
           )}
 
           {workspaces?.documents.map(({ $id, name, imageUrl }) => (
-            <SelectItem key={$id} value={$id}>
-              <div className="flex items-center justify-start gap-3 font-medium">
-                <WorkspaceAvatar name={name} image={imageUrl} />
+            <SelectItem
+              key={$id}
+              value={$id}
+              className="max-w-[--radix-popper-anchor-width] truncate"
+            >
+              <div className="flex max-w-full items-center justify-start gap-3 overflow-hidden font-medium">
+                <div className="block min-w-fit shrink-0">
+                  <WorkspaceAvatar name={name} image={imageUrl} />
+                </div>
 
-                <span className="truncate">{name}</span>
+                <span className="block max-w-[8rem] truncate">{name}</span>
               </div>
             </SelectItem>
           ))}
@@ -100,29 +91,5 @@ export function WorkspaceSwitcher() {
         </SelectContent>
       </Select>
     </div>
-  );
-}
-
-/**
- * Component that opens up a modal to create a new workspace.
- *
- * @warning This component must be wrapped with Suspense to avoid Next.js errors because of the `nuqs` package.
- *
- * @example
- * ```tsx
- * <Suspense
- *   fallback={<PlusCircle className="size-5 cursor-pointer text-muted-foreground transition hover:opacity-75" />}
- * >
- *    <CreateWorkspaceButton />
- * </Suspense>
- * ```
- */
-function CreateWorkspaceButton() {
-  const { open } = useCreateWorkspaceModal();
-
-  return (
-    <Button variant={"ghost"} className="px-3" onClick={() => open()}>
-      <PlusCircle className="size-5 cursor-pointer text-muted-foreground transition hover:opacity-75" />
-    </Button>
   );
 }
