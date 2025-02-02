@@ -38,6 +38,7 @@ export const updateWorkspaceSchema = z.object({
       z.string().transform((value) => (value === "" ? undefined : value)),
     ])
     .optional(),
+  fileName: z.string().optional(),
 });
 
 export type UpdateWorkspaceSchema = z.infer<typeof updateWorkspaceSchema>;

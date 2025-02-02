@@ -1,12 +1,17 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { Account, Databases, Query, type Models } from "node-appwrite";
+import Link from "next/link";
 
 import { env } from "@/env";
 import { createClient } from "@/server/lib/appwrite";
 import { SESSION_COOKIE } from "@/server/routes/auth/constants";
 import type { Member } from "@/features/members/types";
 import type { Workspace } from "@/features/workspaces/types";
+
+import { Button } from "@/components/ui/button";
+import { typography } from "@/components/ui/typography";
+import { cn } from "@/lib/utils";
 
 async function Page() {
   const cookieStore = cookies();
@@ -45,10 +50,27 @@ async function Page() {
   } catch (error) {
     console.log(error);
 
-    return <h1>Unexpected error occurred.</h1>;
+    return (
+      <h1 className={cn(typography.h2, "text-center")}>
+        Unexpected error occurred.
+      </h1>
+    );
   }
 
-  const { documents } = workspaces;
+  const { documents, total } = workspaces;
+
+  if (total === 0) {
+    return (
+      <div className="flex h-full min-h-[60vh] w-full flex-col items-center justify-center gap-3">
+        <h1 className={cn(typography.h2, "text-center")}>
+          Hmm, no workspaces have been found.
+        </h1>
+        <Button asChild>
+          <Link href="/dashboard/workspaces/create">Create workspace</Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
     <ul className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

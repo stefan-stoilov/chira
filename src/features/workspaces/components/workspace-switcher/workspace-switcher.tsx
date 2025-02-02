@@ -1,6 +1,7 @@
 "use client";
 import { Suspense } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { PlusCircle } from "lucide-react";
 
 import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
@@ -63,6 +64,19 @@ export function WorkspaceSwitcher() {
                 data-testid="workspaces-skeleton"
               />
             </>
+          )}
+
+          {!isFetching && workspaces?.total === 0 && (
+            <div className="my-2 flex flex-col gap-2">
+              <span className="block w-full text-center text-sm font-medium">
+                No workspaces found.
+              </span>
+              <Button asChild variant={"muted"}>
+                <Link href="/dashboard/workspaces/create">
+                  Create workspace
+                </Link>
+              </Button>
+            </div>
           )}
 
           {workspaces?.documents.map(({ $id, name, imageUrl }) => (

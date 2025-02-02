@@ -6,6 +6,7 @@ import {
   createValidationErrorSchema,
   jsonContent,
   formContent,
+  createSuccessSchema,
 } from "@/server/lib/utils";
 import {
   workspacesSchema,
@@ -80,7 +81,9 @@ export const updateWorkspace = createRoute({
   tags,
   middleware: [sessionMiddleware] as const,
   responses: {
+    200: jsonContent(workspaceIdSchema, "Workspace successfully updated."),
     401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
+    404: jsonContent(createErrorMessageSchema(), "Not found"),
     422: jsonContent(
       createValidationErrorSchema(createWorkspaceServerSchema),
       "The validation error(s)",

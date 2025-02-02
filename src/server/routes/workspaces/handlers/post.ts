@@ -10,6 +10,7 @@ import type { CreateWorkspaceRoute } from "../workspaces.routes";
 
 import { env } from "@/env";
 import { MemberRole } from "@/features/members/types";
+import { validateImage } from "@/server/lib/validate-image";
 
 export const create: AppRouteHandler<
   CreateWorkspaceRoute,
@@ -24,21 +25,25 @@ export const create: AppRouteHandler<
   let uploadedImgUrl: string | undefined;
 
   if (image instanceof Blob) {
-    const file = await storage.createFile(
-      env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
-      ID.unique(),
-      new File([image], fileName || "unnamed", {
-        type: image.type,
-        lastModified: Date.now(),
-      }),
-    );
+    const isSupportedImage = await validateImage(image);
 
-    const arrayBuffer = await storage.getFilePreview(
-      env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
-      file.$id,
-    );
+    if (isSupportedImage) {
+      const file = await storage.createFile(
+        env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
+        ID.unique(),
+        new File([image], fileName || ID.unique(), {
+          type: image.type,
+          lastModified: Date.now(),
+        }),
+      );
 
-    uploadedImgUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+      const arrayBuffer = await storage.getFilePreview(
+        env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
+        file.$id,
+      );
+
+      uploadedImgUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+    }
   }
 
   try {

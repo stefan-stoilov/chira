@@ -4,5 +4,5 @@ export type Workspace = Models.Document & {
   name: string;
   userId: string;
   imageUrl?: string;
-  inviteCode: string;
+  inviteCode?: string;
 };

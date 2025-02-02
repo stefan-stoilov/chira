@@ -6,7 +6,7 @@ import * as routes from "./workspaces.routes";
 const router = createRouter()
   .openapi(routes.workspaces, handlers.get)
   .openapi(routes.createWorkspace, handlers.create)
-  .openapi(routes.getWorkspace, handlers.getWorkspaceHandler);
-// .openapi(routes.updateWorkspace, handlers.update);
+  .openapi(routes.getWorkspace, handlers.getWorkspaceHandler)
+  .openapi(routes.updateWorkspace, handlers.updateWorkspaceHandler);
 
 export default router;

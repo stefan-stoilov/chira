@@ -18,6 +18,7 @@ export const get: AppRouteHandler<
 > = async (c) => {
   const user = c.get("user");
   const databases = c.get("databases");
+  const storage = c.get("storage");
 
   try {
     const members: Models.DocumentList<Member> = await databases.listDocuments(
