@@ -1,11 +1,11 @@
 import { http, HttpResponse } from "msw";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { server } from "@/tests/mocks/server";
-import { QueryWrapper } from "@/tests/utils";
+import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
 import { env } from "@/env";
 import { useCreateWorkspace } from "./use-create-workspace";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces`;
+const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces/create`;
 
 const push = vi.fn();
 
@@ -23,8 +23,17 @@ vi.mock("@/lib/rpc", () => {
   const rpc = {
     api: {
       workspaces: {
-        $post: async () => {
-          return await fetch(API_ENDPOINT, { method: "POST" });
+        $post: async (payload: {
+          form: {
+            name: string;
+            image?: string | Blob | undefined;
+            fileName?: string | undefined;
+          };
+        }) => {
+          return await fetch(API_ENDPOINT, {
+            method: "POST",
+            body: JSON.stringify(payload),
+          });
         },
       },
     },
@@ -54,15 +63,18 @@ describe("useCreateWorkspace hook test", () => {
     await waitFor(() => expect(result.current.isError).toBe(true));
   });
 
-  it("Should NOT fail when server responds with success.", async () => {
+  it("Should NOT fail when server responds with success and the mutation should invalidate queries.", async () => {
     server.use(
       http.post(API_ENDPOINT, () => {
-        return HttpResponse.json({ success: true }, { status: 200 });
+        return HttpResponse.json({ $id: "test-id" }, { status: 200 });
       }),
     );
 
+    const queryClient = createTestQueryClient();
+    const invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
+
     const { result } = renderHook(() => useCreateWorkspace(), {
-      wrapper: QueryWrapper,
+      wrapper: (props) => QueryWrapper({ ...props, queryClient }),
     });
 
     await act(async () => {
@@ -71,7 +83,14 @@ describe("useCreateWorkspace hook test", () => {
       });
     });
 
-    await waitFor(() => expect(result.current.isError).toBe(false));
+    await waitFor(() => {
+      expect(result.current.isError).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
+      expect(result.current.data).toEqual({ $id: "test-id" });
+      expect(invalidateQueriesSpy).toHaveBeenCalledWith({
+        queryKey: ["workspaces"],
+      });
+    });
     expect(push).toHaveBeenCalledTimes(1);
   });
 });

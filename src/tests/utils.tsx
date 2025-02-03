@@ -6,7 +6,7 @@ export function networkDelay(delayTime = 500) {
   return delay(delayTime);
 }
 
-const createTestQueryClient = () =>
+export const createTestQueryClient = () =>
   new QueryClient({
     defaultOptions: {
       queries: {
@@ -31,10 +31,13 @@ export function renderWithClient(ui: React.ReactElement) {
   };
 }
 
-export function QueryWrapper({ children }: React.PropsWithChildren) {
+export function QueryWrapper({
+  children,
+  queryClient,
+}: React.PropsWithChildren & { queryClient?: QueryClient }) {
   const testQueryClient = createTestQueryClient();
   return (
-    <QueryClientProvider client={testQueryClient}>
+    <QueryClientProvider client={queryClient || testQueryClient}>
       {children}
     </QueryClientProvider>
   );

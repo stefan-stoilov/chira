@@ -28,7 +28,7 @@ export function useSignUp() {
       queryClient.invalidateQueries({
         queryKey: ["currentUser"],
       });
-      router.refresh();
+      router.push("/dashboard");
     },
     onError: (err) => {
       toast.error(err.message);

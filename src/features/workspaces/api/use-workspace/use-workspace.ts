@@ -26,7 +26,7 @@ type UseWorkspaceResult = UseQueryResult<
 
 export function useWorkspace(workspaceId: string): UseWorkspaceResult {
   return useQuery({
-    queryKey: [workspaceId],
+    queryKey: ["workspace", workspaceId],
     queryFn: async () => {
       const res = await rpc.api.workspaces[":id"].$get({
         param: { id: workspaceId },
