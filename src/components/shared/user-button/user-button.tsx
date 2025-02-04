@@ -9,7 +9,7 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
+} from "@/components/ui/dropdown-menu";
 import { Separator } from "@/components/ui/separator";
 import { Loader } from "../loader";
 
@@ -52,7 +52,7 @@ export function UserButton() {
         className="w-60 bg-background"
         sideOffset={10}
       >
-        <div className="flex flex-col items-center justify-center gap-2 rounded border border-muted px-2.5 py-4">
+        <div className="flex flex-col items-center justify-center gap-2 rounded px-2.5 py-4">
           <Avatar className="size-14 border border-neutral-300 transition hover:opacity-75">
             <AvatarFallback className="flex items-center justify-center bg-neutral-200 text-xl font-medium text-neutral-500">
               {avatarFallback}

@@ -1,5 +1,5 @@
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
-import type { PropsWithChildren } from "react";
+import type { Dispatch, PropsWithChildren, SetStateAction } from "react";
 import type { Options } from "nuqs";
 
 import { useMediaQuery } from "@/hooks/use-media-query";
@@ -16,14 +16,18 @@ import {
   DrawerTitle,
 } from "@/components/ui/drawer";
 
+type OnOpenChange =
+  | Dispatch<SetStateAction<boolean>>
+  | ((
+      value: boolean | ((old: boolean) => boolean | null) | null,
+      options?: Options,
+    ) => Promise<URLSearchParams>);
+
 type ResponsiveModalProps = {
   title: string;
   description: string;
   isOpen: boolean;
-  onOpenChange: (
-    value: boolean | ((old: boolean) => boolean | null) | null,
-    options?: Options,
-  ) => Promise<URLSearchParams>;
+  onOpenChange?: OnOpenChange;
 } & PropsWithChildren;
 
 export function ResponsiveModal({
@@ -36,7 +40,10 @@ export function ResponsiveModal({
   const screenLg = useMediaQuery({ type: "min", breakpoint: "md" });
 
   return screenLg ? (
-    <Dialog open={isOpen} onOpenChange={(value) => onOpenChange(value)}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={onOpenChange ? (value) => onOpenChange(value) : undefined}
+    >
       <DialogContent className="hide-scrollbar max-h-[85vh] w-full overflow-y-auto border-none p-0 sm:max-w-lg">
         <VisuallyHidden.Root>
           <DialogTitle>{title}</DialogTitle>
@@ -47,7 +54,10 @@ export function ResponsiveModal({
       </DialogContent>
     </Dialog>
   ) : (
-    <Drawer open={isOpen} onOpenChange={(value) => onOpenChange(value)}>
+    <Drawer
+      open={isOpen}
+      onOpenChange={onOpenChange ? (value) => onOpenChange(value) : undefined}
+    >
       <DrawerContent>
         <VisuallyHidden.Root>
           <DrawerTitle>{title}</DrawerTitle>

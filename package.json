@@ -98,6 +98,7 @@
     "eslint-plugin-storybook": "^0.11.2",
     "jsdom": "^25.0.1",
     "msw": "^2.7.0",
+    "msw-storybook-addon": "^2.0.4",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
@@ -110,5 +111,10 @@
   "ct3aMetadata": {
     "initVersion": "7.38.1"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

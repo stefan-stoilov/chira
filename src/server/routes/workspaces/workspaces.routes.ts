@@ -85,10 +85,31 @@ export const updateWorkspace = createRoute({
     401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
     404: jsonContent(createErrorMessageSchema(), "Not found"),
     422: jsonContent(
-      createValidationErrorSchema(createWorkspaceServerSchema),
+      createValidationErrorSchema(updateWorkspaceServerSchema),
       "The validation error(s)",
     ),
     500: jsonContent(createErrorMessageSchema(), "Server error"),
   },
 });
 export type UpdateWorkspaceRoute = typeof updateWorkspace;
+
+export const deleteWorkspace = createRoute({
+  method: "delete",
+  path: "/api/workspaces/{id}",
+  tags,
+  request: {
+    params: workspaceParamsSchema,
+  },
+  middleware: [sessionMiddleware] as const,
+  responses: {
+    200: jsonContent(workspaceIdSchema, "Workspace successfully deleted."),
+    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
+    404: jsonContent(createErrorMessageSchema(), "Not found"),
+    422: jsonContent(
+      createValidationErrorSchema(workspaceParamsSchema),
+      "The validation error(s)",
+    ),
+    500: jsonContent(createErrorMessageSchema(), "Server error"),
+  },
+});
+export type DeleteWorkspaceRoute = typeof deleteWorkspace;

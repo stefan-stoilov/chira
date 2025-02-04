@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { render } from "@testing-library/react";
-import { delay } from "msw";
+import { delay, type HttpHandler } from "msw";
 
 export function networkDelay(delayTime = 500) {
   return delay(delayTime);
@@ -55,4 +55,14 @@ export function mockMatchMedia(matches: boolean) {
       dispatchEvent: vi.fn(),
     })),
   });
+}
+
+export function withMswHandlers(handlers: HttpHandler[]) {
+  return {
+    parameters: {
+      msw: {
+        handlers,
+      },
+    },
+  };
 }

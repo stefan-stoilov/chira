@@ -8,6 +8,7 @@ export default defineConfig({
     globals: true,
     environment: "jsdom",
     setupFiles: "./src/tests/setup-tests.ts",
+    environmentMatchGlobs: [["./src/server/**/*.ts", "node"]],
   },
-  envPrefix: ["NEXT_PUBLIC_"],
+  envPrefix: ["NEXT_"],
 });

@@ -1,6 +1,7 @@
 "use client";
 import { useWorkspace } from "@/features/workspaces/api/use-workspace";
 import { EditWorkspaceForm } from "@/features/workspaces/components/edit-workspace-form";
+import { DeleteWorkspaceCard } from "@/features/workspaces/components/delete-workspace-card";
 import { PageLoader } from "@/components/shared/page-loader";
 
 function Page({ params }: { params: { workspaceId: string } }) {
@@ -20,7 +21,12 @@ function Page({ params }: { params: { workspaceId: string } }) {
 
   return (
     <div className="mx-auto w-full lg:max-w-xl">
-      {data && <EditWorkspaceForm workspace={data} />}
+      {data && (
+        <EditWorkspaceForm
+          workspace={data}
+          deleteWorkspaceCard={<DeleteWorkspaceCard workspaceId={data.$id} />}
+        />
+      )}
     </div>
   );
 }
