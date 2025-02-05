@@ -1,4 +1,5 @@
 import { AppwriteException, ID } from "node-appwrite";
+import { revalidatePath } from "next/cache";
 
 import type {
   AppMiddlewareVariables,
@@ -9,6 +10,7 @@ import type { CreateWorkspaceRoute } from "../workspaces.routes";
 
 import { env } from "@/env";
 import { MemberRole } from "@/features/members/types";
+import { validateImage } from "@/server/lib/validate-image";
 
 export const create: AppRouteHandler<
   CreateWorkspaceRoute,
@@ -23,21 +25,25 @@ export const create: AppRouteHandler<
   let uploadedImgUrl: string | undefined;
 
   if (image instanceof Blob) {
-    const file = await storage.createFile(
-      env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
-      ID.unique(),
-      new File([image], fileName || "unnamed", {
-        type: image.type,
-        lastModified: Date.now(),
-      }),
-    );
+    const isSupportedImage = await validateImage(image);
 
-    const arrayBuffer = await storage.getFilePreview(
-      env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
-      file.$id,
-    );
+    if (isSupportedImage) {
+      const file = await storage.createFile(
+        env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
+        ID.unique(),
+        new File([image], fileName || ID.unique(), {
+          type: image.type,
+          lastModified: Date.now(),
+        }),
+      );
 
-    uploadedImgUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+      const arrayBuffer = await storage.getFilePreview(
+        env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
+        file.$id,
+      );
+
+      uploadedImgUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString("base64")}`;
+    }
   }
 
   try {
@@ -49,6 +55,7 @@ export const create: AppRouteHandler<
         name,
         userId: user.$id,
         imageUrl: uploadedImgUrl,
+        inviteCode: crypto.randomUUID(),
       },
     );
 
@@ -58,12 +65,14 @@ export const create: AppRouteHandler<
       ID.unique(),
       {
         userId: user.$id,
-        workspace: workspace.$id,
+        workspaceId: workspace.$id,
         role: MemberRole.ADMIN,
       },
     );
 
-    return c.json({ success: true }, 200);
+    revalidatePath("/dashboard", "page");
+
+    return c.json({ $id: workspace.$id }, 200);
   } catch (error) {
     if (error instanceof AppwriteException) {
       return c.json({ error: error.message }, 401);

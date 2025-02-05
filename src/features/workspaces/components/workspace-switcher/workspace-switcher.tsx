@@ -1,5 +1,10 @@
 "use client";
-import { useWorkspaces } from "@/features/workspaces/api";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+
+import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
+import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+
 import {
   Select,
   SelectContent,
@@ -7,34 +12,82 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 import { WorkspaceAvatar } from "../workspace-avatar";
-import { PlusCircle } from "lucide-react";
+import { Loader } from "@/components/shared/loader";
 
 export function WorkspaceSwitcher() {
-  const { data: workspaces } = useWorkspaces();
+  const workspaceId = useWorkspaceId();
+  const { data: workspaces, isFetching } = useWorkspaces();
+  const router = useRouter();
+
+  const onSelect = (id: string) => {
+    router.push(`/dashboard/workspaces/${id}`);
+  };
 
   return (
     <div className="flex flex-col gap-y-2">
-      <div className="flex items-center justify-between">
-        <p className="text-xs uppercase text-muted-foreground">Workspaces</p>
-        <PlusCircle className="size-5 cursor-pointer text-muted-foreground transition hover:opacity-75" />
-      </div>
-
-      <Select>
-        <SelectTrigger className="w-full bg-background p-1 font-medium">
+      <Select onValueChange={onSelect} value={workspaceId}>
+        <SelectTrigger className="w-full bg-background p-1 font-medium dark:bg-background/50">
           <SelectValue placeholder="No workspace selected" />
         </SelectTrigger>
 
-        <SelectContent>
-          {workspaces?.documents.map(({ $id, name, imageUrl }) => (
-            <SelectItem key={$id} value={$id}>
-              <div className="flex items-center justify-start gap-3 font-medium">
-                <WorkspaceAvatar name={name} image={imageUrl} />
+        <SelectContent className="w-[--radix-popper-anchor-width]">
+          {!workspaces && isFetching && (
+            <>
+              <Skeleton
+                className="my-2 h-5 w-full rounded-md"
+                data-testid="workspaces-skeleton"
+              />
+              <Skeleton
+                className="my-2 h-5 w-full rounded-md"
+                data-testid="workspaces-skeleton"
+              />
+              <Skeleton
+                className="my-2 h-5 w-full rounded-md"
+                data-testid="workspaces-skeleton"
+              />
+            </>
+          )}
 
-                <span className="truncate">{name}</span>
+          {!isFetching && workspaces?.total === 0 && (
+            <div className="my-2 flex flex-col gap-2">
+              <span className="block w-full text-center text-sm font-medium">
+                No workspaces found.
+              </span>
+              <Button asChild variant={"muted"}>
+                <Link href="/dashboard/workspaces/create">
+                  Create workspace
+                </Link>
+              </Button>
+            </div>
+          )}
+
+          {workspaces?.documents.map(({ $id, name, imageUrl }) => (
+            <SelectItem
+              key={$id}
+              value={$id}
+              className="max-w-[--radix-popper-anchor-width] truncate"
+            >
+              <div className="flex max-w-full items-center justify-start gap-3 overflow-hidden font-medium">
+                <div className="block min-w-fit shrink-0">
+                  <WorkspaceAvatar name={name} image={imageUrl} />
+                </div>
+
+                <span className="block max-w-[8rem] truncate">{name}</span>
               </div>
             </SelectItem>
           ))}
+
+          {workspaces && isFetching && (
+            <div
+              className="flex h-8 w-full items-center justify-center"
+              data-testid="workspaces-loader"
+            >
+              <Loader />
+            </div>
+          )}
         </SelectContent>
       </Select>
     </div>

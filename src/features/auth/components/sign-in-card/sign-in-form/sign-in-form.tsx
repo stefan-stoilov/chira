@@ -7,7 +7,7 @@ import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import Link from "next/link";
 
 import { signInSchema, type SignInSchema } from "@/features/auth/schemas";
-import { useSignIn } from "@/features/auth/api";
+import { useSignIn } from "@/features/auth/api/use-sign-in";
 
 import {
   Form,

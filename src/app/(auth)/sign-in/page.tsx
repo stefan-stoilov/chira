@@ -1,4 +1,4 @@
-import { SignInCard } from "@/features/auth/components";
+import { SignInCard } from "@/features/auth/components/sign-in-card";
 
 function Page() {
   return <SignInCard />;

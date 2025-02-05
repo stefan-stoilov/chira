@@ -34,6 +34,7 @@
     "@radix-ui/react-separator": "^1.1.1",
     "@radix-ui/react-slot": "^1.1.1",
     "@radix-ui/react-tabs": "^1.1.2",
+    "@radix-ui/react-tooltip": "^1.1.7",
     "@radix-ui/react-visually-hidden": "^1.1.1",
     "@scalar/hono-api-reference": "^0.5.166",
     "@t3-oss/env-nextjs": "^0.10.1",
@@ -48,6 +49,7 @@
     "next": "^14.2.22",
     "next-themes": "^0.4.4",
     "node-appwrite": "^14.1.0",
+    "nuqs": "^2.3.1",
     "pino": "^9.6.0",
     "pino-pretty": "^13.0.0",
     "react": "^18.3.1",
@@ -96,6 +98,7 @@
     "eslint-plugin-storybook": "^0.11.2",
     "jsdom": "^25.0.1",
     "msw": "^2.7.0",
+    "msw-storybook-addon": "^2.0.4",
     "postcss": "^8.4.39",
     "prettier": "^3.3.2",
     "prettier-plugin-tailwindcss": "^0.6.5",
@@ -108,5 +111,10 @@
   "ct3aMetadata": {
     "initVersion": "7.38.1"
   },
-  "packageManager": "pnpm@9.15.0"
+  "packageManager": "pnpm@9.15.0",
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
+  }
 }

@@ -1,22 +1,34 @@
 import type { PropsWithChildren } from "react";
-import { Sidebar, Navbar } from "@/components/shared";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { AppSidebar } from "@/components/shared/app-sidebar";
+import { Navbar } from "@/components/shared/navbar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import { CreateWorkspaceModal } from "@/features/workspaces/components/create-workspace-modal";
 
 function Layout({ children }: PropsWithChildren) {
   return (
-    <div className="min-h-screen">
-      <div className="flex size-full">
-        <div className="fixed left-0 top-0 hidden h-full overflow-auto lg:block lg:w-64">
-          <Sidebar />
-        </div>
+    <NuqsAdapter>
+      <SidebarProvider>
+        <div className="min-h-screen w-full">
+          <CreateWorkspaceModal />
 
-        <div className="w-full lg:pl-64">
-          <div className="container mx-auto h-full">
-            <Navbar />
-            <main className="flex h-full flex-col px-6 py-8">{children}</main>
+          <div className="flex size-full">
+            <AppSidebar />
+
+            <SidebarInset className="w-full">
+              <div className="w-full">
+                <div className="container mx-auto h-full">
+                  <Navbar />
+                  <div className="flex h-full flex-col px-6 py-8">
+                    {children}
+                  </div>
+                </div>
+              </div>
+            </SidebarInset>
           </div>
         </div>
-      </div>
-    </div>
+      </SidebarProvider>
+    </NuqsAdapter>
   );
 }
 

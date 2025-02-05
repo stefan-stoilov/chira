@@ -20,6 +20,18 @@ export const getCurrent = createRoute({
   middleware: [sessionMiddleware] as const,
   responses: {
     200: jsonContent(userSchema, "User"),
+    401: jsonContent(
+      createErrorMessageSchema().openapi({
+        example: { error: "Unauthorized" },
+      }),
+      "Unauthorized",
+    ),
+    500: jsonContent(
+      createErrorMessageSchema().openapi({
+        example: { error: "Unexpected error" },
+      }),
+      "Server error",
+    ),
   },
 });
 
