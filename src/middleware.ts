@@ -8,14 +8,18 @@ import {
   apiDocPrefix,
   apiReferencePrefix,
   DEFAULT_LOGIN_REDIRECT,
+  apiTestPrefix,
 } from "@/routes";
 import { getCurrentUser } from "@/lib/get-current-user";
 import { env } from "@/env";
 
 export async function middleware(req: NextRequest) {
   const { nextUrl } = req;
+  console.log("MIDDLEWARE RAN");
 
   const isApiAuthRoute = nextUrl.pathname.startsWith(apiAuthPrefix);
+  const isApiTestRoute = nextUrl.pathname.startsWith(apiTestPrefix);
+
   const isAuthRoute = authRoutes.has(nextUrl.pathname);
   const isPublicRoute = publicRoutes.has(nextUrl.pathname);
 
@@ -24,7 +28,8 @@ export async function middleware(req: NextRequest) {
     (nextUrl.pathname.startsWith(apiDocPrefix) ||
       nextUrl.pathname.startsWith(apiReferencePrefix));
 
-  if (isApiAuthRoute || isPublicRoute || isAccessibleDocRoute) return;
+  if (isApiAuthRoute || isPublicRoute || isAccessibleDocRoute || isApiTestRoute)
+    return;
 
   const user = await getCurrentUser();
 
@@ -43,15 +48,15 @@ export async function middleware(req: NextRequest) {
   }
 }
 
-/**
- * This matcher configuration for NextJS middleware is recommended by clerk auth provider.
- * @see https://clerk.com/docs/references/nextjs/auth-middleware#usage
- */
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-    // Always run for API routes
-    "/(api|trpc)(.*)",
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico, sitemap.xml, robots.txt (metadata files)
+     */
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
   ],
 };
