@@ -14,8 +14,6 @@ export function createApp() {
   app.notFound(notFound);
   app.onError(onError);
 
-  // app.use(pinoLogger());
-
   return app;
 }
 
