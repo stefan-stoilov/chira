@@ -11,7 +11,7 @@ export type AppOpenAPI = OpenAPIHono<AppBindings>;
 
 export type AppBindings = {
   Variables: {
-    logger: PinoLogger;
+    pinoLogger: PinoLogger;
   };
 };
 

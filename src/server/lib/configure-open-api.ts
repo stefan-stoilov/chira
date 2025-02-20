@@ -1,3 +1,4 @@
+import { logger } from "hono/logger";
 import { apiReference } from "@scalar/hono-api-reference";
 
 import type { AppOpenAPI } from "./types";
@@ -5,7 +6,9 @@ import type { AppOpenAPI } from "./types";
 import packageJSON from "../../../package.json" with { type: "json" };
 
 export function configureOpenAPI(app: AppOpenAPI) {
-  app.doc("/api/doc", {
+  app.use(logger());
+
+  app.doc("/api/test/doc", {
     openapi: "3.0.0",
     info: {
       version: packageJSON.version,
@@ -14,7 +17,7 @@ export function configureOpenAPI(app: AppOpenAPI) {
   });
 
   app.get(
-    "/api/reference",
+    "/api/test/reference",
     apiReference({
       theme: "kepler",
       layout: "classic",
@@ -23,7 +26,7 @@ export function configureOpenAPI(app: AppOpenAPI) {
         clientKey: "fetch",
       },
       spec: {
-        url: "/api/doc",
+        url: "/api/test/doc",
       },
     }),
   );

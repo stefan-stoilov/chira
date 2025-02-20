@@ -73,7 +73,6 @@ export const signOut: AppRouteHandler<
     deleteCookie(c, SESSION_COOKIE);
     return c.json({ success: true }, 200);
   } catch (error) {
-    c.var.logger.error(error);
     return c.json({ error: "Unexpected error." }, 500);
   }
 };

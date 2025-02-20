@@ -1,6 +1,6 @@
 import { OpenAPIHono } from "@hono/zod-openapi";
 import type { AppBindings, AppOpenAPI } from "./types";
-import { notFound, onError, pinoLogger } from "../middlewares";
+import { notFound, onError } from "../middlewares";
 import { defaultHook } from "./default-hook";
 
 export function createRouter() {
@@ -14,7 +14,7 @@ export function createApp() {
   app.notFound(notFound);
   app.onError(onError);
 
-  app.use(pinoLogger());
+  // app.use(pinoLogger());
 
   return app;
 }
