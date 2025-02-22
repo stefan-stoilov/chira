@@ -4,13 +4,12 @@ import { QueryWrapper } from "@/tests/utils";
 
 const meta = {
   title: "Features/Auth/SignUpCard",
-  render() {
-    return (
-      <QueryWrapper>
-        <SignUpCard />
-      </QueryWrapper>
-    );
-  },
+  component: SignUpCard,
+  decorators: (Story) => (
+    <QueryWrapper>
+      <Story />
+    </QueryWrapper>
+  ),
 } satisfies Meta<typeof SignUpCard>;
 
 export default meta;

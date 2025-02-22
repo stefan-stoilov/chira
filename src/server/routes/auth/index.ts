@@ -1,12 +1,28 @@
 import { createRouter } from "@/server/lib/create-app";
 
-import * as handlers from "./handlers";
-import * as routes from "./auth.routes";
+import {
+  oauthHandler,
+  oauthCallbackHandler,
+  signUpHandler,
+  signInHandler,
+  signOutHandler,
+  getUserHandler,
+} from "./auth.handlers";
+import {
+  oauthRoute,
+  oauthCallbackRoute,
+  signUpRoute,
+  signInRoute,
+  signOutRoute,
+  getUserRoute,
+} from "./auth.routes";
 
-const router = createRouter()
-  .openapi(routes.getCurrent, handlers.getUser)
-  .openapi(routes.signIn, handlers.signIn)
-  .openapi(routes.signUp, handlers.signUp)
-  .openapi(routes.signOut, handlers.signOut);
+export const authRouter = createRouter()
+  .openapi(signUpRoute, signUpHandler)
+  .openapi(signInRoute, signInHandler)
+  .openapi(signOutRoute, signOutHandler)
+  .openapi(oauthRoute, oauthHandler)
+  .openapi(oauthCallbackRoute, oauthCallbackHandler)
+  .openapi(getUserRoute, getUserHandler);
 
-export default router;
+export type AuthRouter = typeof authRouter;

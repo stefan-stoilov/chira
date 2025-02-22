@@ -8,7 +8,7 @@ import packageJSON from "../../../package.json" with { type: "json" };
 export function configureOpenAPI(app: AppOpenAPI) {
   app.use(logger());
 
-  app.doc("/api/test/doc", {
+  app.doc("/api/doc", {
     openapi: "3.0.0",
     info: {
       version: packageJSON.version,
@@ -17,7 +17,7 @@ export function configureOpenAPI(app: AppOpenAPI) {
   });
 
   app.get(
-    "/api/test/reference",
+    "/api/reference",
     apiReference({
       theme: "kepler",
       layout: "classic",
@@ -26,7 +26,7 @@ export function configureOpenAPI(app: AppOpenAPI) {
         clientKey: "fetch",
       },
       spec: {
-        url: "/api/test/doc",
+        url: "/api/doc",
       },
     }),
   );

@@ -4,13 +4,12 @@ import { QueryWrapper } from "@/tests/utils";
 
 const meta = {
   title: "Features/Workspace/CreateWorkspaceForm",
-  render() {
-    return (
-      <QueryWrapper>
-        <CreateWorkspaceForm />
-      </QueryWrapper>
-    );
-  },
+  component: CreateWorkspaceForm,
+  decorators: (Story) => (
+    <QueryWrapper>
+      <Story />
+    </QueryWrapper>
+  ),
 } satisfies Meta<typeof CreateWorkspaceForm>;
 
 export default meta;

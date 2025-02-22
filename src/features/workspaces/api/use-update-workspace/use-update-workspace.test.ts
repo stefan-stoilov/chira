@@ -1,53 +1,27 @@
-import { http, HttpResponse } from "msw";
 import { renderHook, act, waitFor } from "@testing-library/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
-import { env } from "@/env";
+
+import { workspacesKeys } from "../query-key-factory";
+import { queryMockWorkspaces } from "../use-workspaces/mocks";
+import { queryMockWorkspace } from "../use-workspace/mocks";
 import { useUpdateWorkspace } from "./use-update-workspace";
-
-const TEST_WORKSPACE_ID = vi.hoisted(() => "test-id");
-
-const MSW_API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces/:id`;
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces/${TEST_WORKSPACE_ID}`;
-
-const payload = {
-  form: { name: "Test" },
-  param: { id: TEST_WORKSPACE_ID },
-};
-
-vi.mock("@/lib/rpc", () => {
-  const rpc = {
-    api: {
-      workspaces: {
-        [":id"]: {
-          $patch: async (args: typeof payload) => {
-            return await fetch(API_ENDPOINT, {
-              method: "PATCH",
-              body: JSON.stringify(args),
-            });
-          },
-        },
-      },
-    },
-  };
-
-  return { rpc };
-});
+import { handlers } from "./mocks";
 
 describe("useUpdateWorkspace hook test", () => {
   it("Should fail when server responds with an error.", async () => {
-    server.use(
-      http.patch(MSW_API_ENDPOINT, () => {
-        return HttpResponse.json({ error: "Error" }, { status: 500 });
-      }),
-    );
+    server.use(handlers.errorUnauthorized);
 
     const { result } = renderHook(() => useUpdateWorkspace(), {
       wrapper: QueryWrapper,
     });
 
     await act(async () => {
-      result.current.mutate(payload);
+      result.current.mutate({
+        param: { id: "test" },
+        json: { name: "New Name" },
+      });
     });
 
     await waitFor(() => {
@@ -56,36 +30,72 @@ describe("useUpdateWorkspace hook test", () => {
     });
   });
 
-  it("Should NOT fail when server responds with success and the mutation should invalidate queries.", async () => {
-    server.use(
-      http.patch(MSW_API_ENDPOINT, async () => {
-        return HttpResponse.json({ $id: TEST_WORKSPACE_ID }, { status: 200 });
-      }),
-    );
+  it("Should NOT fail when server responds with success and the mutation should update the query data without invalidating queries for workspaces.", async () => {
+    server.use(handlers.success);
 
     const queryClient = createTestQueryClient();
     const invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
+    const setQueryDataSpy = vi.spyOn(queryClient, "setQueryData");
+
+    const { result: qcResult } = renderHook(() => useQueryClient(), {
+      wrapper: (props) => QueryWrapper({ ...props, queryClient }),
+    });
+
+    const { workspaces } = await queryMockWorkspaces(queryClient);
+
+    const toUpdateId = workspaces[0]!.id;
+    const name = "New Name";
 
     const { result } = renderHook(() => useUpdateWorkspace(), {
       wrapper: (props) => QueryWrapper({ ...props, queryClient }),
     });
 
     await act(async () => {
-      result.current.mutate(payload);
+      result.current.mutate({
+        param: { id: toUpdateId },
+        json: { name },
+      });
     });
 
     await waitFor(() => {
       expect(result.current.isError).toBe(false);
       expect(result.current.isSuccess).toBe(true);
-      expect(result.current.data).toEqual({ $id: TEST_WORKSPACE_ID });
 
-      expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-        queryKey: ["workspaces"],
+      // Queries should not be invalidated.
+      expect(invalidateQueriesSpy).not.toHaveBeenCalled();
+
+      // Query cache should be updated when a workspace is deleted.
+      expect(setQueryDataSpy).toHaveBeenCalledTimes(2);
+
+      expect(qcResult.current.getQueryData(workspacesKeys.lists())).toEqual({
+        workspaces: workspaces.map((workspace) =>
+          toUpdateId !== workspace.id ? workspace : { ...workspace, name },
+        ),
       });
-      expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-        queryKey: ["workspace", TEST_WORKSPACE_ID],
-        exact: true,
+    });
+
+    const workspace = await queryMockWorkspace(queryClient);
+
+    await act(async () => {
+      result.current.mutate({
+        param: { id: workspace.id },
+        json: { name },
       });
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
+
+      // Queries should not be invalidated.
+      expect(invalidateQueriesSpy).not.toHaveBeenCalled();
+
+      // Query cache should be updated when a workspace is deleted.
+      expect(setQueryDataSpy).toHaveBeenCalledTimes(4);
+
+      expect(
+        qcResult.current.getQueryData(workspacesKeys.detail(workspace.id)),
+      ).toEqual({ ...workspace, name });
     });
   });
 });

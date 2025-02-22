@@ -1,32 +1,29 @@
 import { useQuery, type UseQueryResult } from "@tanstack/react-query";
-import { rpc } from "@/lib/rpc";
+import { workspacesKeys } from "../query-key-factory";
 
-type NotFound = "Not found";
-type Unauthorized = "Unauthorized";
-type ServerError = "Server error";
+import type { InferResponseType } from "hono";
+import { hcInit } from "@/lib/hc";
+import type { WorkspacesRouter } from "@/server/routes/workspaces";
 
-export const NOT_FOUND: NotFound = "Not found";
-export const UNAUTHORIZED: Unauthorized = "Unauthorized";
-export const SERVER_ERROR: ServerError = "Server error";
+const { rpc } = hcInit<WorkspacesRouter>();
+
+export type WorkspaceRpc = (typeof rpc.api.workspaces)[":id"]["$get"];
+export type UseWorkspaceData = InferResponseType<WorkspaceRpc, 200>;
+
+enum Errors {
+  NOT_FOUND = "Not found",
+  UNAUTHORIZED = "Unauthorized",
+  INTERNAL_SERVER_ERROR = "Internal Server Error",
+}
 
 type UseWorkspaceResult = UseQueryResult<
-  {
-    $id: string;
-    $createdAt: string;
-    $updatedAt: string;
-    name: string;
-    $collectionId: string;
-    $databaseId: string;
-    $permissions: string[];
-    userId: string;
-    imageUrl?: string | undefined;
-  },
-  Error & { cause: NotFound | Unauthorized | ServerError }
+  UseWorkspaceData,
+  Error & { cause: Errors }
 >;
 
 export function useWorkspace(workspaceId: string): UseWorkspaceResult {
   return useQuery({
-    queryKey: ["workspace", workspaceId],
+    queryKey: workspacesKeys.detail(workspaceId),
     queryFn: async () => {
       const res = await rpc.api.workspaces[":id"].$get({
         param: { id: workspaceId },
@@ -37,14 +34,18 @@ export function useWorkspace(workspaceId: string): UseWorkspaceResult {
 
         if (status === 404)
           throw new Error("Oops, seems this workspace could not be found!", {
-            cause: NOT_FOUND,
+            cause: Errors.NOT_FOUND,
           });
 
         if (status === 401)
-          throw new Error(UNAUTHORIZED, { cause: UNAUTHORIZED });
+          throw new Error(Errors.UNAUTHORIZED, {
+            cause: Errors.UNAUTHORIZED,
+          });
 
         if (status === 500)
-          throw new Error(SERVER_ERROR, { cause: SERVER_ERROR });
+          throw new Error(Errors.INTERNAL_SERVER_ERROR, {
+            cause: Errors.INTERNAL_SERVER_ERROR,
+          });
       }
 
       return await res.json();

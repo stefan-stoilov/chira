@@ -32,9 +32,7 @@ export function UserButton() {
 
   const { email, name } = user;
 
-  const avatarFallback = name
-    ? name.charAt(0).toUpperCase()
-    : (email.charAt(0).toUpperCase() ?? "U");
+  const avatarFallback = name ?? "U";
 
   return (
     <DropdownMenu modal={false}>

@@ -1,19 +1,22 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CreateWorkspaceForm } from "./create-workspace-form";
+import { toast } from "sonner";
 
-const mutate = vi.fn();
+import { server } from "@/tests/mocks/server";
+import { QueryWrapper } from "@/tests/utils";
+import { CreateWorkspaceForm } from "./create-workspace-form";
+import { handlers } from "@/features/workspaces/api/use-create-workspace/mocks";
+
 const cancel = vi.fn();
+const push = vi.fn();
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
 
 function setUp(onCancel?: typeof cancel) {
-  vi.mock("@/features/workspaces/api/use-create-workspace", () => ({
-    useCreateWorkspace: () => ({ mutate, isPending: false }),
-  }));
-
-  render(<CreateWorkspaceForm onCancel={onCancel} />);
+  render(<CreateWorkspaceForm onCancel={onCancel} />, {
+    wrapper: QueryWrapper,
+  });
   const name = screen.getByLabelText(/name/i);
-  const iconInput = screen.getByLabelText(/icon/i);
-  const uploadIconBtn = screen.getByRole("button", { name: /upload image/i });
+
   const submit = screen.getByRole("button", { name: /create workspace/i });
 
   let cancelBtn: HTMLElement | undefined;
@@ -21,37 +24,64 @@ function setUp(onCancel?: typeof cancel) {
     cancelBtn = screen.getByRole("button", { name: /cancel/i });
   }
 
-  return { name, iconInput, uploadIconBtn, cancelBtn, submit };
+  return { name, cancelBtn, submit };
 }
 
 describe("Create workspace form test", () => {
-  it("Should render", () => {
-    setUp(cancel);
+  it("Should render properly with cancel button.", () => {
+    const { cancelBtn } = setUp(cancel);
+    expect(cancelBtn).toBeVisible();
     expect(screen.getByRole("form")).toBeDefined();
   });
 
-  it("Should display an error when an empty form is submitted.", async () => {
+  it("Should display a validation error when an empty form is submitted.", async () => {
     const { submit } = setUp();
     fireEvent.submit(submit);
 
     expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(mutate).not.toHaveBeenCalled();
   });
 
-  it("Should display no errors when an form is submitted with correct schema.", async () => {
+  it("Should display a toast error when an form is submitted with correct schema and server responds with an error.", async () => {
+    server.use(handlers.error);
+
+    const toastErrorSpy = vi.spyOn(toast, "error");
+
     const { submit, name } = setUp();
     const user = userEvent.setup();
-    await user.click(submit);
-
-    const errorMessages = await screen.findAllByRole("alert");
-    expect(errorMessages).toHaveLength(1);
 
     await user.type(name, "Test");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
-    expect(mutate).toHaveBeenCalledTimes(1);
+    expect(toastErrorSpy).toHaveBeenCalled();
+    expect(push).not.toHaveBeenCalled();
+  });
+
+  it("Should display a loader when an form is submitted with correct schema and server is slow to respond.", async () => {
+    server.use(handlers.loading);
+
+    const { submit, name } = setUp();
+    const user = userEvent.setup();
+
+    await user.type(name, "Test");
+    await user.click(submit);
+
+    expect(screen.getByTestId("loader")).toBeVisible();
+    expect(push).not.toHaveBeenCalled();
+    expect(submit).toBeDisabled();
+  });
+
+  it("Should display no errors when an form is submitted with correct schema and server responds with success.", async () => {
+    server.use(handlers.success);
+
+    const toastSuccessSpy = vi.spyOn(toast, "success");
+
+    const { submit, name } = setUp();
+    const user = userEvent.setup();
+
+    await user.type(name, "Test");
+    await user.click(submit);
+
+    expect(push).toHaveBeenCalledOnce();
+    expect(toastSuccessSpy).toHaveBeenCalledOnce();
   });
 });

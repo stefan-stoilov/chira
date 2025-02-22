@@ -1,47 +1,20 @@
-import { http, HttpResponse } from "msw";
 import { renderHook, act, waitFor } from "@testing-library/react";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
-import { env } from "@/env";
+import { handlers, data } from "./mocks";
 import { useSignOut } from "./use-sign-out";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/auth/sign-out`;
+const push = vi.fn();
 
-const refresh = vi.fn();
-
-vi.mock("next/navigation", () => {
-  return {
-    useRouter: () => {
-      return {
-        refresh,
-      };
-    },
-  };
-});
-
-vi.mock("@/lib/rpc", () => {
-  const rpc = {
-    api: {
-      auth: {
-        "sign-out": {
-          $post: async () => {
-            return await fetch(API_ENDPOINT, { method: "POST" });
-          },
-        },
-      },
-    },
-  };
-
-  return { rpc };
-});
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({
+    push,
+  }),
+}));
 
 describe("useSignOut hook test", () => {
   it("Should fail when server responds with an error.", async () => {
-    server.use(
-      http.post(API_ENDPOINT, () => {
-        return HttpResponse.json({ error: "Error" }, { status: 500 });
-      }),
-    );
+    server.use(handlers.error);
 
     const { result } = renderHook(() => useSignOut(), {
       wrapper: QueryWrapper,
@@ -54,16 +27,12 @@ describe("useSignOut hook test", () => {
     await waitFor(() => {
       expect(result.current.isError).toBe(true);
       expect(result.current.isSuccess).toBe(false);
-      expect(refresh).toHaveBeenCalledTimes(0);
+      expect(push).toHaveBeenCalledTimes(0);
     });
   });
 
   it("Should NOT fail when server responds with success and the mutation should invalidate queries.", async () => {
-    server.use(
-      http.post(API_ENDPOINT, () => {
-        return HttpResponse.json({ success: true }, { status: 200 });
-      }),
-    );
+    server.use(handlers.success);
 
     const queryClient = createTestQueryClient();
     const invalidateQueriesSpy = vi.spyOn(queryClient, "invalidateQueries");
@@ -79,11 +48,9 @@ describe("useSignOut hook test", () => {
     await waitFor(() => {
       expect(result.current.isError).toBe(false);
       expect(result.current.isSuccess).toBe(true);
-      expect(result.current.data).toEqual({ success: true });
-      expect(invalidateQueriesSpy).toHaveBeenCalledWith({
-        queryKey: ["currentUser", "workspaces"],
-      });
-      expect(refresh).toHaveBeenCalledTimes(1);
+      expect(result.current.data).toEqual(data.success);
+      expect(invalidateQueriesSpy).toHaveBeenCalled();
+      expect(push).toHaveBeenCalledTimes(1);
     });
   });
 });

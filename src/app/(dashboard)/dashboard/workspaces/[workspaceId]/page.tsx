@@ -19,7 +19,7 @@ function Page({ params }: { params: { workspaceId: string } }) {
 
   return (
     <div>
-      Workspace {data?.name} {data?.$id}
+      Workspace {data?.name} {data?.id}
     </div>
   );
 }

@@ -1,115 +1,171 @@
-import { createRoute } from "@hono/zod-openapi";
-
-import { sessionMiddleware } from "@/server/middlewares";
+import { createRoute, z } from "@hono/zod-openapi";
+import { sessionMiddleware } from "@/server/middlewares/session";
 import {
   createErrorMessageSchema,
   createValidationErrorSchema,
   jsonContent,
-  formContent,
-  createSuccessSchema,
+  jsonContentRequired,
 } from "@/server/lib/utils";
-import {
-  workspacesSchema,
-  workspaceIdSchema,
-  workspaceParamsSchema,
-  workspaceSchema,
-} from "@/server/schemas";
-import {
-  createWorkspaceServerSchema,
-  updateWorkspaceServerSchema,
-} from "@/features/workspaces/schemas";
+import { WorkspaceRoles } from "@/server/db/schemas";
+import { workspaceParamsSchema } from "@/server/schemas";
+import * as http from "@/server/lib/http-status-codes";
 
 const tags = ["Workspaces"];
 
-export const workspaces = createRoute({
+export const getWorkspacesRoute = createRoute({
   method: "get",
   path: "/api/workspaces",
   tags,
   middleware: [sessionMiddleware] as const,
   responses: {
-    200: jsonContent(workspacesSchema, "Workspaces"),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.OK]: jsonContent(
+      z.object({
+        workspaces: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            role: z.nativeEnum(WorkspaceRoles),
+          }),
+        ),
+      }),
+      "Workspaces",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
   },
 });
-export type WorkspacesRoute = typeof workspaces;
+export type GetWorkspacesRoute = typeof getWorkspacesRoute;
 
-export const getWorkspace = createRoute({
+export const getWorkspaceRoute = createRoute({
   method: "get",
   path: "/api/workspaces/{id}",
+  tags,
+  middleware: [sessionMiddleware] as const,
   request: {
     params: workspaceParamsSchema,
   },
-  tags,
-  middleware: [sessionMiddleware] as const,
   responses: {
-    200: jsonContent(workspaceSchema, "Workspace"),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    404: jsonContent(createErrorMessageSchema(), "Not found"),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.OK]: jsonContent(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        role: z.nativeEnum(WorkspaceRoles),
+      }),
+      "Workspaces",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
   },
 });
-export type GetWorkspaceRoute = typeof getWorkspace;
+export type GetWorkspaceRoute = typeof getWorkspaceRoute;
 
-export const createWorkspace = createRoute({
+// TODO: extract after migrating from AppWrite
+const createWorkspaceSchema = z.object({
+  name: z.string({ message: "Workspace name is required." }).trim().min(1),
+});
+
+export const createWorkspaceRoute = createRoute({
   method: "post",
   path: "/api/workspaces",
-  request: {
-    body: formContent(createWorkspaceServerSchema, "Create workspace schema"),
-  },
   tags,
   middleware: [sessionMiddleware] as const,
+  request: {
+    body: jsonContentRequired(createWorkspaceSchema, "Create workspace schema"),
+  },
   responses: {
-    200: jsonContent(workspaceIdSchema, "Create Workspace"),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    422: jsonContent(
-      createValidationErrorSchema(createWorkspaceServerSchema),
+    [http.CREATED]: jsonContent(
+      // TODO: extract after migrating from AppWrite
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        role: z.nativeEnum(WorkspaceRoles),
+      }),
+      "Create Workspace",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.UNPROCESSABLE_ENTITY]: jsonContent(
+      createValidationErrorSchema(createWorkspaceSchema),
       "The validation error(s)",
     ),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
   },
 });
-export type CreateWorkspaceRoute = typeof createWorkspace;
+export type CreateWorkspaceRoute = typeof createWorkspaceRoute;
 
-export const updateWorkspace = createRoute({
+// TODO: extract after migrating from AppWrite
+const updateWorkspaceSchema = z.object({
+  name: z.string({ message: "Workspace name is required." }).trim().min(1),
+});
+
+export const updateWorkspaceRoute = createRoute({
   method: "patch",
   path: "/api/workspaces/{id}",
-  request: {
-    params: workspaceParamsSchema,
-    body: formContent(updateWorkspaceServerSchema, "Update workspace schema"),
-  },
   tags,
   middleware: [sessionMiddleware] as const,
+  request: {
+    params: workspaceParamsSchema,
+    body: jsonContentRequired(updateWorkspaceSchema, "Create workspace schema"),
+  },
   responses: {
-    200: jsonContent(workspaceIdSchema, "Workspace successfully updated."),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    404: jsonContent(createErrorMessageSchema(), "Not found"),
-    422: jsonContent(
-      createValidationErrorSchema(updateWorkspaceServerSchema),
+    [http.OK]: jsonContent(
+      z.object({ id: z.string(), name: z.string() }),
+      "Update Workspace",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.UNPROCESSABLE_ENTITY]: jsonContent(
+      createValidationErrorSchema(updateWorkspaceSchema),
       "The validation error(s)",
     ),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
   },
 });
-export type UpdateWorkspaceRoute = typeof updateWorkspace;
+export type UpdateWorkspaceRoute = typeof updateWorkspaceRoute;
 
-export const deleteWorkspace = createRoute({
+export const deleteWorkspaceRoute = createRoute({
   method: "delete",
   path: "/api/workspaces/{id}",
   tags,
+  middleware: [sessionMiddleware] as const,
   request: {
     params: workspaceParamsSchema,
   },
-  middleware: [sessionMiddleware] as const,
   responses: {
-    200: jsonContent(workspaceIdSchema, "Workspace successfully deleted."),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    404: jsonContent(createErrorMessageSchema(), "Not found"),
-    422: jsonContent(
-      createValidationErrorSchema(workspaceParamsSchema),
-      "The validation error(s)",
+    [http.OK]: jsonContent(z.object({ id: z.string() }), "Delete Workspace"),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
     ),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
   },
 });
-export type DeleteWorkspaceRoute = typeof deleteWorkspace;
+export type DeleteWorkspaceRoute = typeof deleteWorkspaceRoute;

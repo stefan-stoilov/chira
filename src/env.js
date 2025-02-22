@@ -8,7 +8,6 @@ export const env = createEnv({
    */
   server: {
     NODE_ENV: z.enum(["development", "test", "production"]),
-    NEXT_APPWRITE_KEY: z.string(),
     SECRET: z.string(),
     DATABASE_URL: z.string(),
     AUTH_GITHUB_ID: z.string(),
@@ -22,12 +21,6 @@ export const env = createEnv({
    */
   client: {
     NEXT_PUBLIC_APP_URL: z.string(),
-    NEXT_PUBLIC_APPWRITE_ENDPOINT: z.string(),
-    NEXT_PUBLIC_APPWRITE_PROJECT: z.string(),
-    NEXT_PUBLIC_APPWRITE_DATABASE_ID: z.string(),
-    NEXT_PUBLIC_APPWRITE_MEMBERS_ID: z.string(),
-    NEXT_PUBLIC_APPWRITE_WORKSPACES_ID: z.string(),
-    NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID: z.string(),
     NEXT_PUBLIC_MOCK_API_ENDPOINT: z.string(),
   },
 
@@ -42,21 +35,6 @@ export const env = createEnv({
     SECRET: process.env.SECRET,
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
     AUTH_GITHUB_SECRET: process.env.AUTH_GITHUB_SECRET,
-
-    NEXT_PUBLIC_APPWRITE_ENDPOINT: process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT,
-    NEXT_PUBLIC_APPWRITE_PROJECT: process.env.NEXT_PUBLIC_APPWRITE_PROJECT,
-
-    NEXT_PUBLIC_APPWRITE_DATABASE_ID:
-      process.env.NEXT_PUBLIC_APPWRITE_DATABASE_ID,
-    NEXT_PUBLIC_APPWRITE_MEMBERS_ID:
-      process.env.NEXT_PUBLIC_APPWRITE_MEMBERS_ID,
-    NEXT_PUBLIC_APPWRITE_WORKSPACES_ID:
-      process.env.NEXT_PUBLIC_APPWRITE_WORKSPACES_ID,
-    NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID:
-      process.env.NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID,
-
-    NEXT_APPWRITE_KEY: process.env.NEXT_APPWRITE_KEY,
-
     NEXT_PUBLIC_MOCK_API_ENDPOINT: process.env.NEXT_PUBLIC_MOCK_API_ENDPOINT,
   },
   /**

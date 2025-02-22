@@ -3,18 +3,26 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { rpc } from "@/lib/rpc";
+import { workspacesKeys } from "../query-key-factory";
+import { hcInit } from "@/lib/hc";
+import type { WorkspacesRouter } from "@/server/routes/workspaces";
+import type { UseWorkspacesData } from "../use-workspaces";
+import type { UseWorkspaceData } from "../use-workspace";
 
-type RequestType = InferRequestType<typeof rpc.api.workspaces.$post>;
-type ResponseType = InferResponseType<typeof rpc.api.workspaces.$post, 200>;
+const { rpc } = hcInit<WorkspacesRouter>();
+
+export type CreateWorkspaceRpc = (typeof rpc.api.workspaces)["$post"];
+
+type RequestType = InferRequestType<CreateWorkspaceRpc>;
+type ResponseType = InferResponseType<CreateWorkspaceRpc, 201>;
 
 export function useCreateWorkspace() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ form }) => {
-      const res = await rpc.api.workspaces.$post({ form });
+    mutationFn: async ({ json }) => {
+      const res = await rpc.api.workspaces.$post({ json });
 
       if (!res.ok) {
         if (res.status === 422) {
@@ -29,13 +37,24 @@ export function useCreateWorkspace() {
 
       return data;
     },
-    onSuccess: (data) => {
+    onSuccess: ({ id, name, role }) => {
       toast.success("Workspace created.");
-      queryClient.invalidateQueries({
-        queryKey: ["workspaces"],
-      });
+      queryClient.setQueryData<UseWorkspacesData>(
+        workspacesKeys.lists(),
+        (prev) => {
+          if (prev) {
+            return { workspaces: [...prev.workspaces, { id, name, role }] };
+          } else {
+            return { workspaces: [{ id, name, role }] };
+          }
+        },
+      );
+      queryClient.setQueryData<UseWorkspaceData>(
+        workspacesKeys.detail(id),
+        () => ({ id, name, role }),
+      );
 
-      router.push(`/dashboard/workspaces/${data.$id}`);
+      router.push(`/dashboard/workspaces/${id}`);
     },
     onError: (error) => {
       toast.error(error.message);

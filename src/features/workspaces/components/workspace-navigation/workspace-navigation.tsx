@@ -52,7 +52,9 @@ export function WorkspaceNavigation() {
 
   if (typeof workspaceId === "undefined") return null;
 
-  const workspace = data?.documents?.find((doc) => doc.$id === workspaceId);
+  const workspace = data?.workspaces?.find(
+    (workspace) => workspace.id === workspaceId,
+  );
 
   if (typeof workspace === "undefined") return null;
 
@@ -68,7 +70,7 @@ export function WorkspaceNavigation() {
         <SidebarGroupContent>
           <SidebarMenu>
             {routes.map(({ href, label, activeIcon, icon }) => {
-              const fullHref = `/dashboard/workspaces/${workspace.$id}${href}`;
+              const fullHref = `/dashboard/workspaces/${workspace.id}${href}`;
               const isActive = pathname === fullHref;
               const Icon = isActive ? activeIcon : icon;
 

@@ -5,9 +5,10 @@ import { UserButton } from "./user-button";
 
 const meta = {
   title: "Components/Shared/UserButton",
-  render: () => (
+  component: UserButton,
+  decorators: (Story) => (
     <QueryWrapper>
-      <UserButton />
+      <Story />
     </QueryWrapper>
   ),
 } satisfies Meta<typeof UserButton>;
@@ -15,6 +16,6 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = withMswHandlers([handlers.get]);
+export const Default: Story = withMswHandlers([handlers.success]);
 
 export const Loading: Story = withMswHandlers([handlers.loading]);
