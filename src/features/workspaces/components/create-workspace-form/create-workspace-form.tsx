@@ -1,10 +1,6 @@
 "use client";
-import { useRef } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { ImageIcon } from "lucide-react";
-import Image from "next/image";
 
 import {
   createWorkspaceSchema,
@@ -15,7 +11,6 @@ import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspa
 import { cn } from "@/lib/utils";
 import { Loader } from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -28,7 +23,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 type CreateWorkspaceFormProps = {
   onCancel?: () => void;
@@ -37,34 +31,12 @@ type CreateWorkspaceFormProps = {
 export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
   const { mutate, isPending } = useCreateWorkspace();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const form = useForm<CreateWorkspaceSchema>({
     resolver: zodResolver(createWorkspaceSchema),
   });
 
   const submit = (data: CreateWorkspaceSchema) => {
-    mutate({ form: { ...data } });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB in bytes;
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const validImageTypes = ["image/png", "image/jpg", "image/jpeg"];
-
-      if (!validImageTypes.includes(file.type))
-        return toast.error("File is not a valid image.");
-      if (file.size > MAX_FILE_SIZE)
-        return toast.error("Image size cannot exceed 1 MB.");
-
-      form.setValue("image", file);
-      form.setValue("fileName", file.name);
-    } else {
-      form.setValue("image", undefined);
-      form.setValue("fileName", undefined);
-    }
+    mutate({ json: data });
   };
 
   return (
@@ -108,85 +80,6 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
                   </FormItem>
                 )}
               />
-
-              <FormField
-                disabled={isPending}
-                control={form.control}
-                name="image"
-                render={({ field }) => (
-                  <div className="flex flex-col gap-y-2">
-                    <div className="flex items-center gap-x-5">
-                      {field.value ? (
-                        <div className="relative size-[72px] overflow-hidden rounded-md">
-                          <Image
-                            src={
-                              typeof field.value === "string"
-                                ? field.value
-                                : URL.createObjectURL(field.value)
-                            }
-                            alt="Workspace Logo"
-                            fill
-                            className="object-cover"
-                          />
-                        </div>
-                      ) : (
-                        <Avatar className="size-[72px]">
-                          <AvatarFallback>
-                            <ImageIcon className="size-[36px] text-neutral-400" />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-
-                      <div className="flex flex-col">
-                        <Label htmlFor="picture" className="text-sm">
-                          Workspace Icon
-                        </Label>
-                        <p className="text-xs text-muted-foreground">
-                          JPG, PNG, or JPEG, max 1MB
-                        </p>
-
-                        <input
-                          id="picture"
-                          type="file"
-                          className="hidden"
-                          onChange={handleImageChange}
-                          accept=".jpg, .png, .jpeg"
-                          ref={inputRef}
-                          disabled={isPending}
-                        />
-
-                        {field.value ? (
-                          <Button
-                            type="button"
-                            disabled={isPending}
-                            variant="destructive"
-                            size="xs"
-                            className="mt-2 w-fit"
-                            onClick={() => {
-                              field.onChange(null);
-
-                              if (inputRef.current) inputRef.current.value = "";
-                            }}
-                          >
-                            Remove Image
-                          </Button>
-                        ) : (
-                          <Button
-                            type="button"
-                            disabled={isPending}
-                            variant="tertiary"
-                            size="xs"
-                            className="mt-2 w-fit"
-                            onClick={() => inputRef.current?.click()}
-                          >
-                            Upload Image
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  </div>
-                )}
-              />
             </div>
 
             <div className="py-7">
@@ -215,7 +108,10 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
                   Create workspace
                 </span>
                 {isPending && (
-                  <div className="absolute inset-0 flex items-center justify-center">
+                  <div
+                    data-testid="loader"
+                    className="absolute inset-0 flex items-center justify-center"
+                  >
                     <Loader />
                   </div>
                 )}

@@ -2,22 +2,25 @@ import type { InferRequestType, InferResponseType } from "hono";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { rpc } from "@/lib/rpc";
+import { workspacesKeys } from "../query-key-factory";
+import { hcInit } from "@/lib/hc";
+import type { WorkspacesRouter } from "@/server/routes/workspaces";
+import type { UseWorkspacesData } from "../use-workspaces";
+import type { UseWorkspaceData } from "../use-workspace";
 
-type RequestType = InferRequestType<
-  (typeof rpc.api.workspaces)[":id"]["$patch"]
->;
-type ResponseType = InferResponseType<
-  (typeof rpc.api.workspaces)[":id"]["$patch"],
-  200
->;
+const { rpc } = hcInit<WorkspacesRouter>();
+
+export type UpdateWorkspaceRpc = (typeof rpc.api.workspaces)[":id"]["$patch"];
+
+type RequestType = InferRequestType<UpdateWorkspaceRpc>;
+type ResponseType = InferResponseType<UpdateWorkspaceRpc, 200>;
 
 export function useUpdateWorkspace() {
   const queryClient = useQueryClient();
 
   return useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ form, param }) => {
-      const res = await rpc.api.workspaces[":id"].$patch({ form, param });
+    mutationFn: async ({ json, param }) => {
+      const res = await rpc.api.workspaces[":id"].$patch({ json, param });
       if (!res.ok) {
         throw new Error();
       }
@@ -26,16 +29,27 @@ export function useUpdateWorkspace() {
 
       return data;
     },
-    onSuccess: ({ $id }) => {
+    onSuccess: ({ id, name }) => {
       toast.success("Workspace updated.");
 
-      queryClient.invalidateQueries({
-        queryKey: ["workspaces"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["workspace", $id],
-        exact: true,
-      });
+      queryClient.setQueryData<UseWorkspacesData>(
+        workspacesKeys.lists(),
+        (prev) => {
+          if (prev)
+            return {
+              workspaces: prev.workspaces.map((workspace) =>
+                workspace.id !== id ? workspace : { ...workspace, name },
+              ),
+            };
+        },
+      );
+
+      queryClient.setQueryData<UseWorkspaceData>(
+        workspacesKeys.detail(id),
+        (prev) => {
+          if (prev) return { ...prev, name };
+        },
+      );
     },
     onError: () => {
       toast.error("Failed to update workspace.");

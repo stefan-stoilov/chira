@@ -1,43 +1,43 @@
-import { createRoute } from "@hono/zod-openapi";
+import { createRoute, z } from "@hono/zod-openapi";
 
-import { sessionMiddleware } from "@/server/middlewares";
+import { signInSchema, signUpSchema } from "@/features/auth/schemas";
+import { sessionMiddleware } from "@/server/middlewares/session";
 import {
-  createSuccessSchema,
   createErrorMessageSchema,
+  createSuccessSchema,
   createValidationErrorSchema,
   jsonContent,
   jsonContentRequired,
 } from "@/server/lib/utils";
-import { userSchema } from "@/server/schemas";
-import { signInSchema, signUpSchema } from "@/features/auth/schemas";
+import * as http from "@/server/lib/http-status-codes";
 
 const tags = ["Auth"];
 
-export const getCurrent = createRoute({
+export const oauthRoute = createRoute({
   method: "get",
-  path: "/api/auth/current",
+  path: "/api/oauth",
   tags,
-  middleware: [sessionMiddleware] as const,
   responses: {
-    200: jsonContent(userSchema, "User"),
-    401: jsonContent(
-      createErrorMessageSchema().openapi({
-        example: { error: "Unauthorized" },
-      }),
-      "Unauthorized",
-    ),
-    500: jsonContent(
-      createErrorMessageSchema().openapi({
-        example: { error: "Unexpected error" },
-      }),
-      "Server error",
-    ),
+    [http.MOVED_PERMANENTLY]: {
+      description: "Redirect",
+    },
   },
 });
+export type OAuthRoute = typeof oauthRoute;
 
-export type GetCurrentRoute = typeof getCurrent;
+export const oauthCallbackRoute = createRoute({
+  method: "get",
+  path: "/api/oauth/callback",
+  tags,
+  responses: {
+    [http.MOVED_PERMANENTLY]: {
+      description: "Redirect",
+    },
+  },
+});
+export type OAuthCallbackRoute = typeof oauthCallbackRoute;
 
-export const signIn = createRoute({
+export const signInRoute = createRoute({
   method: "post",
   path: "/api/auth/sign-in",
   tags,
@@ -45,19 +45,24 @@ export const signIn = createRoute({
     body: jsonContentRequired(signInSchema, "Credentials"),
   },
   responses: {
-    200: jsonContent(createSuccessSchema(), "Sign in"),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    422: jsonContent(
+    [http.OK]: jsonContent(createSuccessSchema(), "Sign in"),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.UNPROCESSABLE_ENTITY]: jsonContent(
       createValidationErrorSchema(signInSchema),
       "The validation error(s)",
     ),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Server error",
+    ),
   },
 });
+export type SignInRoute = typeof signInRoute;
 
-export type SignInRoute = typeof signIn;
-
-export const signUp = createRoute({
+export const signUpRoute = createRoute({
   method: "post",
   path: "/api/auth/sign-up",
   tags,
@@ -65,28 +70,63 @@ export const signUp = createRoute({
     body: jsonContentRequired(signUpSchema, "Credentials"),
   },
   responses: {
-    200: jsonContent(createSuccessSchema(), "Sign up"),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    422: jsonContent(
+    [http.CREATED]: jsonContent(createSuccessSchema(), "Sign up"),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.UNPROCESSABLE_ENTITY]: jsonContent(
       createValidationErrorSchema(signUpSchema),
       "The validation error(s)",
     ),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Server error",
+    ),
   },
 });
+export type SignUpRoute = typeof signUpRoute;
 
-export type SignUpRoute = typeof signUp;
-
-export const signOut = createRoute({
-  method: "post",
-  path: "/api/auth/sign-out",
+export const getUserRoute = createRoute({
+  method: "get",
+  path: "/api/auth/user",
   tags,
   middleware: [sessionMiddleware] as const,
   responses: {
-    200: jsonContent(createSuccessSchema(), "Sign Out"),
-    401: jsonContent(createErrorMessageSchema(), "Unauthorized"),
-    500: jsonContent(createErrorMessageSchema(), "Server error"),
+    [http.OK]: jsonContent(
+      z.object({
+        id: z.string(),
+        name: z.string(),
+        githubId: z.union([z.number(), z.null()]),
+        email: z.union([z.string(), z.null()]),
+        createdAt: z.date(),
+        updatedAt: z.date(),
+      }),
+      "User",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
   },
 });
+export type GetUserRoute = typeof getUserRoute;
 
-export type SignOutRoute = typeof signOut;
+export const signOutRoute = createRoute({
+  method: "post",
+  path: "/api/auth/sign-out",
+  tags,
+  responses: {
+    [http.OK]: jsonContent(createSuccessSchema(), "Sign Out"),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Server error",
+    ),
+  },
+});
+export type SignOutRoute = typeof signOutRoute;

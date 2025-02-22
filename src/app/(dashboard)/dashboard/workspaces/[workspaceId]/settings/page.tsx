@@ -24,7 +24,7 @@ function Page({ params }: { params: { workspaceId: string } }) {
       {data && (
         <EditWorkspaceForm
           workspace={data}
-          deleteWorkspaceCard={<DeleteWorkspaceCard workspaceId={data.$id} />}
+          deleteWorkspaceCard={<DeleteWorkspaceCard workspaceId={data.id} />}
         />
       )}
     </div>

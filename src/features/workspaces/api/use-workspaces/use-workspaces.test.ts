@@ -1,34 +1,14 @@
-import { http, HttpResponse } from "msw";
 import { renderHook, waitFor } from "@testing-library/react";
-
+import { useQueryClient } from "@tanstack/react-query";
 import { server } from "@/tests/mocks/server";
-import { QueryWrapper } from "@/tests/utils";
-import { env } from "@/env";
+import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
 import { useWorkspaces } from "./use-workspaces";
-
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces`;
-
-vi.mock("@/lib/rpc", () => {
-  const rpc = {
-    api: {
-      workspaces: {
-        $post: async () => {
-          return await fetch(API_ENDPOINT, { method: "GET" });
-        },
-      },
-    },
-  };
-
-  return { rpc };
-});
+import { workspacesKeys } from "../query-key-factory";
+import { data, handlers } from "./mocks";
 
 describe("useWorkspaces hook test", () => {
   it("Should throw when server responds with an error.", async () => {
-    server.use(
-      http.get(API_ENDPOINT, () => {
-        return HttpResponse.json({ error: "Error" }, { status: 500 });
-      }),
-    );
+    server.use(handlers.error);
 
     const { result } = renderHook(() => useWorkspaces(), {
       wrapper: QueryWrapper,
@@ -38,16 +18,27 @@ describe("useWorkspaces hook test", () => {
   });
 
   it("Should NOT throw when server responds with an error.", async () => {
-    server.use(
-      http.get(API_ENDPOINT, () => {
-        return HttpResponse.json({}, { status: 200 });
-      }),
-    );
+    server.use(handlers.success);
 
-    const { result } = renderHook(() => useWorkspaces(), {
-      wrapper: QueryWrapper,
+    const queryClient = createTestQueryClient();
+
+    const { result: qcResult } = renderHook(() => useQueryClient(), {
+      wrapper: (props) => QueryWrapper({ ...props, queryClient }),
     });
 
-    await waitFor(() => expect(result.current.isError).toBe(false));
+    const { result } = renderHook(() => useWorkspaces(), {
+      wrapper: (props) => QueryWrapper({ ...props, queryClient }),
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
+      expect(result.current.data).toStrictEqual(data.success);
+
+      // Check that the correct query key is associated with the data
+      expect(
+        qcResult.current.getQueryData(workspacesKeys.lists()),
+      ).toStrictEqual(data.success);
+    });
   });
 });

@@ -1,13 +1,18 @@
 import type { InferRequestType, InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
 
-type ResponseType = InferResponseType<
-  (typeof rpc.api.auth)["sign-up"]["$post"]
->;
-type RequestType = InferRequestType<(typeof rpc.api.auth)["sign-up"]["$post"]>;
+import { userKeys } from "../query-keys";
+import { hcInit } from "@/lib/hc";
+import type { AuthRouter } from "@/server/routes/auth";
+
+const { rpc } = hcInit<AuthRouter>();
+
+export type SignUpRpc = (typeof rpc.api.auth)["sign-up"]["$post"];
+
+type ResponseType = InferResponseType<SignUpRpc>;
+type RequestType = InferRequestType<SignUpRpc>;
 
 export function useSignUp() {
   const queryClient = useQueryClient();
@@ -26,7 +31,7 @@ export function useSignUp() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["currentUser"],
+        queryKey: userKeys.all,
       });
       router.push("/dashboard");
     },

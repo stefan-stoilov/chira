@@ -1,12 +1,16 @@
 import type { InferResponseType } from "hono";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { rpc } from "@/lib/rpc";
 import { toast } from "sonner";
 
-type ResponseType = InferResponseType<
-  (typeof rpc.api.auth)["sign-out"]["$post"]
->;
+import { hcInit } from "@/lib/hc";
+import type { AuthRouter } from "@/server/routes/auth";
+
+const { rpc } = hcInit<AuthRouter>();
+
+export type SignOutRpc = (typeof rpc.api.auth)["sign-out"]["$post"];
+
+type ResponseType = InferResponseType<SignOutRpc>;
 
 export function useSignOut() {
   const queryClient = useQueryClient();
@@ -23,10 +27,8 @@ export function useSignOut() {
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["currentUser", "workspaces"],
-      });
-      router.refresh();
+      queryClient.invalidateQueries();
+      router.push("/sign-in");
     },
     onError: (err) => {
       toast.error(err.message);

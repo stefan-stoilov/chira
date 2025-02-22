@@ -1,39 +1,16 @@
-import { http, HttpResponse } from "msw";
 import { renderHook, waitFor } from "@testing-library/react";
+import { useQueryClient } from "@tanstack/react-query";
 import { server } from "@/tests/mocks/server";
-import { QueryWrapper } from "@/tests/utils";
-import { env } from "@/env";
+import { createTestQueryClient, QueryWrapper } from "@/tests/utils";
 import { useWorkspace } from "./use-workspace";
-
-const TEST_WORKSPACE_ID = vi.hoisted(() => "test-id");
-
-const API_ENDPOINT = `${env.NEXT_PUBLIC_MOCK_API_ENDPOINT}/workspaces/${TEST_WORKSPACE_ID}`;
-
-vi.mock("@/lib/rpc", () => {
-  const rpc = {
-    api: {
-      workspaces: {
-        [TEST_WORKSPACE_ID]: {
-          $get: async () => {
-            return await fetch(API_ENDPOINT);
-          },
-        },
-      },
-    },
-  };
-
-  return { rpc };
-});
+import { workspacesKeys } from "../query-key-factory";
+import { data, handlers } from "./mocks";
 
 describe("useWorkspace hook test", () => {
   it("Should fail when server responds with an error.", async () => {
-    server.use(
-      http.post(API_ENDPOINT, () => {
-        return HttpResponse.json({ error: "Error" }, { status: 500 });
-      }),
-    );
+    server.use(handlers.error);
 
-    const { result } = renderHook(() => useWorkspace(TEST_WORKSPACE_ID), {
+    const { result } = renderHook(() => useWorkspace(data.MOCK_WORKSPACE_ID), {
       wrapper: QueryWrapper,
     });
 
@@ -41,16 +18,29 @@ describe("useWorkspace hook test", () => {
   });
 
   it("Should NOT fail when server responds with success.", async () => {
-    server.use(
-      http.post(API_ENDPOINT, () => {
-        return HttpResponse.json({ success: true }, { status: 200 });
-      }),
-    );
+    server.use(handlers.successUser);
 
-    const { result } = renderHook(() => useWorkspace(TEST_WORKSPACE_ID), {
-      wrapper: QueryWrapper,
+    const queryClient = createTestQueryClient();
+
+    const { result: qcResult } = renderHook(() => useQueryClient(), {
+      wrapper: (props) => QueryWrapper({ ...props, queryClient }),
     });
 
-    await waitFor(() => expect(result.current.isError).toBe(false));
+    const { result } = renderHook(() => useWorkspace(data.MOCK_WORKSPACE_ID), {
+      wrapper: (props) => QueryWrapper({ ...props, queryClient }),
+    });
+
+    await waitFor(() => {
+      expect(result.current.isError).toBe(false);
+      expect(result.current.isSuccess).toBe(true);
+      expect(result.current.data).toStrictEqual(data.successUser);
+
+      // Check that the correct query key is associated with the data
+      expect(
+        qcResult.current.getQueryData(
+          workspacesKeys.detail(data.MOCK_WORKSPACE_ID),
+        ),
+      ).toStrictEqual(data.successUser);
+    });
   });
 });

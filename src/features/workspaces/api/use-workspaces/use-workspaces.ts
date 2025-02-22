@@ -1,10 +1,18 @@
+import type { InferResponseType } from "hono";
 import { useQuery } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { rpc } from "@/lib/rpc";
+import { workspacesKeys } from "../query-key-factory";
+import { hcInit } from "@/lib/hc";
+import type { WorkspacesRouter } from "@/server/routes/workspaces";
+
+const { rpc } = hcInit<WorkspacesRouter>();
+
+export type WorkspacesRpc = (typeof rpc.api.workspaces)["$get"];
+export type UseWorkspacesData = InferResponseType<WorkspacesRpc, 200>;
 
 export function useWorkspaces() {
   return useQuery({
-    queryKey: ["workspaces"],
+    queryKey: workspacesKeys.lists(),
     queryFn: async () => {
       const res = await rpc.api.workspaces.$get();
 

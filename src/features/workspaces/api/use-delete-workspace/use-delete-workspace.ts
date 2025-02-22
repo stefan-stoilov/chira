@@ -3,15 +3,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { rpc } from "@/lib/rpc";
+import { workspacesKeys } from "../query-key-factory";
+import { hcInit } from "@/lib/hc";
+import type { WorkspacesRouter } from "@/server/routes/workspaces";
+import type { UseWorkspacesData } from "../use-workspaces";
 
-type RequestType = InferRequestType<
-  (typeof rpc.api.workspaces)[":id"]["$delete"]
->;
-type ResponseType = InferResponseType<
-  (typeof rpc.api.workspaces)[":id"]["$delete"],
-  200
->;
+const { rpc } = hcInit<WorkspacesRouter>();
+
+export type DeleteWorkspaceRpc = (typeof rpc.api.workspaces)[":id"]["$delete"];
+
+type RequestType = InferRequestType<DeleteWorkspaceRpc>;
+type ResponseType = InferResponseType<DeleteWorkspaceRpc, 200>;
 
 export function useDeleteWorkspace() {
   const queryClient = useQueryClient();
@@ -29,16 +31,22 @@ export function useDeleteWorkspace() {
 
       return data;
     },
-    onSuccess: ({ $id }) => {
+    onSuccess: ({ id }) => {
       toast.success("Workspace deleted.");
 
-      queryClient.invalidateQueries({
-        queryKey: ["workspaces"],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ["workspace", $id],
-        exact: true,
-      });
+      queryClient.setQueryData<UseWorkspacesData>(
+        workspacesKeys.lists(),
+        (prev) => {
+          if (typeof prev !== "undefined")
+            return {
+              workspaces: prev.workspaces.filter(
+                (workspace) => workspace.id !== id,
+              ),
+            };
+        },
+      );
+
+      queryClient.removeQueries({ queryKey: workspacesKeys.detail(id) });
 
       router.push("/dashboard");
     },

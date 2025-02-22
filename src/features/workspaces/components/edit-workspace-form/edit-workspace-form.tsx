@@ -1,22 +1,19 @@
 "use client";
-import { useRef, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "sonner";
-import { ArrowLeft, ImageIcon } from "lucide-react";
-import Image from "next/image";
+import { ArrowLeft } from "lucide-react";
 
 import {
   updateWorkspaceSchema,
   type UpdateWorkspaceSchema,
 } from "@/features/workspaces/schemas";
-import type { Workspace } from "@/features/workspaces/types";
 import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspace";
+import type { UseWorkspaceData } from "@/features/workspaces/api/use-workspace";
 
 import { cn } from "@/lib/utils";
 import { Loader } from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -29,12 +26,11 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { BackButton } from "@/components/shared/back-button";
 
 type EditWorkspaceFormProps = {
   onCancel?: () => void;
-  workspace: Workspace;
+  workspace: UseWorkspaceData;
   deleteWorkspaceCard: ReactNode;
 };
 
@@ -45,35 +41,13 @@ export function EditWorkspaceForm({
 }: EditWorkspaceFormProps) {
   const { mutate, isPending } = useUpdateWorkspace();
 
-  const inputRef = useRef<HTMLInputElement>(null);
-
   const form = useForm<UpdateWorkspaceSchema>({
     resolver: zodResolver(updateWorkspaceSchema),
-    defaultValues: { name: workspace.name, image: workspace.imageUrl },
+    defaultValues: { name: workspace.name },
   });
 
   const submit = (data: UpdateWorkspaceSchema) => {
-    mutate({ form: { ...data }, param: { id: workspace.$id } });
-  };
-
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const MAX_FILE_SIZE = 1 * 1024 * 1024; // 1 MB in bytes;
-    const file = e.target.files?.[0];
-
-    if (file) {
-      const validImageTypes = ["image/png", "image/jpg", "image/jpeg"];
-
-      if (!validImageTypes.includes(file.type))
-        return toast.error("File is not a valid image.");
-      if (file.size > MAX_FILE_SIZE)
-        return toast.error("Image size cannot exceed 1 MB.");
-
-      form.setValue("image", file);
-      form.setValue("fileName", file.name);
-    } else {
-      form.setValue("image", undefined);
-      form.setValue("fileName", undefined);
-    }
+    mutate({ json: data, param: { id: workspace.id } });
   };
 
   return (
@@ -121,7 +95,7 @@ export function EditWorkspaceForm({
                   )}
                 />
 
-                <FormField
+                {/* <FormField
                   disabled={isPending}
                   control={form.control}
                   name="image"
@@ -199,7 +173,7 @@ export function EditWorkspaceForm({
                       </div>
                     </div>
                   )}
-                />
+                /> */}
               </div>
 
               <div className="py-7">

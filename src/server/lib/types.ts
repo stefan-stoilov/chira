@@ -5,13 +5,13 @@ import type {
   z,
 } from "@hono/zod-openapi";
 import type { Env } from "hono";
-import type { PinoLogger } from "hono-pino";
+import type { RequestIdVariables } from "hono/request-id";
 
 export type AppOpenAPI = OpenAPIHono<AppBindings>;
 
 export type AppBindings = {
   Variables: {
-    logger: PinoLogger;
+    requestId: RequestIdVariables;
   };
 };
 

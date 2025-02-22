@@ -1,13 +1,25 @@
 import { createRouter } from "@/server/lib/create-app";
 
-import * as handlers from "./handlers";
-import * as routes from "./workspaces.routes";
+import {
+  getWorkspaceHandler,
+  getWorkspacesHandler,
+  createWorkspaceHandler,
+  updateWorkspaceHandler,
+  deleteWorkspaceHandler,
+} from "./handlers";
+import {
+  getWorkspaceRoute,
+  getWorkspacesRoute,
+  createWorkspaceRoute,
+  updateWorkspaceRoute,
+  deleteWorkspaceRoute,
+} from "./workspaces.routes";
 
-const router = createRouter()
-  .openapi(routes.workspaces, handlers.get)
-  .openapi(routes.createWorkspace, handlers.create)
-  .openapi(routes.getWorkspace, handlers.getWorkspaceHandler)
-  .openapi(routes.updateWorkspace, handlers.updateWorkspaceHandler)
-  .openapi(routes.deleteWorkspace, handlers.deleteWorkspaceHandler);
+export const workspacesRouter = createRouter()
+  .openapi(getWorkspaceRoute, getWorkspaceHandler)
+  .openapi(getWorkspacesRoute, getWorkspacesHandler)
+  .openapi(createWorkspaceRoute, createWorkspaceHandler)
+  .openapi(updateWorkspaceRoute, updateWorkspaceHandler)
+  .openapi(deleteWorkspaceRoute, deleteWorkspaceHandler);
 
-export default router;
+export type WorkspacesRouter = typeof workspacesRouter;
