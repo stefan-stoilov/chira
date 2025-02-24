@@ -1,4 +1,8 @@
-CREATE TYPE "public"."role" AS ENUM('user', 'admin', 'owner');--> statement-breakpoint
+DO $$ BEGIN
+	CREATE TYPE "public"."role" AS ENUM('user', 'admin', 'owner');
+EXCEPTION
+	WHEN duplicate_object THEN NULL;
+END $$;
 CREATE TABLE "refresh_tokens" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"user_id" uuid NOT NULL,
@@ -15,6 +19,7 @@ CREATE TABLE "users" (
 	"password" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
+	CONSTRAINT "users_github_id_unique" UNIQUE("github_id"),
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );
 --> statement-breakpoint
@@ -26,7 +31,7 @@ CREATE TABLE "workspaces" (
 CREATE TABLE "workspaces_members" (
 	"user_id" uuid NOT NULL,
 	"workspace_id" uuid NOT NULL,
-	"role" "role" DEFAULT 'user',
+	"role" "role" DEFAULT 'user' NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL,
 	"updated_at" timestamp DEFAULT now() NOT NULL,
 	CONSTRAINT "workspaces_members_pk" PRIMARY KEY("user_id","workspace_id")
