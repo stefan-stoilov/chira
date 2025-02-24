@@ -13,6 +13,7 @@ export const typography = {
   large: "text-lg font-semibold",
   small: "text-sm font-medium leading-none",
   muted: "text-sm text-muted-foreground",
+  link: "text-primary underline-offset-4 hover:underline hover:text-primary-hovered active:text-primary-pressed",
 };
 
 export type TypographyProps = {
