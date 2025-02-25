@@ -17,6 +17,9 @@ const config: TestRunnerConfig = {
       },
     });
   },
+  tags: {
+    exclude: ["no-tests"],
+  },
 };
 
 export default config;

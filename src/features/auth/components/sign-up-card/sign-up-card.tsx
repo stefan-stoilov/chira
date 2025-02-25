@@ -8,6 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { typography } from "@/components/ui/typography";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { SignUpForm } from "./sign-up-form";
@@ -20,7 +21,7 @@ export function SignUpCard() {
 
         <CardDescription>
           By signing up, you agree to our{" "}
-          <Link href="#" className="text-blue-500">
+          <Link href="#" className={typography.link}>
             Terms {"&"} Conditions
           </Link>
           .

@@ -30,6 +30,8 @@ const meta = {
       </Select>
     );
   },
+  // Radix Select component has an issue with axe testing.
+  tags: ["no-tests"],
 } satisfies Meta<typeof Select>;
 
 export default meta;
