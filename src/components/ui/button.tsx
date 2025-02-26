@@ -12,16 +12,20 @@ const buttonVariants = cva(
         default:
           "bg-background-neutral text-foreground hover:bg-background-neutral-hovered active:bg-background-neutral-pressed",
         primary:
-          "bg-gradient-to-b from-blue-600 to-blue-700 text-white hover:from-blue-700 hover:to-blue-700",
+          "bg-primary text-primary-foreground hover:bg-primary-hovered active:bg-primary-pressed",
+        secondary:
+          "bg-accent text-accent-foreground hover:bg-accent-hovered active:bg-accent-pressed",
         destructive:
-          "bg-gradient-to-b from-amber-600 to-amber-700 text-destructive-foreground hover:from-amber-700 hover:to-amber-700",
+          "bg-destructive text-destructive-foreground hover:bg-destructive-hovered active:bg-destructive-pressed",
+        warning:
+          "bg-warning text-warning-foreground hover:bg-warning-hovered active:bg-warning-pressed",
         outline:
-          "border border-input bg-background hover:bg-background-hovered active:bg-background-pressed",
+          "border border-input text-foreground hover:bg-background-neutral-hovered active:bg-background-neutral-pressed",
         ghost:
           "hover:bg-background-neutral-hovered active:bg-background-neutral-pressed",
         muted:
           "bg-muted text-foreground hover:bg-muted-hovered active:bg-muted-pressed",
-        link: "text-primary underline-offset-4 hover:underline hover:text-primary-hovered active:text-primary-pressed",
+        link: "text-primary underline-offset-4 underline hover:text-primary-hovered active:text-primary-pressed",
       },
       size: {
         default: "h-10 px-4 py-2",
