@@ -8,7 +8,7 @@ type LoaderProps = {
 export function Loader({ className }: LoaderProps) {
   return (
     <LucideLoader
-      className={cn("size-4 animate-spin text-muted-foreground", className)}
+      className={cn("size-4 animate-spin text-foreground", className)}
     />
   );
 }

@@ -6,7 +6,7 @@ import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
 import { handlers, data } from "./mocks";
 import { useCreateWorkspace } from "./use-create-workspace";
 import { workspacesKeys } from "../query-key-factory";
-import { queryMockWorkspaces } from "../use-workspaces/mocks";
+import { queryMockWorkspaces } from "../use-workspaces/mocks/utils";
 
 const push = vi.fn();
 

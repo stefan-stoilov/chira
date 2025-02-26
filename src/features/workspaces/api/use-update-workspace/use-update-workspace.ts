@@ -30,7 +30,7 @@ export function useUpdateWorkspace() {
       return data;
     },
     onSuccess: ({ id, name }) => {
-      toast.success("Workspace updated.");
+      toast.success(`Workspace ${name} updated.`);
 
       queryClient.setQueryData<UseWorkspacesData>(
         workspacesKeys.lists(),

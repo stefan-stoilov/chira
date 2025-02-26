@@ -27,11 +27,17 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { BackButton } from "@/components/shared/back-button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type EditWorkspaceFormProps = {
   onCancel?: () => void;
   workspace: UseWorkspaceData;
-  deleteWorkspaceCard: ReactNode;
+  deleteWorkspaceCard?: ReactNode;
 };
 
 export function EditWorkspaceForm({
@@ -180,7 +186,7 @@ export function EditWorkspaceForm({
                 <Separator />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap-reverse items-center justify-between">
                 <Button
                   disabled={isPending}
                   type="button"
@@ -192,21 +198,10 @@ export function EditWorkspaceForm({
                   Cancel
                 </Button>
 
-                <Button
-                  disabled={isPending}
-                  type="submit"
-                  size="lg"
-                  className="relative"
-                >
-                  <span className={cn(isPending && "invisible")}>
-                    Save changes
-                  </span>
-                  {isPending && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Loader />
-                    </div>
-                  )}
-                </Button>
+                <SubmitButton
+                  isPending={isPending}
+                  isDirty={form.formState.isDirty}
+                />
               </div>
             </form>
           </Form>
@@ -215,5 +210,41 @@ export function EditWorkspaceForm({
 
       {deleteWorkspaceCard}
     </div>
+  );
+}
+
+type SubmitButtonProps = {
+  isPending: boolean;
+  isDirty: boolean;
+};
+
+function SubmitButton({ isPending, isDirty }: SubmitButtonProps) {
+  return (
+    <TooltipProvider>
+      <Tooltip open={isPending || isDirty ? false : undefined}>
+        <TooltipTrigger asChild disabled={isPending || isDirty}>
+          <div>
+            <Button
+              disabled={isPending || !isDirty}
+              type="submit"
+              variant={"primary"}
+              className="relative"
+            >
+              <span className={cn(isPending && "invisible")}>Save changes</span>
+              {isPending && (
+                <div
+                  data-testid="loader"
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <Loader className="text-primary-foreground" />
+                </div>
+              )}
+            </Button>
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>No changes made to workspace</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }
