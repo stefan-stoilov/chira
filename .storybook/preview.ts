@@ -8,7 +8,15 @@ import { initialize, mswLoader } from "msw-storybook-addon";
  * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
  * to learn how to customize it
  */
-initialize();
+if (process.env.NODE_ENV === "production") {
+  initialize({
+    serviceWorker: {
+      url: "./mockServiceWorker.js",
+    },
+  });
+} else {
+  initialize();
+}
 
 import "@/styles/globals.css";
 
