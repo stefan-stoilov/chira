@@ -25,7 +25,12 @@ export default {
             pressed: "hsl(var(--background-neutral) / 0.295)",
           },
         },
-        foreground: "hsl(var(--foreground))",
+        foreground: {
+          DEFAULT: "hsl(var(--foreground))",
+          subtle: "hsl(var(--foreground-subtle))",
+          muted: "hsl(var(--foreground-muted))",
+          inverse: "hsl(var(--foreground-inverse))",
+        },
         card: {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",

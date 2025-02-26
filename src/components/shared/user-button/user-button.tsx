@@ -10,6 +10,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Loader } from "../loader";
 
@@ -32,13 +33,13 @@ export function UserButton() {
 
   const { email, name } = user;
 
-  const avatarFallback = name ?? "U";
+  const avatarFallback = name?.charAt(0) ?? "U";
 
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="relative">
-        <Avatar className="size-10 border border-neutral-300 transition hover:opacity-75">
-          <AvatarFallback className="flex items-center justify-center bg-neutral-200 font-medium text-neutral-500">
+        <Avatar className="size-10 border border-border">
+          <AvatarFallback className="text-foreground-muted flex items-center justify-center bg-muted font-medium hover:bg-muted-hovered">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>
@@ -51,8 +52,8 @@ export function UserButton() {
         sideOffset={10}
       >
         <div className="flex flex-col items-center justify-center gap-2 rounded px-2.5 py-4">
-          <Avatar className="size-14 border border-neutral-300 transition hover:opacity-75">
-            <AvatarFallback className="flex items-center justify-center bg-neutral-200 text-xl font-medium text-neutral-500">
+          <Avatar className="size-14 border border-border">
+            <AvatarFallback className="text-foreground-muted flex items-center justify-center bg-muted font-medium">
               {avatarFallback}
             </AvatarFallback>
           </Avatar>
@@ -66,12 +67,11 @@ export function UserButton() {
 
           <Separator className="mb-1" />
 
-          <DropdownMenuItem
-            onClick={() => signOut()}
-            className="flex h-10 cursor-pointer items-center justify-center font-medium text-amber-700"
-          >
-            <LogOut className="mr-2 size-4" />
-            Sign Out
+          <DropdownMenuItem asChild>
+            <Button variant="secondary" size="lg" onClick={() => signOut()}>
+              <LogOut />
+              Sign Out
+            </Button>
           </DropdownMenuItem>
         </div>
       </DropdownMenuContent>
