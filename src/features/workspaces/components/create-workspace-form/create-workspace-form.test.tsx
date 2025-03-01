@@ -56,7 +56,7 @@ describe("Create workspace form test", () => {
     expect(push).not.toHaveBeenCalled();
   });
 
-  it("Should display a loader when an form is submitted with correct schema and server is slow to respond.", async () => {
+  it("Should display a loader and every form field should be disabled when the form is submitted with correct schema and server is slow to respond.", async () => {
     server.use(handlers.loading);
 
     const { submit, name } = setUp();
@@ -66,8 +66,9 @@ describe("Create workspace form test", () => {
     await user.click(submit);
 
     expect(screen.getByTestId("loader")).toBeVisible();
-    expect(push).not.toHaveBeenCalled();
     expect(submit).toBeDisabled();
+    expect(name).toBeDisabled();
+    expect(push).not.toHaveBeenCalled();
   });
 
   it("Should display no errors when an form is submitted with correct schema and server responds with success.", async () => {

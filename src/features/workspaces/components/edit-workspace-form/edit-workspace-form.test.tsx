@@ -75,7 +75,7 @@ describe("Create workspace form test", () => {
     expect(toastSuccessSpy).not.toHaveBeenCalled();
   });
 
-  it("Should display a loader when a form is submitted with correct schema and server is slow to respond.", async () => {
+  it("Should display a loader and every form field should be disabled after the form is submitted with correct schema and server is slow to respond.", async () => {
     server.use(handlers.loading);
 
     const { submit, name } = setup();
@@ -85,7 +85,7 @@ describe("Create workspace form test", () => {
     await user.click(submit);
 
     expect(screen.getByTestId("loader")).toBeVisible();
-
+    expect(name).toBeDisabled();
     expect(submit).toBeDisabled();
   });
 
