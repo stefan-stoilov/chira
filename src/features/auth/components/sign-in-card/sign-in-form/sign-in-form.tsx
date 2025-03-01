@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/shared/submit-button";
 
 export function SignInForm() {
   const { mutate, isPending } = useSignIn();
@@ -99,21 +100,16 @@ export function SignInForm() {
               </div>
 
               <FormMessage />
-              <Button
-                className="px-0 font-normal"
-                size="sm"
-                variant="ghost"
-                asChild
-              >
+              <Button className="font-normal" size="sm" variant="ghost" asChild>
                 <Link href="/reset-password">Forgot Password?</Link>
               </Button>
             </FormItem>
           )}
         />
 
-        <Button type="submit" disabled={isPending} className="w-full">
+        <SubmitButton isPending={isPending} className="w-full">
           Sign In
-        </Button>
+        </SubmitButton>
       </form>
     </Form>
   );

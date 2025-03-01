@@ -5,11 +5,11 @@ import { useSignIn } from "./use-sign-in";
 import { userKeys } from "../query-keys";
 import { handlers, data } from "./mocks";
 
-const refresh = vi.fn();
+const push = vi.fn();
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({
-    refresh,
+    push,
   }),
 }));
 
@@ -31,7 +31,7 @@ describe("useSignIn hook test", () => {
       expect(result.current.isError).toBe(true);
       expect(result.current.isSuccess).toBe(false);
     });
-    expect(refresh).toHaveBeenCalledTimes(0);
+    expect(push).toHaveBeenCalledTimes(0);
   });
 
   it("Should NOT fail when server responds with success and the mutation should invalidate queries.", async () => {
@@ -57,7 +57,7 @@ describe("useSignIn hook test", () => {
       expect(invalidateQueriesSpy).toHaveBeenCalledWith({
         queryKey: userKeys.all,
       });
-      expect(refresh).toHaveBeenCalledTimes(1);
+      expect(push).toHaveBeenCalledTimes(1);
     });
   });
 });
