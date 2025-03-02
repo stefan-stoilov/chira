@@ -41,7 +41,7 @@ export function useSignIn() {
       queryClient.invalidateQueries({
         queryKey: userKeys.all,
       });
-      router.refresh();
+      router.push("/dashboard");
     },
     onError: (error) => {
       toast.error(error.message);

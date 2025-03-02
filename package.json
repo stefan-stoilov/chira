@@ -7,7 +7,9 @@
     "build": "next build",
     "check": "next lint && tsc --noEmit",
     "dev": "next dev --turbo",
+    "dev:e2e": "cross-env DATABASE_TYPE=test next dev --turbo",
     "test": "cross-env NODE_ENV=test vitest",
+    "test:e2e": "cross-env NODE_ENV=test pnpm playwright test",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:test": "test-storybook --watch",
@@ -68,6 +70,7 @@
     "zod": "^3.24.1"
   },
   "devDependencies": {
+    "@playwright/test": "^1.50.1",
     "@storybook/addon-a11y": "^8.4.7",
     "@storybook/addon-essentials": "^8.4.7",
     "@storybook/addon-interactions": "^8.4.7",
@@ -107,6 +110,7 @@
     "prettier-plugin-tailwindcss": "^0.6.5",
     "storybook": "^8.4.7",
     "tailwindcss": "^3.4.3",
+    "tsx": "^4.19.3",
     "typescript": "^5.5.3",
     "vite-tsconfig-paths": "^5.1.4",
     "vitest": "^2.1.8"

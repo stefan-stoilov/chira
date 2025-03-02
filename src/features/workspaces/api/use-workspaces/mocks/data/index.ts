@@ -26,6 +26,14 @@ export const success: InferResponseType<WorkspacesRpc, typeof http.OK> = {
 };
 export const successStatus = { status: http.OK };
 
+export const successZeroWorkspaces: InferResponseType<
+  WorkspacesRpc,
+  typeof http.OK
+> = {
+  workspaces: [],
+};
+export const successZeroWorkspacesStatus = { status: http.OK };
+
 export const error: InferResponseType<
   WorkspacesRpc,
   typeof http.INTERNAL_SERVER_ERROR

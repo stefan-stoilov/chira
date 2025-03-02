@@ -14,7 +14,7 @@ const meta = {
   render() {
     return (
       <Select>
-        <SelectTrigger className="w-[180px]">
+        <SelectTrigger className="w-[180px]" aria-label="select a fruit">
           <SelectValue placeholder="Select a fruit" />
         </SelectTrigger>
         <SelectContent>
@@ -30,8 +30,6 @@ const meta = {
       </Select>
     );
   },
-  // Radix Select component has an issue with axe testing.
-  tags: ["no-tests"],
 } satisfies Meta<typeof Select>;
 
 export default meta;
@@ -46,7 +44,7 @@ export const Scrollable: Story = {
   render() {
     return (
       <Select>
-        <SelectTrigger className="w-[280px]">
+        <SelectTrigger className="w-[280px]" aria-label="select a timezone">
           <SelectValue placeholder="Select a timezone" />
         </SelectTrigger>
         <SelectContent>

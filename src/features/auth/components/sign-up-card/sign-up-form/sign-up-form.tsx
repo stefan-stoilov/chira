@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/shared/submit-button";
 
 export function SignUpForm() {
   const { mutate, isPending } = useSignUp();
@@ -129,21 +130,16 @@ export function SignUpForm() {
                   "Password must have a minimum of 8 characters, at least one uppercase and lowercase character, at least one digit and special character."
                 }
               </FormMessage>
-              <Button
-                className="px-0 font-normal"
-                size="sm"
-                variant="ghost"
-                asChild
-              >
+              <Button className="font-normal" size="sm" variant="ghost" asChild>
                 <Link href="/reset-password">Forgot Password?</Link>
               </Button>
             </FormItem>
           )}
         />
 
-        <Button disabled={isPending} className="w-full">
+        <SubmitButton isPending={isPending} className="w-full">
           Sign Up
-        </Button>
+        </SubmitButton>
       </form>
     </Form>
   );

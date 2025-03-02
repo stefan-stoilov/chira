@@ -12,7 +12,6 @@ import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspa
 import type { UseWorkspaceData } from "@/features/workspaces/api/use-workspace";
 
 import { cn } from "@/lib/utils";
-import { Loader } from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,11 +26,21 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { BackButton } from "@/components/shared/back-button";
+import {
+  SubmitButton,
+  type SubmitButtonProps,
+} from "@/components/shared/submit-button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type EditWorkspaceFormProps = {
   onCancel?: () => void;
   workspace: UseWorkspaceData;
-  deleteWorkspaceCard: ReactNode;
+  deleteWorkspaceCard?: ReactNode;
 };
 
 export function EditWorkspaceForm({
@@ -180,7 +189,7 @@ export function EditWorkspaceForm({
                 <Separator />
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-wrap-reverse items-center justify-between">
                 <Button
                   disabled={isPending}
                   type="button"
@@ -192,21 +201,10 @@ export function EditWorkspaceForm({
                   Cancel
                 </Button>
 
-                <Button
-                  disabled={isPending}
-                  type="submit"
-                  size="lg"
-                  className="relative"
-                >
-                  <span className={cn(isPending && "invisible")}>
-                    Save changes
-                  </span>
-                  {isPending && (
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Loader />
-                    </div>
-                  )}
-                </Button>
+                <SubmitButtonWithTooltip
+                  isPending={isPending}
+                  isDirty={form.formState.isDirty}
+                />
               </div>
             </form>
           </Form>
@@ -215,5 +213,27 @@ export function EditWorkspaceForm({
 
       {deleteWorkspaceCard}
     </div>
+  );
+}
+
+function SubmitButtonWithTooltip({
+  isPending,
+  isDirty,
+  ...props
+}: SubmitButtonProps) {
+  return (
+    <TooltipProvider>
+      <Tooltip open={isPending || isDirty ? false : undefined}>
+        <TooltipTrigger asChild disabled={isPending || isDirty}>
+          <div>
+            <SubmitButton isPending={isPending} isDirty={isDirty} {...props}>
+              Save changes
+            </SubmitButton>
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent>No changes made to workspace</TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

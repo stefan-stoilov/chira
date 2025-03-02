@@ -1,3 +1,4 @@
+import React from "react";
 import type { Preview } from "@storybook/react";
 import { withThemeByClassName } from "@storybook/addon-themes";
 
@@ -40,12 +41,17 @@ const preview: Preview = {
     },
   },
   decorators: [
+    (Story) => (
+      <div id="sb-test-wrapper">
+        <Story />
+      </div>
+    ),
     withThemeByClassName({
       themes: {
         light: "",
         dark: "dark",
       },
-      defaultTheme: "light",
+      defaultTheme: "dark",
     }),
   ],
   loaders: [mswLoader],

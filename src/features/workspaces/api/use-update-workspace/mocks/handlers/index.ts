@@ -16,6 +16,19 @@ export const success = http.patch<{ id: string }, { name: string }>(
   },
 );
 
+export const successWithDelay = http.patch<{ id: string }, { name: string }>(
+  API_ENDPOINT,
+  async ({ params, request }) => {
+    const { name } = await request.json();
+    await delay(2000);
+
+    return HttpResponse.json(
+      data.success({ id: params.id, name }),
+      data.successStatus,
+    );
+  },
+);
+
 export const loading = http.patch<{ id: string }, { name: string }>(
   API_ENDPOINT,
   async ({ params }) => {

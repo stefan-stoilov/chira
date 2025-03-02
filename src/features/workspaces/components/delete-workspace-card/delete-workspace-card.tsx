@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 
 import { useDeleteWorkspace } from "@/features/workspaces/api/use-delete-workspace";
 import { ResponsiveModal } from "@/components/shared/responsive-modal";
@@ -11,10 +11,11 @@ import {
 } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { SubmitButton } from "@/components/shared/submit-button";
 
 export function DeleteWorkspaceCard({ workspaceId }: { workspaceId: string }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { mutate, isPending } = useDeleteWorkspace();
+  const { mutate, isPending, isError } = useDeleteWorkspace();
 
   const closeModal = useCallback(() => setIsOpen(false), []);
 
@@ -22,30 +23,35 @@ export function DeleteWorkspaceCard({ workspaceId }: { workspaceId: string }) {
     mutate({ param: { id: workspaceId } });
   }, [mutate, workspaceId]);
 
+  useEffect(() => {
+    if (isError) setIsOpen(false);
+  }, [isError]);
+
   return (
     <>
-      <Card className="size-full border bg-destructive/10 shadow-none">
+      <Card className="size-full border border-destructive-subtle-pressed bg-destructive-subtle shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
             <h3 className="font-bold">Danger Zone</h3>
 
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-foreground-subtle">
               Deleting a workspace is irreversible and will remove all
               associated data.
             </p>
 
             <Separator className="my-7" />
 
-            <Button
+            <SubmitButton
               size="sm"
               variant="destructive"
               type="button"
-              disabled={isPending}
+              isPending={isPending}
               onClick={() => setIsOpen(true)}
               className="ml-auto mt-6 w-fit"
+              loaderClassName="text-destructive-foreground"
             >
               Delete Workspace
-            </Button>
+            </SubmitButton>
           </div>
         </CardContent>
       </Card>
@@ -66,7 +72,7 @@ export function DeleteWorkspaceCard({ workspaceId }: { workspaceId: string }) {
               </CardDescription>
             </CardHeader>
 
-            <div className="flex w-full flex-col items-center justify-end gap-x-2 gap-y-2 pt-4 lg:flex-row">
+            <div className="flex w-full flex-col-reverse items-center justify-end gap-x-2 gap-y-3 pt-4 lg:flex-row">
               <Button
                 onClick={closeModal}
                 variant="outline"
@@ -76,14 +82,15 @@ export function DeleteWorkspaceCard({ workspaceId }: { workspaceId: string }) {
                 Cancel
               </Button>
 
-              <Button
+              <SubmitButton
+                type="button"
                 onClick={deleteWorkspace}
                 variant={"destructive"}
                 className="w-full lg:w-auto"
-                disabled={isPending}
+                isPending={isPending}
               >
                 Confirm
-              </Button>
+              </SubmitButton>
             </div>
           </CardContent>
         </Card>

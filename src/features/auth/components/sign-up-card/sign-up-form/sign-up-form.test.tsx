@@ -1,15 +1,22 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { SignUpForm } from "./sign-up-form";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { toast } from "sonner";
 
-const mutate = vi.fn();
+import { QueryWrapper } from "@/tests/utils";
+import { server } from "@/tests/mocks/server";
+import { handlers } from "@/features/auth/api/use-sign-up/mocks";
+import { SignUpForm } from "./sign-up-form";
 
-vi.mock("@/features/auth/api/use-sign-up", () => ({
-  useSignUp: () => ({ mutate, isPending: false }),
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
 }));
 
 function setUp() {
-  render(<SignUpForm />);
+  render(
+    <QueryWrapper>
+      <SignUpForm />
+    </QueryWrapper>,
+  );
   const name = screen.getByLabelText(/name/i);
   const email = screen.getByRole("textbox", { name: /email/i });
   const password = screen.getByLabelText(/password/i);
@@ -30,7 +37,6 @@ describe("Sign in form test", () => {
     fireEvent.submit(submit);
 
     expect(await screen.findAllByRole("alert")).toHaveLength(3);
-    expect(mutate).not.toHaveBeenCalled();
   });
 
   it("Should display error only for NAME when other fields filled out correctly.", async () => {
@@ -43,7 +49,6 @@ describe("Sign in form test", () => {
 
     expect(await screen.findAllByRole("alert")).toHaveLength(1);
     expect(screen.getByText(/name is required/i)).toBeDefined();
-    expect(mutate).not.toHaveBeenCalled();
   });
 
   it("Should display error only for EMAIL when other fields filled out correctly.", async () => {
@@ -55,7 +60,6 @@ describe("Sign in form test", () => {
     await user.click(submit);
 
     expect(await screen.findAllByRole("alert")).toHaveLength(1);
-    expect(mutate).not.toHaveBeenCalled();
   });
 
   it("Should display error only for PASSWORD when other fields filled out correctly.", async () => {
@@ -67,11 +71,38 @@ describe("Sign in form test", () => {
     await user.click(submit);
 
     expect(await screen.findAllByRole("alert")).toHaveLength(1);
-
-    expect(mutate).not.toHaveBeenCalled();
   });
 
-  it("Should display NO errors when an form is submitted with correct schema.", async () => {
+  it("Should display loader and every form field should be disabled after the form is submitted with correct schema and the component is waiting for a response from the server", async () => {
+    server.use(handlers.loading);
+
+    const { submit, email, password, name } = setUp();
+    const user = userEvent.setup();
+    await user.click(submit);
+
+    const errorMessages = await screen.findAllByRole("alert");
+    expect(errorMessages).toHaveLength(3);
+
+    await user.type(name, "Test");
+    await user.type(email, "test@test.com");
+    await user.type(password, "Test1234!");
+    await user.click(submit);
+
+    errorMessages.forEach((message) => {
+      expect(message).not.toBeNull();
+    });
+
+    expect(await screen.findByTestId("loader")).toBeVisible();
+    expect(submit).toBeDisabled();
+    expect(name).toBeDisabled();
+    expect(email).toBeDisabled();
+    expect(password).toBeDisabled();
+  });
+
+  it("Should display a toast error when form is submitted with correct schema and server responds with success.", async () => {
+    const toastErrorSpy = vi.spyOn(toast, "error");
+    server.use(handlers.error);
+
     const { submit, name, email, password } = setUp();
     const user = userEvent.setup();
     await user.click(submit);
@@ -87,6 +118,29 @@ describe("Sign in form test", () => {
     errorMessages.forEach((message) => {
       expect(message).not.toBeNull();
     });
-    expect(mutate).toHaveBeenCalledTimes(1);
+
+    await waitFor(() => {
+      expect(toastErrorSpy).toHaveBeenCalled();
+    });
+  });
+
+  it("Should display NO errors when form is submitted with correct schema and server responds with success.", async () => {
+    server.use(handlers.success);
+
+    const { submit, name, email, password } = setUp();
+    const user = userEvent.setup();
+    await user.click(submit);
+
+    const errorMessages = await screen.findAllByRole("alert");
+    expect(errorMessages).toHaveLength(3);
+
+    await user.type(name, "Test");
+    await user.type(email, "test@test.com");
+    await user.type(password, "Test1234!");
+    await user.click(submit);
+
+    errorMessages.forEach((message) => {
+      expect(message).not.toBeNull();
+    });
   });
 });

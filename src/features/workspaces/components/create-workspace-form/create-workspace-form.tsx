@@ -99,6 +99,7 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
               </Button>
 
               <Button
+                variant="primary"
                 disabled={isPending}
                 type="submit"
                 size="lg"

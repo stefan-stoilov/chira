@@ -5,19 +5,21 @@ import * as http from "@/server/lib/http-status-codes";
 
 export const MOCK_WORKSPACE_ID = "48ff24e7-6be5-407f-8c5f-51cd7774155a";
 
-export const successOwner: InferResponseType<WorkspaceRpc, typeof http.OK> = {
+type WorkspaceResponseOk = InferResponseType<WorkspaceRpc, typeof http.OK>;
+
+export const successOwner: WorkspaceResponseOk = {
   id: MOCK_WORKSPACE_ID,
   name: "Test Workspace",
   role: WorkspaceRoles.owner,
 };
 
-export const successAdmin: InferResponseType<WorkspaceRpc, typeof http.OK> = {
+export const successAdmin: WorkspaceResponseOk = {
   id: MOCK_WORKSPACE_ID,
   name: "Test Workspace",
   role: WorkspaceRoles.admin,
 };
 
-export const successUser: InferResponseType<WorkspaceRpc, typeof http.OK> = {
+export const successUser: WorkspaceResponseOk = {
   id: MOCK_WORKSPACE_ID,
   name: "Test Workspace",
   role: WorkspaceRoles.user,
@@ -38,3 +40,21 @@ export const errorNotFound: InferResponseType<
   error: "Not found",
 };
 export const errorNotFoundStatus = { status: http.NOT_FOUND };
+
+type CreateMockWorkspaceDataProps =
+  | {
+      id?: string;
+      name?: string;
+      role?: WorkspaceRoles;
+    }
+  | undefined;
+
+export function createMockWorkspaceData(
+  props: CreateMockWorkspaceDataProps,
+): WorkspaceResponseOk {
+  return {
+    id: props?.id || MOCK_WORKSPACE_ID,
+    name: props?.name || "Example Workspace",
+    role: props?.role || WorkspaceRoles.owner,
+  };
+}

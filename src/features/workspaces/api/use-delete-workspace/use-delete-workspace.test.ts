@@ -4,7 +4,7 @@ import { server } from "@/tests/mocks/server";
 import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
 
 import { workspacesKeys } from "../query-key-factory";
-import { queryMockWorkspaces } from "../use-workspaces/mocks";
+import { queryMockWorkspaces } from "../use-workspaces/mocks/utils";
 import { queryMockWorkspace } from "../use-workspace/mocks";
 import { useDeleteWorkspace } from "./use-delete-workspace";
 import { handlers } from "./mocks";
