@@ -12,7 +12,6 @@ import { useUpdateWorkspace } from "@/features/workspaces/api/use-update-workspa
 import type { UseWorkspaceData } from "@/features/workspaces/api/use-workspace";
 
 import { cn } from "@/lib/utils";
-import { Loader } from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,6 +26,10 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { BackButton } from "@/components/shared/back-button";
+import {
+  SubmitButton,
+  type SubmitButtonProps,
+} from "@/components/shared/submit-button";
 import {
   Tooltip,
   TooltipContent,
@@ -198,7 +201,7 @@ export function EditWorkspaceForm({
                   Cancel
                 </Button>
 
-                <SubmitButton
+                <SubmitButtonWithTooltip
                   isPending={isPending}
                   isDirty={form.formState.isDirty}
                 />
@@ -213,33 +216,19 @@ export function EditWorkspaceForm({
   );
 }
 
-type SubmitButtonProps = {
-  isPending: boolean;
-  isDirty: boolean;
-};
-
-function SubmitButton({ isPending, isDirty }: SubmitButtonProps) {
+function SubmitButtonWithTooltip({
+  isPending,
+  isDirty,
+  ...props
+}: SubmitButtonProps) {
   return (
     <TooltipProvider>
       <Tooltip open={isPending || isDirty ? false : undefined}>
         <TooltipTrigger asChild disabled={isPending || isDirty}>
           <div>
-            <Button
-              disabled={isPending || !isDirty}
-              type="submit"
-              variant={"primary"}
-              className="relative"
-            >
-              <span className={cn(isPending && "invisible")}>Save changes</span>
-              {isPending && (
-                <div
-                  data-testid="loader"
-                  className="absolute inset-0 flex items-center justify-center"
-                >
-                  <Loader className="text-primary-foreground" />
-                </div>
-              )}
-            </Button>
+            <SubmitButton isPending={isPending} isDirty={isDirty} {...props}>
+              Save changes
+            </SubmitButton>
           </div>
         </TooltipTrigger>
 

@@ -1,6 +1,5 @@
 "use client";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 
 import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
@@ -16,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { WorkspaceAvatar } from "../workspace-avatar";
 import { Loader } from "@/components/shared/loader";
+import { cn } from "@/lib/utils";
 
 export function WorkspaceSwitcher() {
   const workspaceId = useWorkspaceId();
@@ -29,7 +29,13 @@ export function WorkspaceSwitcher() {
   return (
     <div className="flex flex-col gap-y-2">
       <Select onValueChange={onSelect} value={workspaceId}>
-        <SelectTrigger className="w-full bg-background p-1 font-medium dark:bg-background/50">
+        <SelectTrigger
+          aria-label="select workspace"
+          className={cn(
+            "w-full bg-background p-1 font-medium dark:bg-background/50",
+            !workspaceId && "pl-2",
+          )}
+        >
           <SelectValue placeholder="No workspace selected" />
         </SelectTrigger>
 
@@ -56,10 +62,8 @@ export function WorkspaceSwitcher() {
               <span className="block w-full text-center text-sm font-medium">
                 No workspaces found.
               </span>
-              <Button asChild variant={"muted"}>
-                <Link href="/dashboard/workspaces/create">
-                  Create workspace
-                </Link>
+              <Button asChild variant={"secondary"}>
+                <SelectItem value={"create"}>Create workspace</SelectItem>
               </Button>
             </div>
           )}

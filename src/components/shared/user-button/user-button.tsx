@@ -21,7 +21,7 @@ export function UserButton() {
 
   if (isLoading) {
     return (
-      <div className="flex size-10 items-center justify-center rounded-full border border-neutral-300 bg-neutral-200">
+      <div className="flex size-10 items-center justify-center rounded-full border border-border bg-muted">
         <Loader />
       </div>
     );
@@ -39,7 +39,7 @@ export function UserButton() {
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger className="relative">
         <Avatar className="size-10 border border-border">
-          <AvatarFallback className="text-foreground-muted flex items-center justify-center bg-muted font-medium hover:bg-muted-hovered">
+          <AvatarFallback className="flex items-center justify-center bg-muted font-medium text-foreground-muted hover:bg-muted-hovered">
             {avatarFallback}
           </AvatarFallback>
         </Avatar>
@@ -53,7 +53,7 @@ export function UserButton() {
       >
         <div className="flex flex-col items-center justify-center gap-2 rounded px-2.5 py-4">
           <Avatar className="size-14 border border-border">
-            <AvatarFallback className="text-foreground-muted flex items-center justify-center bg-muted font-medium">
+            <AvatarFallback className="flex items-center justify-center bg-muted font-medium text-foreground-muted">
               {avatarFallback}
             </AvatarFallback>
           </Avatar>

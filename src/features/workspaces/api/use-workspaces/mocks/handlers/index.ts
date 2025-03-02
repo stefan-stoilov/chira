@@ -8,6 +8,13 @@ export const success = http.get(API_ENDPOINT, () => {
   return HttpResponse.json(data.success, data.successStatus);
 });
 
+export const successZeroWorkspaces = http.get(API_ENDPOINT, () => {
+  return HttpResponse.json(
+    data.successZeroWorkspaces,
+    data.successZeroWorkspacesStatus,
+  );
+});
+
 export const loading = http.get(API_ENDPOINT, async () => {
   await delay("infinite");
   return HttpResponse.json(data.success, data.successStatus);

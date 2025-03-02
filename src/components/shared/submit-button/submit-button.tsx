@@ -9,7 +9,7 @@ export type SubmitButtonProps = {
   variant?: ButtonProps["variant"];
   size?: ButtonProps["size"];
   onClick?: ButtonProps["onClick"];
-  className: ButtonProps["className"];
+  className?: ButtonProps["className"];
   loaderClassName?: string;
 } & React.PropsWithChildren;
 
