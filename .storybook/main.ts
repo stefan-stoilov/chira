@@ -17,9 +17,7 @@ const config: StorybookConfig = {
       strictMode: true,
     },
   },
-  docs: {
-    autodocs: false,
-  },
+  docs: {},
   staticDirs: ["../public"],
 };
 export default config;

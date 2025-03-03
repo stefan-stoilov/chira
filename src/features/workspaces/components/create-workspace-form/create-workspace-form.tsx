@@ -9,7 +9,6 @@ import {
 import { useCreateWorkspace } from "@/features/workspaces/api/use-create-workspace";
 
 import { cn } from "@/lib/utils";
-import { Loader } from "@/components/shared/loader";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -23,6 +22,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { SubmitButton } from "@/components/shared/submit-button";
 
 type CreateWorkspaceFormProps = {
   onCancel?: () => void;
@@ -98,25 +98,9 @@ export function CreateWorkspaceForm({ onCancel }: CreateWorkspaceFormProps) {
                 Cancel
               </Button>
 
-              <Button
-                variant="primary"
-                disabled={isPending}
-                type="submit"
-                size="lg"
-                className="relative"
-              >
-                <span className={cn(isPending && "invisible")}>
-                  Create workspace
-                </span>
-                {isPending && (
-                  <div
-                    data-testid="loader"
-                    className="absolute inset-0 flex items-center justify-center"
-                  >
-                    <Loader />
-                  </div>
-                )}
-              </Button>
+              <SubmitButton isPending={isPending} size="lg">
+                Create Workspace
+              </SubmitButton>
             </div>
           </form>
         </Form>

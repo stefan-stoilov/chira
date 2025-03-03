@@ -1,10 +1,12 @@
 "use client";
 import { Suspense } from "react";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { PlusCircle } from "lucide-react";
+
 import { useCreateWorkspaceModal } from "@/features/workspaces/hooks/use-create-workspace-modal";
 import { CreateWorkspaceForm } from "../create-workspace-form";
 import { ResponsiveModal } from "@/components/shared/responsive-modal";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
 
 function Modal() {
   const { isOpen, setIsOpen, close } = useCreateWorkspaceModal();
@@ -27,6 +29,7 @@ function ModalButton() {
   return (
     <Button variant={"ghost"} className="px-3" onClick={() => open()}>
       <CreateWorkspaceIcon />
+      <VisuallyHidden>Create Workspace</VisuallyHidden>
     </Button>
   );
 }

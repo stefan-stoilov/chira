@@ -526,9 +526,23 @@ const sidebarMenuButtonVariants = cva(
   {
     variants: {
       variant: {
-        default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+        default:
+          "bg-background-neutral text-foreground hover:bg-background-neutral-hovered active:bg-background-neutral-pressed",
+        primary:
+          "bg-primary text-primary-foreground hover:bg-primary-hovered active:bg-primary-pressed",
+        secondary:
+          "bg-accent text-accent-foreground hover:bg-accent-hovered active:bg-accent-pressed",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive-hovered active:bg-destructive-pressed",
+        warning:
+          "bg-warning text-warning-foreground hover:bg-warning-hovered active:bg-warning-pressed",
         outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]",
+          "border border-input text-foreground hover:bg-background-neutral-hovered active:bg-background-neutral-pressed",
+        ghost:
+          "hover:bg-background-neutral-hovered active:bg-background-neutral-pressed",
+        muted:
+          "bg-muted text-foreground hover:bg-muted-hovered active:bg-muted-pressed",
+        link: "text-primary underline-offset-4 underline hover:text-primary-hovered active:text-primary-pressed",
       },
       size: {
         default: "h-8 text-sm",

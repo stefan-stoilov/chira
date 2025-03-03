@@ -14,7 +14,7 @@ describe("useCurrentUser hook test", () => {
       wrapper: QueryWrapper,
     });
 
-    await waitFor(() => expect(result.current.data).toBe(null));
+    await waitFor(() => expect(result.current.data).toBe(undefined));
   });
 
   it("Should NOT fail when server responds with success", async () => {

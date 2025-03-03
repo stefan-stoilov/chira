@@ -17,7 +17,7 @@ describe("useCreateWorkspaceModal hook test", () => {
       result.current.open();
     });
 
-    waitFor(() => expect(result.current.isOpen).toBe(true));
+    await waitFor(() => expect(result.current.isOpen).toBe(true));
   });
 
   it("Should be open when the search params are correct and should close once the close function has been called.", async () => {
@@ -35,6 +35,6 @@ describe("useCreateWorkspaceModal hook test", () => {
       result.current.close();
     });
 
-    waitFor(() => expect(result.current.isOpen).toBe(false));
+    await waitFor(() => expect(result.current.isOpen).toBe(false));
   });
 });

@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { userKeys } from "../query-keys";
 import { hcInit } from "@/lib/hc";
 import type { AuthRouter } from "@/server/routes/auth";
+import { toast } from "sonner";
 
 const { rpc } = hcInit<AuthRouter>();
 
@@ -14,7 +15,9 @@ export function useCurrentUser() {
       const res = await rpc.api.auth.user.$get();
 
       if (!res.ok) {
-        return null;
+        const message = "Unexpected error occurred - could not load user data.";
+        toast.error(message);
+        throw new Error(message);
       }
 
       const data = await res.json();

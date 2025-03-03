@@ -109,6 +109,10 @@ export const getUserRoute = createRoute({
       "Unauthorized",
     ),
     [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Server error",
+    ),
   },
 });
 export type GetUserRoute = typeof getUserRoute;

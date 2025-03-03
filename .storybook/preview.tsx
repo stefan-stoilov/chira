@@ -4,20 +4,11 @@ import { withThemeByClassName } from "@storybook/addon-themes";
 
 import { initialize, mswLoader } from "msw-storybook-addon";
 
-/*
- * Initializes MSW
- * See https://github.com/mswjs/msw-storybook-addon#configuring-msw
- * to learn how to customize it
- */
-if (process.env.NODE_ENV === "production") {
-  initialize({
-    serviceWorker: {
-      url: "./mockServiceWorker.js",
-    },
-  });
-} else {
-  initialize();
-}
+initialize({
+  serviceWorker: {
+    url: "./mockServiceWorker.js",
+  },
+});
 
 import "@/styles/globals.css";
 

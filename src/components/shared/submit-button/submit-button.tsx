@@ -1,3 +1,4 @@
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import { Button, type ButtonProps } from "@/components/ui/button";
 import { Loader } from "../loader";
 import { cn } from "@/lib/utils";
@@ -34,6 +35,7 @@ export function SubmitButton({
       className={cn("relative", className)}
     >
       <span className={cn(isPending && "invisible")}>{children}</span>
+      {isPending && <VisuallyHidden>Loading</VisuallyHidden>}
       {isPending && (
         <div
           data-testid="loader"

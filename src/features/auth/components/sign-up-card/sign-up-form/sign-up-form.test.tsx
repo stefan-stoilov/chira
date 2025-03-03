@@ -88,9 +88,7 @@ describe("Sign in form test", () => {
     await user.type(password, "Test1234!");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
 
     expect(await screen.findByTestId("loader")).toBeVisible();
     expect(submit).toBeDisabled();
@@ -115,9 +113,7 @@ describe("Sign in form test", () => {
     await user.type(password, "Test1234!");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
 
     await waitFor(() => {
       expect(toastErrorSpy).toHaveBeenCalled();
@@ -139,8 +135,6 @@ describe("Sign in form test", () => {
     await user.type(password, "Test1234!");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
   });
 });
