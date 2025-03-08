@@ -7,8 +7,9 @@ import { SignInForm } from "./sign-in-form";
 import { server } from "@/tests/mocks/server";
 import { handlers } from "@/features/auth/api/use-sign-in/mocks";
 
+const push = vi.fn();
 vi.mock("next/navigation", () => ({
-  useRouter: vi.fn(),
+  useRouter: () => ({ push }),
 }));
 
 function setUp() {
@@ -74,9 +75,7 @@ describe("Sign in form test", () => {
     await user.type(password, "test");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
 
     expect(await screen.findByTestId("loader")).toBeVisible();
     expect(submit).toBeDisabled();
@@ -99,9 +98,7 @@ describe("Sign in form test", () => {
     await user.type(password, "test");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
 
     await waitFor(() => {
       expect(toastErrorSpy).toHaveBeenCalled();
@@ -122,8 +119,6 @@ describe("Sign in form test", () => {
     await user.type(password, "test");
     await user.click(submit);
 
-    errorMessages.forEach((message) => {
-      expect(message).not.toBeNull();
-    });
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
   });
 });

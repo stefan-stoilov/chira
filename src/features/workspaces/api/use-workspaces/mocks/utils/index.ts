@@ -4,6 +4,8 @@ import { renderHook, waitFor } from "@testing-library/react";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper } from "@/tests/utils";
 import { useWorkspaces } from "../../use-workspaces";
+import { WorkspaceRoles } from "@/server/db/schemas";
+
 import * as data from "../data";
 import * as handlers from "../handlers";
 

@@ -1,6 +1,8 @@
 import type { StoryObj, Meta } from "@storybook/react";
-import { EditWorkspaceForm } from "./edit-workspace-form";
+import { screen, userEvent } from "@storybook/test";
+
 import { QueryWrapper, withMswHandlers } from "@/tests/utils";
+import { EditWorkspaceForm } from "./edit-workspace-form";
 import { Toaster } from "@/components/ui/sonner";
 import { createMockWorkspaceData } from "../../api/use-workspace/mocks/data";
 import { handlers } from "../../api/use-update-workspace/mocks";
@@ -28,4 +30,40 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = withMswHandlers([handlers.successWithDelay]);
 
-export const Loading: Story = withMswHandlers([handlers.loading]);
+export const Loading: Story = {
+  ...withMswHandlers([handlers.loading]),
+  play: async () => {
+    const user = userEvent.setup();
+    const name = screen.getByLabelText(/name/i);
+    const submit = screen.getByRole("button", { name: /save changes/i });
+
+    await user.clear(name);
+    await user.type(name, "Changed name");
+    await user.click(submit);
+  },
+};
+
+export const Validation: Story = {
+  ...withMswHandlers([handlers.success]),
+  play: async () => {
+    const user = userEvent.setup();
+    const name = screen.getByLabelText(/name/i);
+    const submit = screen.getByRole("button", { name: /save changes/i });
+
+    await user.clear(name);
+    await user.click(submit);
+  },
+};
+
+export const Error: Story = {
+  ...withMswHandlers([handlers.errorUnauthorized]),
+  play: async () => {
+    const user = userEvent.setup();
+    const name = screen.getByLabelText(/name/i);
+    const submit = screen.getByRole("button", { name: /save changes/i });
+
+    await user.clear(name);
+    await user.type(name, "Changed name");
+    await user.click(submit);
+  },
+};

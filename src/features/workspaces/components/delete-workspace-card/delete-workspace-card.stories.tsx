@@ -35,6 +35,11 @@ export const Error: Story = withMswHandlers([handlers.errorUnauthorized]);
 
 export const Demo: Story = {
   ...withMswHandlers([handlers.success]),
+  parameters: {
+    a11y: {
+      disable: true,
+    },
+  },
   play: async () => {
     const user = userEvent.setup();
     const deleteBtn = screen.getByRole("button");

@@ -29,7 +29,7 @@ export function DeleteWorkspaceCard({ workspaceId }: { workspaceId: string }) {
 
   return (
     <>
-      <Card className="size-full border border-destructive-subtle-pressed bg-destructive-subtle shadow-none">
+      <Card className="border-destructive-border size-full border bg-destructive-subtle shadow-none">
         <CardContent className="p-7">
           <div className="flex flex-col">
             <h3 className="font-bold">Danger Zone</h3>

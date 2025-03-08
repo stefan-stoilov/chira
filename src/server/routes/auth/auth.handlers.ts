@@ -370,17 +370,22 @@ export const getUserHandler: AppRouteHandler<
 > = async (c) => {
   const { id, name } = c.get("user");
 
-  const [user] = await db
-    .select({
-      githubId: users.githubId,
-      email: users.email,
-      createdAt: users.createdAt,
-      updatedAt: users.updatedAt,
-    })
-    .from(users)
-    .where(eq(users.id, id));
+  try {
+    const [user] = await db
+      .select({
+        githubId: users.githubId,
+        email: users.email,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(eq(users.id, id));
 
-  if (!user) return c.json({ error: "Not found" }, http.NOT_FOUND);
+    if (!user) return c.json({ error: "Not found" }, http.NOT_FOUND);
 
-  return c.json({ id, name, ...user }, http.OK);
+    return c.json({ id, name, ...user }, http.OK);
+  } catch (error) {
+    console.log(error);
+    return c.json({ error: "Unexpected Error" }, http.INTERNAL_SERVER_ERROR);
+  }
 };

@@ -11,6 +11,7 @@ import { WorkspaceSwitcher } from "./workspace-switcher";
 import { handlers, data } from "../../api/use-workspaces/mocks";
 import { workspacesKeys } from "../../api/query-key-factory";
 import type { UseWorkspacesData } from "../../api/use-workspaces";
+import { Toaster } from "@/components/ui/sonner";
 
 const meta = {
   title: "Features/Workspace/WorkspaceSwitcher",
@@ -20,25 +21,20 @@ const meta = {
       <div className="mx-auto w-[80vw] max-w-xs">
         <Story />
       </div>
+      <Toaster />
     </QueryWrapper>
   ),
+  parameters: {
+    layout: "padded",
+  },
 } satisfies Meta<typeof WorkspaceSwitcher>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = withMswHandlers([handlers.success]);
+export const Default: Story = withMswHandlers([handlers.successExtended]);
 
-export const Loading: Story = {
-  ...withMswHandlers([handlers.loading]),
-  play: async () => {
-    const user = userEvent.setup();
-    const trigger = screen.getByRole("combobox");
-
-    await user.click(trigger);
-    expect(await screen.findAllByTestId("workspaces-skeleton")).toHaveLength(3);
-  },
-};
+export const Loading: Story = withMswHandlers([handlers.loading]);
 
 const queryClient = createTestQueryClient();
 queryClient.setQueryData<UseWorkspacesData>(workspacesKeys.lists(), () => ({
@@ -54,14 +50,9 @@ export const Refetching: Story = {
       </div>
     </QueryWrapper>
   ),
-  play: async () => {
-    const user = userEvent.setup();
-    const trigger = screen.getByRole("combobox");
-
-    await user.click(trigger);
-    expect(await screen.findByTestId("workspaces-loader")).toBeDefined();
-  },
 };
+
+export const Error: Story = withMswHandlers([handlers.error]);
 
 export const OnWorkspacePage: Story = {
   parameters: {

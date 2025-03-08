@@ -72,6 +72,7 @@ export default {
             hovered: "hsl(var(--destructive-subtle-hovered))",
             pressed: "hsl(var(--destructive-subtle-pressed))",
           },
+          border: "hsl(var(--destructive-subtle-pressed))",
         },
         warning: {
           DEFAULT: "hsl(var(--warning))",
