@@ -19,5 +19,9 @@ const config: StorybookConfig = {
   },
   docs: {},
   staticDirs: ["../public"],
+  env: (config) => ({
+    ...config,
+    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL!,
+  }),
 };
 export default config;

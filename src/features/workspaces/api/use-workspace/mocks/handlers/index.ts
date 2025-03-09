@@ -1,8 +1,7 @@
 import { http, HttpResponse, delay } from "msw";
-import { env } from "@/env";
 import * as data from "../data";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_APP_URL}/api/workspaces/${data.MOCK_WORKSPACE_ID}`;
+const API_ENDPOINT = `${process.env.NEXT_PUBLIC_APP_URL}/api/workspaces/${data.MOCK_WORKSPACE_ID}`;
 
 export const successUser = http.get(API_ENDPOINT, () => {
   return HttpResponse.json(data.successUser, data.successStatus);

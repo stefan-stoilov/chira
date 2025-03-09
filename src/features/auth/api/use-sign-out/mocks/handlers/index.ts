@@ -1,8 +1,7 @@
 import { http, HttpResponse, delay } from "msw";
-import { env } from "@/env";
 import { data } from "..";
 
-const API_ENDPOINT = `${env.NEXT_PUBLIC_APP_URL}/api/auth/sign-out`;
+const API_ENDPOINT = `${process.env.NEXT_PUBLIC_APP_URL}/api/auth/sign-out`;
 
 export const success = http.post(API_ENDPOINT, () => {
   return HttpResponse.json(data.success, data.successStatus);
