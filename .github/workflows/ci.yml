@@ -1,0 +1,136 @@
+name: Chira CI
+
+on:
+  push:
+    branches:
+      - "main"
+      - "ci/sandbox"
+  pull_request:
+    branches:
+      - "main"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  lint:
+    name: Lint and check types
+    runs-on: ubuntu-latest
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run ESlint and check types
+        run: pnpm check
+
+  build:
+    name: Build app
+    runs-on: ubuntu-latest
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build
+        run: pnpm build
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Run unit tests
+        run: pnpm test
+    strategy:
+      fail-fast: true
+
+  storybook:
+    name: Build Storybook
+    runs-on: ubuntu-latest
+    if: github.ref != 'refs/heads/main'
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build Storybook
+        run: pnpm storybook:build
+
+  storybook-deployment:
+    name: Build and deploy Storybook
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
+    steps:
+      - name: Checkout branch
+        uses: actions/checkout@v4
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Build Storybook
+        run: pnpm storybook:build
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v3
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: "./storybook-static"
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
