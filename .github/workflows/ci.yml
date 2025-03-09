@@ -24,7 +24,8 @@ jobs:
       AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
       AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
       NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
-      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -34,6 +35,8 @@ jobs:
 
       - name: Run unit tests
         run: pnpm test
+    strategy:
+      fail-fast: true
 
   storybook:
     name: Build and deploy Storybook
