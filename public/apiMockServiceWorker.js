@@ -4,7 +4,10 @@
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  if (!url.pathname.startsWith("/api/")) {
+  if (
+    !url.pathname.startsWith("/api/") &&
+    !url.pathname.startsWith("/chira/api/")
+  ) {
     // Do not propagate this event to other listeners (from MSW)
     event.stopImmediatePropagation();
   }
