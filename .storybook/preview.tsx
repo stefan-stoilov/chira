@@ -6,7 +6,7 @@ import { initialize, mswLoader } from "msw-storybook-addon";
 
 initialize({
   serviceWorker: {
-    url: "./mockServiceWorker.js",
+    url: "./apiMockServiceWorker.js",
   },
 });
 
