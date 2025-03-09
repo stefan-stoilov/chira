@@ -33,7 +33,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Run unit tests
-        run: pnpm test:unit
+        run: pnpm test
 
   storybook:
     name: Build and deploy Storybook
