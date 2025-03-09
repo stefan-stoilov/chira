@@ -18,6 +18,13 @@ jobs:
   lint:
     name: Lint and check types
     runs-on: ubuntu-latest
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
@@ -31,6 +38,13 @@ jobs:
   build:
     name: Build app
     runs-on: ubuntu-latest
+    env:
+      SECRET: ${{ secrets.SECRET }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
+      AUTH_GITHUB_ID: ${{ secrets.AUTH_GITHUB_ID }}
+      AUTH_GITHUB_SECRET: ${{ secrets.AUTH_GITHUB_SECRET }}
+      NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+      NEXT_PUBLIC_MOCK_API_ENDPOINT: ${{ secrets.NEXT_PUBLIC_MOCK_API_ENDPOINT }}
     steps:
       - name: Checkout branch
         uses: actions/checkout@v4
