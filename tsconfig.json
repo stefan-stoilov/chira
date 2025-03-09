@@ -41,5 +41,5 @@
     "**/*.mts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "public/mockServiceWorker.js"]
+  "exclude": ["node_modules", "public/*.js", "coverage"]
 }
