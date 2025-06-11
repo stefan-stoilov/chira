@@ -1,4 +1,5 @@
 import { render, screen, waitFor } from "@testing-library/react";
+import { usePathname, useParams } from "next/navigation";
 import { NuqsTestingAdapter } from "nuqs/adapters/testing";
 
 import { QueryWrapper, mockMatchMedia } from "@/tests/utils";
@@ -14,11 +15,7 @@ import {
   WORKSPACE_NAV_ROUTES,
 } from "./workspace-navigation";
 
-import { usePathname } from "next/navigation";
-import { useWorkspaceId } from "../../hooks/use-workspace-id";
-
 vi.mock("next/navigation");
-vi.mock("@/features/workspaces/hooks/use-workspace-id");
 
 function setup() {
   mockMatchMedia(false);
@@ -45,9 +42,9 @@ describe("Workspace Navigation test", () => {
     vi.mocked(usePathname).mockReturnValue(
       `/dashboard/workspaces/${data.getWorkspaceWithOwnerRights().id}`,
     );
-    vi.mocked(useWorkspaceId).mockReturnValue(
-      data.getWorkspaceWithOwnerRights().id,
-    );
+    vi.mocked(useParams).mockReturnValue({
+      workspaceId: data.getWorkspaceWithOwnerRights().id,
+    });
     setup();
 
     await waitFor(() => {
@@ -64,9 +61,9 @@ describe("Workspace Navigation test", () => {
     vi.mocked(usePathname).mockReturnValue(
       `/dashboard/workspaces/${data.getWorkspaceWithOwnerRights().id}`,
     );
-    vi.mocked(useWorkspaceId).mockReturnValue(
-      data.getWorkspaceWithOwnerRights().id,
-    );
+    vi.mocked(useParams).mockReturnValue({
+      workspaceId: data.getWorkspaceWithOwnerRights().id,
+    });
     setup();
 
     expect(
@@ -80,9 +77,9 @@ describe("Workspace Navigation test", () => {
     vi.mocked(usePathname).mockReturnValue(
       `/dashboard/workspaces/${data.getWorkspaceWithUserRights().id}`,
     );
-    vi.mocked(useWorkspaceId).mockReturnValue(
-      data.getWorkspaceWithUserRights().id,
-    );
+    vi.mocked(useParams).mockReturnValue({
+      workspaceId: data.getWorkspaceWithUserRights().id,
+    });
     setup();
 
     const { name, role } = data.getWorkspaceWithUserRights();
@@ -106,9 +103,9 @@ describe("Workspace Navigation test", () => {
     vi.mocked(usePathname).mockReturnValue(
       `/dashboard/workspaces/${data.getWorkspaceWithOwnerRights().id}`,
     );
-    vi.mocked(useWorkspaceId).mockReturnValue(
-      data.getWorkspaceWithOwnerRights().id,
-    );
+    vi.mocked(useParams).mockReturnValue({
+      workspaceId: data.getWorkspaceWithOwnerRights().id,
+    });
     setup();
 
     expect(

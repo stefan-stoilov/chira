@@ -15,4 +15,5 @@ export const workspacesKeys = {
   list: (filters: string) => [...workspacesKeys.lists(), { filters }] as const,
   details: () => [...workspacesKeys.all, "detail"] as const,
   detail: (id: string) => [...workspacesKeys.details(), id] as const,
+  invites: (id: string) => [...workspacesKeys.detail(id), "invites"] as const,
 };

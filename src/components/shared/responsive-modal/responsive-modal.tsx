@@ -15,6 +15,14 @@ import {
   DrawerDescription,
   DrawerTitle,
 } from "@/components/ui/drawer";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 type OnOpenChange =
   | Dispatch<SetStateAction<boolean>>
@@ -69,5 +77,34 @@ export function ResponsiveModal({
         </div>
       </DrawerContent>
     </Drawer>
+  );
+}
+
+type ResponsiveModalCardProps = {
+  title: string;
+  description: string;
+  className?: string;
+  contentCn?: string;
+} & PropsWithChildren;
+
+export function ResponsiveModalCard({
+  title,
+  description,
+  children,
+  className,
+  contentCn,
+}: ResponsiveModalCardProps) {
+  return (
+    <Card className={cn("size-full border-none shadow-none", className)}>
+      <CardContent className={cn("pt-8", contentCn)}>
+        <CardHeader className="p-0">
+          <CardTitle className="mb-2">{title}</CardTitle>
+
+          <CardDescription>{description}</CardDescription>
+        </CardHeader>
+
+        {children}
+      </CardContent>
+    </Card>
   );
 }

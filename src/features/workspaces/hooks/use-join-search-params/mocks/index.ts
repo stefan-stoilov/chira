@@ -1,0 +1,11 @@
+import { INVITE_LINK_SEARCH_PARAMS } from "../use-join-search-params";
+
+export const INVALID_INVITE_LINK_SEARCH_PARAMS = {
+  [INVITE_LINK_SEARCH_PARAMS.code]: "test",
+  [INVITE_LINK_SEARCH_PARAMS.id]: "test",
+};
+
+export const VALID_INVITE_LINK_SEARCH_PARAMS = {
+  [INVITE_LINK_SEARCH_PARAMS.code]: "TEST12",
+  [INVITE_LINK_SEARCH_PARAMS.id]: "2809588d-b9f2-4514-a78d-e3a4d0a9a2d7",
+};

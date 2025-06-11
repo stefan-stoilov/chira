@@ -11,24 +11,29 @@ import * as handlers from "./handlers";
 /**
  * Utility function for unit / integration tests that fetches a mock workspace.
  * Use to check that query cache is properly updating.
- *
- * @param queryClient
  */
 export async function queryMockWorkspace(
   queryClient: QueryClient,
   role?: WorkspaceRoles,
+  withoutInviteCode?: boolean,
 ) {
   const mocks = {
     [WorkspaceRoles.user]: {
-      handler: handlers.successUser,
+      handler: withoutInviteCode
+        ? handlers.successUserNoInvite
+        : handlers.successUser,
       data: data.successUser,
     },
     [WorkspaceRoles.admin]: {
-      handler: handlers.successAdmin,
+      handler: withoutInviteCode
+        ? handlers.successAdminNoInvite
+        : handlers.successAdmin,
       data: data.successAdmin,
     },
     [WorkspaceRoles.owner]: {
-      handler: handlers.successOwner,
+      handler: withoutInviteCode
+        ? handlers.successOwnerNoInvite
+        : handlers.successOwner,
       data: data.successOwner,
     },
   };
@@ -39,15 +44,15 @@ export async function queryMockWorkspace(
     wrapper: (props) => QueryWrapper({ ...props, queryClient }),
   });
 
-  const mockResData = role ? mocks[role].data : data.successUser;
-
   await waitFor(() => {
     expect(result.current.isError).toBe(false);
     expect(result.current.isSuccess).toBe(true);
-    expect(result.current.data).toStrictEqual(mockResData);
   });
 
-  return mockResData;
+  if (!result.current.data)
+    throw new Error("queryMockWorkspace failed to fetch.");
+
+  return result.current.data;
 }
 
 export { data, handlers };
