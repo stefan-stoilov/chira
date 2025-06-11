@@ -3,11 +3,10 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { workspacesKeys } from "../query-key-factory";
 import { hcInit } from "@/lib/hc";
 import type { WorkspacesRouter } from "@/server/routes/workspaces";
-import type { UseWorkspacesData } from "../use-workspaces";
-import type { UseWorkspaceData } from "../use-workspace";
+import { workspacesQuery } from "../use-workspaces";
+import { workspaceQuery } from "../use-workspace";
 
 const { rpc } = hcInit<WorkspacesRouter>();
 
@@ -39,20 +38,18 @@ export function useCreateWorkspace() {
     },
     onSuccess: ({ id, name, role }) => {
       toast.success("Workspace created.");
-      queryClient.setQueryData<UseWorkspacesData>(
-        workspacesKeys.lists(),
-        (prev) => {
-          if (prev) {
-            return { workspaces: [...prev.workspaces, { id, name, role }] };
-          } else {
-            return { workspaces: [{ id, name, role }] };
-          }
-        },
-      );
-      queryClient.setQueryData<UseWorkspaceData>(
-        workspacesKeys.detail(id),
-        () => ({ id, name, role }),
-      );
+      queryClient.setQueryData(workspacesQuery.queryKey, (prev) => {
+        if (prev) {
+          return { workspaces: [...prev.workspaces, { id, name, role }] };
+        } else {
+          return { workspaces: [{ id, name, role }] };
+        }
+      });
+      queryClient.setQueryData(workspaceQuery(id).queryKey, () => ({
+        id,
+        name,
+        role,
+      }));
 
       router.push(`/dashboard/workspaces/${id}`);
     },

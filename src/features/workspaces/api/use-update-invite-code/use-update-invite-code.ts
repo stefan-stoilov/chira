@@ -2,10 +2,9 @@ import type { InferRequestType, InferResponseType } from "hono";
 import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
-import { workspacesKeys } from "../query-key-factory";
 import { hcInit } from "@/lib/hc";
 import type { WorkspacesRouter } from "@/server/routes/workspaces";
-import type { UseWorkspaceData } from "../use-workspace";
+import { workspaceQuery } from "../use-workspace";
 
 const { rpc } = hcInit<WorkspacesRouter>();
 
@@ -37,12 +36,9 @@ export function useUpdateInviteCode() {
         toast.success("Invite code removed.");
       }
 
-      queryClient.setQueryData<UseWorkspaceData>(
-        workspacesKeys.detail(id),
-        (prev) => {
-          if (prev) return { ...prev, inviteCode };
-        },
-      );
+      queryClient.setQueryData(workspaceQuery(id).queryKey, (prev) => {
+        if (prev) return { ...prev, inviteCode };
+      });
     },
     onError: () => {
       toast.error("Failed to update invite code of workspace.");

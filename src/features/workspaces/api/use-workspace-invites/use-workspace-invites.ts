@@ -1,6 +1,7 @@
 import {
   useInfiniteQuery,
-  // type UseInfiniteQueryResult,
+  type InfiniteData,
+  type UseInfiniteQueryResult,
 } from "@tanstack/react-query";
 import { workspacesKeys } from "../query-key-factory";
 
@@ -10,20 +11,18 @@ import type { WorkspacesRouter } from "@/server/routes/workspaces";
 
 const { rpc } = hcInit<WorkspacesRouter>();
 
-export type WorkspaceRpc =
+export type WorkspaceInvitesRpc =
   (typeof rpc.api.workspaces)[":id"]["invites"]["$get"];
-export type UseWorkspaceData = InferResponseType<WorkspaceRpc, 200>;
+export type UseWorkspaceInvitesData = InferResponseType<
+  WorkspaceInvitesRpc,
+  200
+>;
 
 enum Errors {
   NOT_FOUND = "Not found",
   UNAUTHORIZED = "Unauthorized",
   INTERNAL_SERVER_ERROR = "Internal Server Error",
 }
-
-// type UseWorkspaceInvitesResult = UseInfiniteQueryResult<
-//   UseWorkspaceData,
-//   Error & { cause: Errors }
-// >;
 
 const fetchInvites = async ({
   pageParam,
@@ -59,7 +58,12 @@ const fetchInvites = async ({
   return await res.json();
 };
 
-export function useWorkspaceInvites(workspaceId: string) {
+export function useWorkspaceInvites(
+  workspaceId: string,
+): UseInfiniteQueryResult<
+  InfiniteData<UseWorkspaceInvitesData, unknown>,
+  Error
+> {
   return useInfiniteQuery({
     queryKey: workspacesKeys.invites(workspaceId),
     initialPageParam: 1,

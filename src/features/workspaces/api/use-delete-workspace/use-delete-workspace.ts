@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { workspacesKeys } from "../query-key-factory";
 import { hcInit } from "@/lib/hc";
 import type { WorkspacesRouter } from "@/server/routes/workspaces";
-import type { UseWorkspacesData } from "../use-workspaces";
+import { workspacesQuery } from "../use-workspaces";
 
 const { rpc } = hcInit<WorkspacesRouter>();
 
@@ -34,17 +34,14 @@ export function useDeleteWorkspace() {
     onSuccess: ({ id }) => {
       toast.success("Workspace deleted.");
 
-      queryClient.setQueryData<UseWorkspacesData>(
-        workspacesKeys.lists(),
-        (prev) => {
-          if (typeof prev !== "undefined")
-            return {
-              workspaces: prev.workspaces.filter(
-                (workspace) => workspace.id !== id,
-              ),
-            };
-        },
-      );
+      queryClient.setQueryData(workspacesQuery.queryKey, (prev) => {
+        if (typeof prev !== "undefined")
+          return {
+            workspaces: prev.workspaces.filter(
+              (workspace) => workspace.id !== id,
+            ),
+          };
+      });
 
       queryClient.removeQueries({ queryKey: workspacesKeys.detail(id) });
 
