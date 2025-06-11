@@ -6,6 +6,9 @@ import {
   createWorkspaceHandler,
   updateWorkspaceHandler,
   deleteWorkspaceHandler,
+  joinWorkspaceHandler,
+  updateInviteCodeHandler,
+  getWorkspaceInvitesHandler,
 } from "./handlers";
 import {
   getWorkspaceRoute,
@@ -13,6 +16,9 @@ import {
   createWorkspaceRoute,
   updateWorkspaceRoute,
   deleteWorkspaceRoute,
+  joinWorkspaceRoute,
+  updateInviteCodeRoute,
+  getWorkspaceInvitesRoute,
 } from "./workspaces.routes";
 
 export const workspacesRouter = createRouter()
@@ -20,6 +26,9 @@ export const workspacesRouter = createRouter()
   .openapi(getWorkspacesRoute, getWorkspacesHandler)
   .openapi(createWorkspaceRoute, createWorkspaceHandler)
   .openapi(updateWorkspaceRoute, updateWorkspaceHandler)
-  .openapi(deleteWorkspaceRoute, deleteWorkspaceHandler);
+  .openapi(deleteWorkspaceRoute, deleteWorkspaceHandler)
+  .openapi(joinWorkspaceRoute, joinWorkspaceHandler)
+  .openapi(updateInviteCodeRoute, updateInviteCodeHandler)
+  .openapi(getWorkspaceInvitesRoute, getWorkspaceInvitesHandler);
 
 export type WorkspacesRouter = typeof workspacesRouter;

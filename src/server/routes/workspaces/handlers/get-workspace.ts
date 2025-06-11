@@ -23,12 +23,18 @@ export const getWorkspaceHandler: AppRouteHandler<
         id: workspaces.id,
         name: workspaces.name,
         role: workspacesMembers.role,
+        inviteCode: workspaces.inviteCode,
       })
       .from(workspacesMembers)
       .innerJoin(workspaces, eq(workspaces.id, workspaceId))
       .where(eq(workspacesMembers.userId, user.id));
 
     if (!workspace) return c.json({ error: "Not found" }, http.NOT_FOUND);
+
+    if (!workspace.inviteCode) {
+      const { id, name, role } = workspace;
+      return c.json({ id, name, role }, http.OK);
+    }
 
     return c.json(workspace, http.OK);
   } catch (error) {

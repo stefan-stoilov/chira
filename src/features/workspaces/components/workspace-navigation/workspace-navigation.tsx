@@ -2,8 +2,13 @@
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { Settings } from "lucide-react";
 import { GoHome, GoHomeFill } from "react-icons/go";
+import {
+  RiUserAddFill,
+  RiUserAddLine,
+  RiSettings3Fill,
+  RiSettings3Line,
+} from "react-icons/ri";
 
 import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
 import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
@@ -27,18 +32,18 @@ const routes = [
     icon: GoHome,
     activeIcon: GoHomeFill,
   },
-  // {
-  //   label: "Lorem",
-  //   href: "/lorem",
-  //   icon: GoCheckCircle,
-  //   activeIcon: GoCheckCircleFill,
-  // },
   {
     label: "Settings",
     href: "/settings",
-    icon: Settings,
-    activeIcon: Settings,
+    icon: RiSettings3Line,
+    activeIcon: RiSettings3Fill,
     permissions: new Set([WorkspaceRoles.admin, WorkspaceRoles.owner]),
+  },
+  {
+    label: "Invites",
+    href: "/invites",
+    icon: RiUserAddLine,
+    activeIcon: RiUserAddFill,
   },
   // {
   //   label: "Dolor",
@@ -94,7 +99,7 @@ export function WorkspaceNavigation() {
                     asChild
                     isActive={isActive}
                     className={cn(
-                      "!text-foreground",
+                      "bg-transparent !text-foreground",
                       isActive && "!bg-accent-hovered dark:!bg-accent",
                     )}
                   >

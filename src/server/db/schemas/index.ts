@@ -8,6 +8,7 @@ import {
   timestamp,
   bigint,
   pgEnum,
+  char,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -22,6 +23,7 @@ export const users = pgTable("users", {
 
 export const userRelations = relations(users, ({ many }) => ({
   workspaceMembers: many(workspacesMembers),
+  workspacesRequests: many(workspacesRequests),
   refreshTokens: many(refreshTokens),
 }));
 
@@ -45,7 +47,12 @@ export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
 export const workspaces = pgTable("workspaces", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
+  inviteCode: char("invite_code", { length: 6 }),
 });
+
+export const workspacesRelations = relations(workspaces, ({ many }) => ({
+  workspaceRequests: many(workspacesRequests),
+}));
 
 export enum WorkspaceRoles {
   user = "user",
@@ -90,6 +97,40 @@ export const workspacesMembersRelations = relations(
     }),
     workspace: one(workspaces, {
       fields: [workspacesMembers.workspaceId],
+      references: [workspaces.id],
+    }),
+  }),
+);
+
+export const workspacesRequests = pgTable(
+  "workspaces_requests",
+  {
+    userId: uuid("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    workspaceId: uuid("workspace_id")
+      .notNull()
+      .references(() => workspaces.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  },
+
+  (table) => [
+    primaryKey({
+      name: "workspaces_requests_pk",
+      columns: [table.userId, table.workspaceId],
+    }),
+  ],
+);
+
+export const workspacesRequestsRelations = relations(
+  workspacesRequests,
+  ({ one }) => ({
+    user: one(users, {
+      fields: [workspacesRequests.userId],
+      references: [users.id],
+    }),
+    workspace: one(workspaces, {
+      fields: [workspacesRequests.workspaceId],
       references: [workspaces.id],
     }),
   }),

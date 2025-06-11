@@ -27,3 +27,15 @@ export const error = http.get(API_ENDPOINT, () => {
 export const errorNotFound = http.get(API_ENDPOINT, () => {
   return HttpResponse.json(data.errorNotFound, data.errorNotFoundStatus);
 });
+
+export const successUserNoInvite = http.get(API_ENDPOINT, () => {
+  return HttpResponse.json(data.successUserNoInvite, data.successStatus);
+});
+
+export const successAdminNoInvite = http.get(API_ENDPOINT, () => {
+  return HttpResponse.json(data.successAdminNoInvite, data.successStatus);
+});
+
+export const successOwnerNoInvite = http.get(API_ENDPOINT, () => {
+  return HttpResponse.json(data.successOwnerNoInvite, data.successStatus);
+});

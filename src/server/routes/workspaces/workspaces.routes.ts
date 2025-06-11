@@ -56,6 +56,7 @@ export const getWorkspaceRoute = createRoute({
         id: z.string(),
         name: z.string(),
         role: z.nativeEnum(WorkspaceRoles),
+        inviteCode: z.string().length(6).optional(),
       }),
       "Workspaces",
     ),
@@ -169,3 +170,104 @@ export const deleteWorkspaceRoute = createRoute({
   },
 });
 export type DeleteWorkspaceRoute = typeof deleteWorkspaceRoute;
+
+export const joinWorkspaceRoute = createRoute({
+  method: "post",
+  path: "/api/workspaces/{id}/join",
+  tags,
+  middleware: [sessionMiddleware] as const,
+  request: {
+    params: workspaceParamsSchema,
+    body: jsonContentRequired(
+      z.object({ inviteCode: z.string().length(6) }),
+      "Join workspace schema",
+    ),
+  },
+  responses: {
+    [http.OK]: jsonContent(
+      z.object({ name: z.string() }),
+      "Request to join workspace",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
+  },
+});
+export type JoinWorkspaceRoute = typeof joinWorkspaceRoute;
+
+export const updateInviteCodeRoute = createRoute({
+  method: "patch",
+  path: "/api/workspaces/{id}/invite-code",
+  tags,
+  middleware: [sessionMiddleware] as const,
+  request: {
+    params: workspaceParamsSchema,
+    body: jsonContentRequired(
+      z.object({
+        remove: z.boolean().optional(),
+      }),
+      "Update invite code schema",
+    ),
+  },
+  responses: {
+    [http.OK]: jsonContent(
+      z.object({ id: z.string(), inviteCode: z.string().optional() }),
+      "Update Workspace",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
+  },
+});
+export type UpdateInviteCodeRoute = typeof updateInviteCodeRoute;
+
+export const getWorkspaceInvitesRoute = createRoute({
+  method: "get",
+  path: "/api/workspaces/{id}/invites",
+  tags,
+  middleware: [sessionMiddleware] as const,
+  request: {
+    params: workspaceParamsSchema,
+    query: z.object({
+      page: z.number({ coerce: true }),
+    }),
+  },
+  responses: {
+    [http.OK]: jsonContent(
+      z.object({
+        invites: z.array(
+          z.object({
+            id: z.string(),
+            name: z.string(),
+            createdAt: z.date(),
+            githubId: z.union([z.number(), z.null()]),
+            email: z.union([z.string(), z.null()]),
+          }),
+        ),
+      }),
+      "Workspace Invites",
+    ),
+    [http.UNAUTHORIZED]: jsonContent(
+      createErrorMessageSchema(),
+      "Unauthorized",
+    ),
+    [http.NOT_FOUND]: jsonContent(createErrorMessageSchema(), "Not found"),
+    [http.INTERNAL_SERVER_ERROR]: jsonContent(
+      createErrorMessageSchema(),
+      "Internal Server Error",
+    ),
+  },
+});
+export type GetWorkspaceInvitesRoute = typeof getWorkspaceInvitesRoute;
