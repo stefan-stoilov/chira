@@ -4,7 +4,7 @@ import type { AppBindings } from "@/server/lib/types";
 
 export function hcInit<T extends OpenAPIHono<AppBindings, {}, "/">>() {
   const rpc = hc<T>(
-    process.env.NODE_ENV === "production"
+    process.env.NEXT_PUBLIC_VERCEL_ENV === "preview"
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : `${process.env.NEXT_PUBLIC_APP_URL}`,
   );
