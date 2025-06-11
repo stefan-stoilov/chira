@@ -30,7 +30,10 @@ export const env = createEnv({
    */
   runtimeEnv: {
     NODE_ENV: process.env.NODE_ENV,
-    NEXT_PUBLIC_APP_URL: process.env.NEXT_PUBLIC_APP_URL,
+    NEXT_PUBLIC_APP_URL:
+      process.env.NODE_ENV === "production"
+        ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+        : "http://localhost:3000",
     DATABASE_URL: process.env.DATABASE_URL,
     SECRET: process.env.SECRET,
     AUTH_GITHUB_ID: process.env.AUTH_GITHUB_ID,
