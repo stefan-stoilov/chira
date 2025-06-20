@@ -19,8 +19,6 @@ function Page({ params }: { params: { workspaceId: string } }) {
     );
   }
 
-  console.log(data?.role);
-
   return (
     <div className="mx-auto w-full lg:max-w-xl">
       {data && (
