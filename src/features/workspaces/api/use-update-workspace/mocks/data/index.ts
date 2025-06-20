@@ -5,12 +5,16 @@ import * as http from "@/server/lib/http-status-codes";
 type SuccessProps = {
   id: string;
   name: string;
+  allowMemberInviteManagement?: boolean;
 };
 
 export function success(
   args: SuccessProps,
 ): InferResponseType<UpdateWorkspaceRpc, typeof http.OK> {
-  return args;
+  return {
+    ...args,
+    allowMemberInviteManagement: args?.allowMemberInviteManagement ?? true,
+  };
 }
 export const successStatus = { status: http.OK };
 

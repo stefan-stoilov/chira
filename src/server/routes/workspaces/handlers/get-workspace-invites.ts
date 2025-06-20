@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, eq, count } from "drizzle-orm";
 import { db } from "@/server/db";
 import {
   users,
@@ -47,21 +47,40 @@ export const getWorkspaceInvitesHandler: AppRouteHandler<
     if (!existingMember)
       return c.json({ error: "Unauthorized" }, http.UNAUTHORIZED);
 
+    const [totalInvites] = await db
+      .select({
+        count: count(workspacesRequests.userId),
+      })
+      .from(workspacesRequests)
+      .where(eq(workspacesRequests.workspaceId, existingWorkspace.id));
+    const totalPages = Math.ceil((totalInvites?.count ?? 0) / RESULTS_PER_PAGE);
+
+    const currentPage = totalPages < page ? totalPages : page;
+
+    if (totalPages === 0)
+      return c.json({ invites: [], totalPages, currentPage }, http.OK);
+
+    const offset =
+      (totalPages < page ? totalPages - 1 : page - 1) * RESULTS_PER_PAGE;
+
     const invites = await db
       .select({
         id: workspacesRequests.userId,
         name: users.name,
         createdAt: workspacesRequests.createdAt,
+        deletedAt: workspacesRequests.deletedAt,
+        acceptedAt: workspacesRequests.acceptedAt,
         githubId: users.githubId,
         email: users.email,
       })
       .from(workspacesRequests)
+      .where(eq(workspacesRequests.workspaceId, existingWorkspace.id))
+      .innerJoin(users, eq(users.id, workspacesRequests.userId))
       .orderBy(workspacesRequests.createdAt)
-      .limit(RESULTS_PER_PAGE)
-      .offset(page >= 1 ? page - 1 : 0)
-      .innerJoin(users, eq(users.id, workspacesRequests.userId));
+      .offset(offset)
+      .limit(RESULTS_PER_PAGE);
 
-    return c.json({ invites }, http.OK);
+    return c.json({ invites, totalPages, currentPage }, http.OK);
   } catch (e) {
     console.log(e);
 

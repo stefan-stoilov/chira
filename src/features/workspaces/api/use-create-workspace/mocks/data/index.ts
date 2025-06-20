@@ -7,6 +7,7 @@ export const MOCK_WORKSPACE = {
   id: "c792c258-879a-425b-9399-87fcc0f14b65",
   name: "Test Workspace",
   role: WorkspaceRoles.owner,
+  allowMemberInviteManagement: true,
 };
 
 export const success: InferResponseType<

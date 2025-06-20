@@ -20,7 +20,7 @@ export const updateWorkspaceHandler: AppRouteHandler<
 > = async (c) => {
   const user = c.get("user");
   const { id: workspaceId } = c.req.valid("param");
-  const { name } = c.req.valid("json");
+  const { name, allowMemberInviteManagement } = c.req.valid("json");
 
   try {
     const [workspace] = await db
@@ -28,6 +28,7 @@ export const updateWorkspaceHandler: AppRouteHandler<
         id: workspaces.id,
         name: workspaces.name,
         role: workspacesMembers.role,
+        allowMemberInviteManagement: workspaces.allowMemberInviteManagement,
       })
       .from(workspacesMembers)
       .innerJoin(workspaces, eq(workspaces.id, workspaceId))
@@ -40,10 +41,22 @@ export const updateWorkspaceHandler: AppRouteHandler<
 
     await db
       .update(workspaces)
-      .set({ name })
+      .set({
+        name,
+        allowMemberInviteManagement:
+          allowMemberInviteManagement ?? workspace.allowMemberInviteManagement,
+      })
       .where(eq(workspaces.id, workspace.id));
 
-    return c.json({ id: workspaceId, name }, http.OK);
+    return c.json(
+      {
+        id: workspaceId,
+        name,
+        allowMemberInviteManagement:
+          allowMemberInviteManagement ?? workspace.allowMemberInviteManagement,
+      },
+      http.OK,
+    );
   } catch (error) {
     console.log(error);
 

@@ -1,0 +1,1 @@
+ALTER TABLE "workspaces" ADD COLUMN "allow_member_invite_management" boolean DEFAULT true NOT NULL;

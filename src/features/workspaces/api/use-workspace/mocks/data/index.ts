@@ -16,6 +16,7 @@ export const successOwner: WorkspaceResponseOk = {
   name: MOCK_WORKSPACE_NAME,
   role: WorkspaceRoles.owner,
   inviteCode: MOCK_WORKSPACE_INVITE_CODE,
+  allowMemberInviteManagement: true,
 };
 
 export const successAdmin: WorkspaceResponseOk = {
@@ -23,6 +24,7 @@ export const successAdmin: WorkspaceResponseOk = {
   name: MOCK_WORKSPACE_NAME,
   role: WorkspaceRoles.admin,
   inviteCode: MOCK_WORKSPACE_INVITE_CODE,
+  allowMemberInviteManagement: true,
 };
 
 export const successUser: WorkspaceResponseOk = {
@@ -30,24 +32,28 @@ export const successUser: WorkspaceResponseOk = {
   name: MOCK_WORKSPACE_NAME,
   role: WorkspaceRoles.user,
   inviteCode: MOCK_WORKSPACE_INVITE_CODE,
+  allowMemberInviteManagement: true,
 };
 
 export const successOwnerNoInvite: WorkspaceResponseOk = {
   id: MOCK_WORKSPACE_ID,
   name: MOCK_WORKSPACE_NAME,
   role: WorkspaceRoles.admin,
+  allowMemberInviteManagement: true,
 };
 
 export const successAdminNoInvite: WorkspaceResponseOk = {
   id: MOCK_WORKSPACE_ID,
   name: MOCK_WORKSPACE_NAME,
   role: WorkspaceRoles.admin,
+  allowMemberInviteManagement: true,
 };
 
 export const successUserNoInvite: WorkspaceResponseOk = {
   id: MOCK_WORKSPACE_ID,
   name: MOCK_WORKSPACE_NAME,
   role: WorkspaceRoles.user,
+  allowMemberInviteManagement: true,
 };
 
 export const successStatus = { status: http.OK };
@@ -71,6 +77,7 @@ type CreateMockWorkspaceDataProps =
       id?: string;
       name?: string;
       role?: WorkspaceRoles;
+      allowMemberInviteManagement?: boolean;
     }
   | undefined;
 
@@ -78,8 +85,9 @@ export function createMockWorkspaceData(
   props: CreateMockWorkspaceDataProps,
 ): WorkspaceResponseOk {
   return {
-    id: props?.id || MOCK_WORKSPACE_ID,
-    name: props?.name || "Example Workspace",
-    role: props?.role || WorkspaceRoles.owner,
+    id: props?.id ?? MOCK_WORKSPACE_ID,
+    name: props?.name ?? "Example Workspace",
+    role: props?.role ?? WorkspaceRoles.owner,
+    allowMemberInviteManagement: props?.allowMemberInviteManagement ?? true,
   };
 }

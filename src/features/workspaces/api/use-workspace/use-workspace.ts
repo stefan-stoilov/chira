@@ -1,4 +1,9 @@
-import { useQuery, type UseQueryResult } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useQuery,
+  type UseQueryOptions,
+  type UseQueryResult,
+} from "@tanstack/react-query";
 import { workspacesKeys } from "../query-key-factory";
 
 import type { InferResponseType } from "hono";
@@ -9,6 +14,11 @@ const { rpc } = hcInit<WorkspacesRouter>();
 
 export type WorkspaceRpc = (typeof rpc.api.workspaces)[":id"]["$get"];
 export type UseWorkspaceData = InferResponseType<WorkspaceRpc, 200>;
+
+type UseWorkspaceQueryOptions = UseQueryOptions<
+  UseWorkspaceData,
+  Error & { cause: Errors }
+>;
 
 enum Errors {
   NOT_FOUND = "Not found",
@@ -21,8 +31,8 @@ type UseWorkspaceResult = UseQueryResult<
   Error & { cause: Errors }
 >;
 
-export function useWorkspace(workspaceId: string): UseWorkspaceResult {
-  return useQuery({
+export const workspaceQuery = (workspaceId: string) =>
+  queryOptions<UseWorkspaceData, Error & { cause: Errors }>({
     queryKey: workspacesKeys.detail(workspaceId),
     queryFn: async () => {
       const res = await rpc.api.workspaces[":id"].$get({
@@ -51,4 +61,14 @@ export function useWorkspace(workspaceId: string): UseWorkspaceResult {
       return await res.json();
     },
   });
+
+export function useWorkspace(
+  workspaceId: string,
+  options?: UseWorkspaceQueryOptions,
+): UseWorkspaceResult {
+  return useQuery(
+    options
+      ? { ...options, ...workspaceQuery(workspaceId) }
+      : workspaceQuery(workspaceId),
+  );
 }

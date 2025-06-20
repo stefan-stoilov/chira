@@ -1,6 +1,7 @@
 import {
-  useInfiniteQuery,
-  // type UseInfiniteQueryResult,
+  useQuery,
+  queryOptions,
+  type UseQueryOptions,
 } from "@tanstack/react-query";
 import { workspacesKeys } from "../query-key-factory";
 
@@ -10,9 +11,17 @@ import type { WorkspacesRouter } from "@/server/routes/workspaces";
 
 const { rpc } = hcInit<WorkspacesRouter>();
 
-export type WorkspaceRpc =
+export type WorkspaceInvitesRpc =
   (typeof rpc.api.workspaces)[":id"]["invites"]["$get"];
-export type UseWorkspaceData = InferResponseType<WorkspaceRpc, 200>;
+export type UseWorkspaceInvitesData = InferResponseType<
+  WorkspaceInvitesRpc,
+  200
+>;
+
+type UseWorkspaceInvitesQueryOptions = Omit<
+  UseQueryOptions<UseWorkspaceInvitesData, Error>,
+  "queryKey"
+>;
 
 enum Errors {
   NOT_FOUND = "Not found",
@@ -20,61 +29,71 @@ enum Errors {
   INTERNAL_SERVER_ERROR = "Internal Server Error",
 }
 
-// type UseWorkspaceInvitesResult = UseInfiniteQueryResult<
-//   UseWorkspaceData,
-//   Error & { cause: Errors }
-// >;
-
-const fetchInvites = async ({
-  pageParam,
-  workspaceId,
-}: {
-  pageParam: number;
-  workspaceId: string;
-}) => {
-  const res = await rpc.api.workspaces[":id"].invites.$get({
-    param: { id: workspaceId },
-    query: { page: pageParam },
-  });
-
-  if (!res.ok) {
-    const { status } = res;
-
-    if (status === 404)
-      throw new Error("Oops, seems this workspace could not be found!", {
-        cause: Errors.NOT_FOUND,
-      });
-
-    if (status === 401)
-      throw new Error(Errors.UNAUTHORIZED, {
-        cause: Errors.UNAUTHORIZED,
-      });
-
-    if (status === 500)
-      throw new Error(Errors.INTERNAL_SERVER_ERROR, {
-        cause: Errors.INTERNAL_SERVER_ERROR,
-      });
-  }
-
-  return await res.json();
+type WorkspaceInvitesQueryProps = {
+  id: string;
+  page: number;
 };
 
-export function useWorkspaceInvites(workspaceId: string) {
-  return useInfiniteQuery({
-    queryKey: workspacesKeys.invites(workspaceId),
-    initialPageParam: 1,
-    queryFn: ({ pageParam = 0 }) => fetchInvites({ pageParam, workspaceId }),
-    getNextPageParam: (lastPage, allPages, lastPageParam) => {
-      if (lastPage.invites.length === 0) {
-        return undefined;
+export const workspaceInvitesQuery = ({
+  id,
+  page,
+}: WorkspaceInvitesQueryProps) =>
+  queryOptions<UseWorkspaceInvitesData, Error>({
+    queryKey: workspacesKeys.invites({ id, page }),
+    queryFn: async () => {
+      const res = await rpc.api.workspaces[":id"].invites.$get({
+        param: { id },
+        query: { page },
+      });
+
+      if (!res.ok) {
+        const { status } = res;
+
+        if (status === 404)
+          throw new Error("Oops, seems this workspace could not be found!", {
+            cause: Errors.NOT_FOUND,
+          });
+
+        if (status === 401)
+          throw new Error(Errors.UNAUTHORIZED, {
+            cause: Errors.UNAUTHORIZED,
+          });
+
+        if (status === 500)
+          throw new Error(Errors.INTERNAL_SERVER_ERROR, {
+            cause: Errors.INTERNAL_SERVER_ERROR,
+          });
       }
-      return lastPageParam + 1;
+
+      return await res.json();
     },
-    getPreviousPageParam: (firstPage, allPages, firstPageParam) => {
-      if (firstPageParam <= 1) {
-        return undefined;
-      }
-      return firstPageParam - 1;
-    },
+    placeholderData: (prev) => prev,
+    select: ({ invites, totalPages, currentPage }) => ({
+      totalPages,
+      currentPage,
+      invites: invites.map((inv) => ({
+        ...inv,
+        createdAt: new Date(inv.createdAt).toDateString(),
+        deletedAt: inv.deletedAt
+          ? new Date(inv.deletedAt).toDateString()
+          : null,
+        acceptedAt: inv.acceptedAt
+          ? new Date(inv.acceptedAt).toDateString()
+          : null,
+      })),
+    }),
   });
+
+export function useWorkspaceInvites({
+  id,
+  page,
+  options,
+}: WorkspaceInvitesQueryProps & {
+  options?: Omit<UseWorkspaceInvitesQueryOptions, "queryKey">;
+}) {
+  return useQuery(
+    options
+      ? { ...options, ...workspaceInvitesQuery({ id, page }) }
+      : workspaceInvitesQuery({ id, page }),
+  );
 }

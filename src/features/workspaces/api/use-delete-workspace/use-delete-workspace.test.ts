@@ -3,11 +3,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
 
-import { workspacesKeys } from "../query-key-factory";
 import { queryMockWorkspaces } from "../use-workspaces/mocks/utils";
 import { queryMockWorkspace } from "../use-workspace/mocks";
 import { useDeleteWorkspace } from "./use-delete-workspace";
 import { handlers } from "./mocks";
+import { workspacesQuery } from "../use-workspaces";
+import { workspaceQuery } from "../use-workspace";
 
 const push = vi.fn();
 
@@ -49,7 +50,7 @@ describe("useDeleteWorkspace hook test", () => {
       expect(setQueryDataSpy).toHaveBeenCalledTimes(1);
 
       expect(
-        qcResult.current.getQueryData(workspacesKeys.lists()),
+        qcResult.current.getQueryData(workspacesQuery.queryKey),
       ).toStrictEqual({
         workspaces: workspaces.slice(1),
       });
@@ -93,11 +94,11 @@ describe("useDeleteWorkspace hook test", () => {
       // // Query cache should be updated when a workspace is deleted.
       expect(setQueryDataSpy).toHaveBeenCalledTimes(1);
       expect(removeQueriesSpy).toHaveBeenCalledWith({
-        queryKey: workspacesKeys.detail(toDeleteId),
+        queryKey: workspaceQuery(toDeleteId).queryKey,
       });
 
       expect(
-        qcResult.current.getQueryData(workspacesKeys.detail(toDeleteId)),
+        qcResult.current.getQueryData(workspaceQuery(toDeleteId).queryKey),
       ).toBe(undefined);
 
       expect(push).toHaveBeenCalledTimes(2);

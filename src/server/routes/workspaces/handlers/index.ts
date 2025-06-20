@@ -6,3 +6,5 @@ export * from "./delete-workspace";
 export * from "./join-workspace";
 export * from "./update-invite-code";
 export * from "./get-workspace-invites";
+export * from "./accept-workspace-invites";
+export * from "./soft-delete-workspace-invites";

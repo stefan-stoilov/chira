@@ -9,8 +9,7 @@ import {
 } from "@/tests/utils";
 import { WorkspaceSwitcher } from "./workspace-switcher";
 import { handlers, data } from "../../api/use-workspaces/mocks";
-import { workspacesKeys } from "../../api/query-key-factory";
-import type { UseWorkspacesData } from "../../api/use-workspaces";
+import { workspacesQuery } from "../../api/use-workspaces";
 import { Toaster } from "@/components/ui/sonner";
 
 const meta = {
@@ -37,7 +36,7 @@ export const Default: Story = withMswHandlers([handlers.successExtended]);
 export const Loading: Story = withMswHandlers([handlers.loading]);
 
 const queryClient = createTestQueryClient();
-queryClient.setQueryData<UseWorkspacesData>(workspacesKeys.lists(), () => ({
+queryClient.setQueryData(workspacesQuery.queryKey, () => ({
   workspaces: data.MOCK_WORKSPACES,
 }));
 
