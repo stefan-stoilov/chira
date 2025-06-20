@@ -1,5 +1,6 @@
+import { useCallback, useMemo } from "react";
 import { useQueryState, parseAsInteger, type Options } from "nuqs";
-import { useCallback } from "react";
+import { z } from "zod";
 
 export const PAGE_SEARCH_PARAM = "page";
 
@@ -15,13 +16,21 @@ export type UsePaginationSearchParamsReturnT = {
   first: () => void;
 };
 
+function parsePageParam(param: unknown) {
+  const { data, success } = z.number().min(1).safeParse(param);
+
+  return success ? data : 1;
+}
+
 export function usePaginationSearchParams(
   pageSearchParam: string = PAGE_SEARCH_PARAM,
 ): UsePaginationSearchParamsReturnT {
-  const [page, setPage] = useQueryState(
+  const [unparsedPage, setPage] = useQueryState(
     pageSearchParam,
     parseAsInteger.withDefault(1),
   );
+
+  const page = useMemo(() => parsePageParam(unparsedPage), [unparsedPage]);
 
   const next = useCallback(
     (totalPages?: number) => {
@@ -55,7 +64,7 @@ export function usePaginationSearchParams(
 
   const last = useCallback(
     (totalPages?: number) => {
-      if (typeof totalPages === "number") {
+      if (typeof totalPages === "number" && totalPages > 0) {
         setPage(totalPages);
       }
     },

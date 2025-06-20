@@ -1,8 +1,6 @@
 "use client";
-import { useRouter } from "next/navigation";
-
 import { useWorkspaces } from "@/features/workspaces/api/use-workspaces";
-import { useWorkspaceId } from "@/features/workspaces/hooks/use-workspace-id";
+import { useSwitchWorkspace } from "@/features/workspaces/hooks/use-switch-workspace";
 
 import {
   Select,
@@ -18,17 +16,12 @@ import { Loader } from "@/components/shared/loader";
 import { cn } from "@/lib/utils";
 
 export function WorkspaceSwitcher() {
-  const workspaceId = useWorkspaceId();
+  const { workspaceId, switchWorkspace } = useSwitchWorkspace();
   const { data, isFetching, isError, isLoading } = useWorkspaces();
-  const router = useRouter();
-
-  const onSelect = (id: string) => {
-    router.push(`/dashboard/workspaces/${id}`);
-  };
 
   return (
     <div className={"mt-1.5 flex flex-col gap-y-2"}>
-      <Select onValueChange={onSelect} value={workspaceId}>
+      <Select onValueChange={switchWorkspace} value={workspaceId}>
         <SelectTrigger
           aria-label="select workspace"
           className={cn(
