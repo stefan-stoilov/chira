@@ -9,6 +9,7 @@ import {
   bigint,
   pgEnum,
   char,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
@@ -48,6 +49,9 @@ export const workspaces = pgTable("workspaces", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name", { length: 255 }).notNull(),
   inviteCode: char("invite_code", { length: 6 }),
+  allowMemberInviteManagement: boolean("allow_member_invite_management")
+    .notNull()
+    .default(true),
 });
 
 export const workspacesRelations = relations(workspaces, ({ many }) => ({
@@ -112,6 +116,8 @@ export const workspacesRequests = pgTable(
       .notNull()
       .references(() => workspaces.id, { onDelete: "cascade" }),
     createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    deletedAt: timestamp("deleted_at", { mode: "date" }),
+    acceptedAt: timestamp("accepted_at", { mode: "date" }),
   },
 
   (table) => [

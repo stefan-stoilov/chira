@@ -114,5 +114,5 @@ export const sessionMiddleware = createMiddleware<{
     }
   }
 
-  return next();
+  await next();
 });

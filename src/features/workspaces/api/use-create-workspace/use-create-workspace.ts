@@ -1,5 +1,10 @@
 import type { InferRequestType, InferResponseType } from "hono";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  type UseMutationOptions,
+  type UseMutationResult,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -15,11 +20,26 @@ export type CreateWorkspaceRpc = (typeof rpc.api.workspaces)["$post"];
 type RequestType = InferRequestType<CreateWorkspaceRpc>;
 type ResponseType = InferResponseType<CreateWorkspaceRpc, 201>;
 
-export function useCreateWorkspace() {
+type UseCreateWorkspaceOptions = UseMutationOptions<
+  ResponseType,
+  Error,
+  RequestType
+>;
+
+type UseCreateWorkspaceResult = UseMutationResult<
+  ResponseType,
+  Error,
+  RequestType
+>;
+
+export function useCreateWorkspace(
+  options: UseCreateWorkspaceOptions = {},
+): UseCreateWorkspaceResult {
   const queryClient = useQueryClient();
   const router = useRouter();
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
+    ...options,
     mutationFn: async ({ json }) => {
       const res = await rpc.api.workspaces.$post({ json });
 
@@ -36,8 +56,9 @@ export function useCreateWorkspace() {
 
       return data;
     },
-    onSuccess: ({ id, name, role }) => {
+    onSuccess: (data, ...props) => {
       toast.success("Workspace created.");
+      const { id, name, role, allowMemberInviteManagement } = data;
       queryClient.setQueryData(workspacesQuery.queryKey, (prev) => {
         if (prev) {
           return { workspaces: [...prev.workspaces, { id, name, role }] };
@@ -49,12 +70,19 @@ export function useCreateWorkspace() {
         id,
         name,
         role,
+        allowMemberInviteManagement,
       }));
 
       router.push(`/dashboard/workspaces/${id}`);
+
+      if (typeof options?.onSuccess === "function")
+        options.onSuccess(data, ...props);
     },
-    onError: (error) => {
+    onError: (error, ...props) => {
       toast.error(error.message);
+
+      if (typeof options?.onError === "function")
+        options.onError(error, ...props);
     },
   });
 

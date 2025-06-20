@@ -3,7 +3,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import { server } from "@/tests/mocks/server";
 import { QueryWrapper, createTestQueryClient } from "@/tests/utils";
 
-import { workspacesKeys } from "../query-key-factory";
+import { workspacesQuery } from "../use-workspaces";
+import { workspaceQuery } from "../use-workspace";
 import { queryMockWorkspaces } from "../use-workspaces/mocks/utils";
 import { queryMockWorkspace } from "../use-workspace/mocks";
 import { useUpdateWorkspace } from "./use-update-workspace";
@@ -67,7 +68,7 @@ describe("useUpdateWorkspace hook test", () => {
       // Query cache should be updated when a workspace is deleted.
       expect(setQueryDataSpy).toHaveBeenCalledTimes(2);
 
-      expect(qcResult.current.getQueryData(workspacesKeys.lists())).toEqual({
+      expect(qcResult.current.getQueryData(workspacesQuery.queryKey)).toEqual({
         workspaces: workspaces.map((workspace) =>
           toUpdateId !== workspace.id ? workspace : { ...workspace, name },
         ),
@@ -94,7 +95,7 @@ describe("useUpdateWorkspace hook test", () => {
       expect(setQueryDataSpy).toHaveBeenCalledTimes(4);
 
       expect(
-        qcResult.current.getQueryData(workspacesKeys.detail(workspace.id)),
+        qcResult.current.getQueryData(workspaceQuery(workspace.id).queryKey),
       ).toEqual({ ...workspace, name });
     });
   });

@@ -2,12 +2,10 @@
 import { useWorkspace } from "@/features/workspaces/api/use-workspace";
 import { PageLoader } from "@/components/shared/page-loader";
 import { InviteCard } from "@/features/workspaces/components/invite-card";
-import { useWorkspaceInvites } from "@/features/workspaces/api/use-workspace-invites";
+import { InvitesTable } from "@/features/workspaces/components/invites-table";
 
 function Page({ params }: { params: { workspaceId: string } }) {
   const { data, isLoading, isError, error } = useWorkspace(params.workspaceId);
-  const { data: invitesData } = useWorkspaceInvites(params.workspaceId);
-  console.log(invitesData);
 
   if (isLoading) return <PageLoader />;
 
@@ -21,19 +19,19 @@ function Page({ params }: { params: { workspaceId: string } }) {
     );
   }
 
+  console.log(data?.role);
+
   return (
     <div className="mx-auto w-full lg:max-w-xl">
-      {data && <InviteCard workspace={data} />}
-      {invitesData && (
-        <>
-          {invitesData.pages.map((page) =>
-            page.invites.map((invite) => (
-              <p key={invite.id}>
-                {invite.name} {invite.createdAt}
-              </p>
-            )),
-          )}
-        </>
+      {data && (
+        <div className="flex flex-col gap-8">
+          <InviteCard workspace={data} />
+          <InvitesTable
+            workspaceId={data.id}
+            role={data.role}
+            allowMemberInviteManagement={data.allowMemberInviteManagement}
+          />
+        </div>
       )}
     </div>
   );

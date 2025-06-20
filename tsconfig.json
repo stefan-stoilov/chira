@@ -41,5 +41,11 @@
     "**/*.mts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "public/*.js", "coverage"]
+  "exclude": [
+    "node_modules",
+    "public/*.js",
+    "coverage",
+    "storybook-static",
+    "test-results"
+  ]
 }

@@ -76,7 +76,14 @@ describe("useCreateWorkspace hook test", () => {
       expect(
         qcResult.current.getQueryData(workspacesKeys.lists()),
       ).toStrictEqual({
-        workspaces: [...workspacesQueryData.workspaces, data.success],
+        workspaces: [
+          ...workspacesQueryData.workspaces,
+          {
+            name: data.success.name,
+            id: data.success.id,
+            role: data.success.role,
+          },
+        ],
       });
       expect(
         qcResult.current.getQueryData(

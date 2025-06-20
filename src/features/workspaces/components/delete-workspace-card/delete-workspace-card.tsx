@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 
 import { useDeleteWorkspace } from "@/features/workspaces/api/use-delete-workspace";
 import {
@@ -47,17 +47,15 @@ function DeleteWorkspaceModal({
   description,
 }: DeleteWorkspaceModalProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const { mutate, isPending, isError } = useDeleteWorkspace();
+  const { mutate, isPending } = useDeleteWorkspace({
+    onError: () => setIsOpen(false),
+  });
 
   const closeModal = useCallback(() => setIsOpen(false), []);
 
   const deleteWorkspace = useCallback(() => {
     mutate({ param: { id: workspaceId } });
   }, [mutate, workspaceId]);
-
-  useEffect(() => {
-    if (isError) setIsOpen(false);
-  }, [isError]);
 
   return (
     <>

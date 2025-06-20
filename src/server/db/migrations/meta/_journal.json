@@ -15,6 +15,20 @@
       "when": 1741684978028,
       "tag": "0001_closed_madripoor",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1749882696463,
+      "tag": "0002_shocking_ravenous",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1750442575501,
+      "tag": "0003_opposite_madrox",
+      "breakpoints": true
     }
   ]
 }

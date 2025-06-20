@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { db } from "@/server/db";
 import { workspaces, workspacesMembers } from "@/server/db/schemas";
 import * as http from "@/server/lib/http-status-codes";
@@ -24,16 +24,22 @@ export const getWorkspaceHandler: AppRouteHandler<
         name: workspaces.name,
         role: workspacesMembers.role,
         inviteCode: workspaces.inviteCode,
+        allowMemberInviteManagement: workspaces.allowMemberInviteManagement,
       })
       .from(workspacesMembers)
-      .innerJoin(workspaces, eq(workspaces.id, workspaceId))
-      .where(eq(workspacesMembers.userId, user.id));
+      .where(
+        and(
+          eq(workspacesMembers.userId, user.id),
+          eq(workspacesMembers.workspaceId, workspaceId),
+        ),
+      )
+      .innerJoin(workspaces, eq(workspaces.id, workspaceId));
 
     if (!workspace) return c.json({ error: "Not found" }, http.NOT_FOUND);
 
     if (!workspace.inviteCode) {
-      const { id, name, role } = workspace;
-      return c.json({ id, name, role }, http.OK);
+      const { id, name, role, allowMemberInviteManagement } = workspace;
+      return c.json({ id, name, role, allowMemberInviteManagement }, http.OK);
     }
 
     return c.json(workspace, http.OK);

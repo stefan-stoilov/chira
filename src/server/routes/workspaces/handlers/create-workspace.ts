@@ -37,7 +37,10 @@ export const createWorkspaceHandler: AppRouteHandler<
       role,
     });
 
-    return c.json({ id: workspaceId, name, role }, http.CREATED);
+    return c.json(
+      { id: workspaceId, name, role, allowMemberInviteManagement: true },
+      http.CREATED,
+    );
   } catch (error) {
     console.log(error);
 

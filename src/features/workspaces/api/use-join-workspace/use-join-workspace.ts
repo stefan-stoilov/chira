@@ -1,5 +1,9 @@
 import type { InferRequestType, InferResponseType } from "hono";
-import { useMutation } from "@tanstack/react-query";
+import {
+  useMutation,
+  type UseMutationOptions,
+  type UseMutationResult,
+} from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import { hcInit } from "@/lib/hc";
@@ -13,8 +17,23 @@ export type JoinWorkspaceRpc =
 type RequestType = InferRequestType<JoinWorkspaceRpc>;
 type ResponseType = InferResponseType<JoinWorkspaceRpc, 200>;
 
-export function useJoinWorkspace() {
+type UseJoinWorkspaceOptions = UseMutationOptions<
+  ResponseType,
+  Error,
+  RequestType
+>;
+
+type UseJoinWorkspaceResult = UseMutationResult<
+  ResponseType,
+  Error,
+  RequestType
+>;
+
+export function useJoinWorkspace(
+  options: UseJoinWorkspaceOptions = {},
+): UseJoinWorkspaceResult {
   return useMutation<ResponseType, Error, RequestType>({
+    ...options,
     mutationFn: async ({ param, json }) => {
       const res = await rpc.api.workspaces[":id"].join.$post({
         param,
@@ -42,13 +61,18 @@ export function useJoinWorkspace() {
       const { error } = await res.json();
       throw new Error(error);
     },
-    onSuccess: ({ name }) => {
+    onSuccess: (data, ...props) => {
       toast.success(
-        `Successfully sent a requested to join workspace - ${name}`,
+        `Successfully sent a requested to join workspace - ${data.name}`,
       );
+
+      if (typeof options?.onSuccess === "function")
+        options.onSuccess(data, ...props);
     },
-    onError: () => {
+    onError: (...props) => {
       toast.error("Failed send a request to join workspace.");
+
+      if (typeof options?.onError === "function") options.onError(...props);
     },
   });
 }
