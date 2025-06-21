@@ -1,4 +1,4 @@
-import type { StorybookConfig } from "@storybook/nextjs";
+import type { StorybookConfig } from "@storybook/experimental-nextjs-vite";
 
 const config: StorybookConfig = {
   stories: ["../src/{app,components,features}/**/*.stories.{ts,tsx}"],
@@ -12,10 +12,8 @@ const config: StorybookConfig = {
     "@storybook/blocks",
   ],
   framework: {
-    name: "@storybook/nextjs",
-    options: {
-      strictMode: true,
-    },
+    name: "@storybook/experimental-nextjs-vite",
+    options: {},
   },
   docs: {},
   staticDirs: ["../public"],

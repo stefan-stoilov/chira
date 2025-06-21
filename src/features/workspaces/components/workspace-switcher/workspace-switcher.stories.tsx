@@ -58,7 +58,7 @@ export const OnWorkspacePage: Story = {
     nextjs: {
       appDirectory: true,
       navigation: {
-        segments: [["workspaceId", data.MOCK_WORKSPACES[0]?.id]],
+        pathname: `/dashboard/workspaces/${data.MOCK_WORKSPACES[0]?.id}`,
       },
     },
     msw: { handlers: [handlers.success] },
