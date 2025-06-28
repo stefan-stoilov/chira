@@ -8,8 +8,9 @@ import {
 } from "@/server/lib/utils";
 import { WorkspaceRoles } from "@/server/db/schemas";
 import * as http from "@/server/lib/http-status-codes";
+import { WORKSPACES_TAGS } from "@/server/routes/constants";
 
-const tags = ["Workspaces"];
+const tags = WORKSPACES_TAGS;
 
 const createWorkspaceSchema = z.object({
   name: z.string({ message: "Workspace name is required." }).trim().min(1),

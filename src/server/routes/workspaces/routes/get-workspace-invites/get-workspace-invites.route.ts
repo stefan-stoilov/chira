@@ -3,8 +3,9 @@ import { sessionMiddleware } from "@/server/middlewares/session";
 import { createErrorMessageSchema, jsonContent } from "@/server/lib/utils";
 import { workspaceParamsSchema } from "@/server/schemas";
 import * as http from "@/server/lib/http-status-codes";
+import { WORKSPACES_TAGS } from "@/server/routes/constants";
 
-const tags = ["Workspaces"];
+const tags = WORKSPACES_TAGS;
 
 export const getWorkspaceInvitesRoute = createRoute({
   method: "get",

@@ -4,8 +4,9 @@ import { createErrorMessageSchema, jsonContent } from "@/server/lib/utils";
 import { WorkspaceRoles } from "@/server/db/schemas";
 import { workspaceParamsSchema } from "@/server/schemas";
 import * as http from "@/server/lib/http-status-codes";
+import { WORKSPACES_TAGS } from "@/server/routes/constants";
 
-const tags = ["Workspaces"];
+const tags = WORKSPACES_TAGS;
 
 export const getWorkspaceRoute = createRoute({
   method: "get",
