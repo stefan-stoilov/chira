@@ -14,7 +14,7 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { SoftDeleteWorkspaceInvitesRoute } from "../workspaces.routes";
+import type { SoftDeleteWorkspaceInvitesRoute } from "./soft-delete-workspace-invites.route";
 
 export const softDeleteWorkspaceInvitesHandler: AppRouteHandler<
   SoftDeleteWorkspaceInvitesRoute,
@@ -55,7 +55,7 @@ export const softDeleteWorkspaceInvitesHandler: AppRouteHandler<
       return c.json(
         {
           error:
-            "No user requests with specified IDs have been found for workspace.",
+            "No user requests with specified IDs have been found for workspace",
         },
         http.NOT_FOUND,
       );
@@ -77,7 +77,7 @@ export const softDeleteWorkspaceInvitesHandler: AppRouteHandler<
       return c.json(
         {
           error:
-            "No pending invites for users with specified IDs have been found.",
+            "No pending invites for users with specified IDs have been found",
         },
         http.NOT_FOUND,
       );

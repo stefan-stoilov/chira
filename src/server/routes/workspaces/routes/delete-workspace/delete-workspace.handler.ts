@@ -12,16 +12,14 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { UpdateInviteCodeRoute } from "../workspaces.routes";
-import { generateInviteCode } from "@/server/lib/utils";
+import type { DeleteWorkspaceRoute } from "./delete-workspace.route";
 
-export const updateInviteCodeHandler: AppRouteHandler<
-  UpdateInviteCodeRoute,
+export const deleteWorkspaceHandler: AppRouteHandler<
+  DeleteWorkspaceRoute,
   AppMiddlewareVariables<SessionMiddlewareVariables>
 > = async (c) => {
   const user = c.get("user");
   const { id: workspaceId } = c.req.valid("param");
-  const { remove } = c.req.valid("json");
 
   try {
     const [workspace] = await db
@@ -36,26 +34,12 @@ export const updateInviteCodeHandler: AppRouteHandler<
 
     if (!workspace) return c.json({ error: "Not found" }, http.NOT_FOUND);
 
-    if (workspace.role === WorkspaceRoles.user)
+    if (workspace.role !== WorkspaceRoles.owner)
       return c.json({ error: "Unauthorized" }, http.UNAUTHORIZED);
 
-    if (remove) {
-      await db
-        .update(workspaces)
-        .set({ inviteCode: null })
-        .where(eq(workspaces.id, workspace.id));
+    await db.delete(workspaces).where(eq(workspaces.id, workspace.id));
 
-      return c.json({ id: workspaceId, inviteCode: undefined }, http.OK);
-    } else {
-      const inviteCode = generateInviteCode();
-
-      await db
-        .update(workspaces)
-        .set({ inviteCode })
-        .where(eq(workspaces.id, workspace.id));
-
-      return c.json({ id: workspaceId, inviteCode }, http.OK);
-    }
+    return c.json({ id: workspaceId }, http.OK);
   } catch (error) {
     console.log(error);
 

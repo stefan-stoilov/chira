@@ -58,8 +58,7 @@ export function useJoinWorkspace(
         );
       }
 
-      const { error } = await res.json();
-      throw new Error(error);
+      throw new Error("Something went wrong");
     },
     onSuccess: (data, ...props) => {
       toast.success(

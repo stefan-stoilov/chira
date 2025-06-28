@@ -12,7 +12,7 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { UpdateWorkspaceRoute } from "../workspaces.routes";
+import type { UpdateWorkspaceRoute } from "./update-workspace.route";
 
 export const updateWorkspaceHandler: AppRouteHandler<
   UpdateWorkspaceRoute,

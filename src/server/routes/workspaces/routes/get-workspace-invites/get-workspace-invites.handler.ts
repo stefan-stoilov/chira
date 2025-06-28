@@ -13,7 +13,7 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { GetWorkspaceInvitesRoute } from "../workspaces.routes";
+import type { GetWorkspaceInvitesRoute } from "./get-workspace-invites.route";
 
 const RESULTS_PER_PAGE = 20;
 

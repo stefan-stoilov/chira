@@ -14,7 +14,7 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { AcceptWorkspaceInvitesRoute } from "../workspaces.routes";
+import type { AcceptWorkspaceInvitesRoute } from "./accept-workspace-invites.route";
 
 export const acceptWorkspaceInvitesHandler: AppRouteHandler<
   AcceptWorkspaceInvitesRoute,
@@ -54,7 +54,7 @@ export const acceptWorkspaceInvitesHandler: AppRouteHandler<
     if (validUserIdsFromPayload.length === 0) {
       return c.json(
         {
-          error: "No users with specified IDs have been found.",
+          error: "No users with specified IDs have been found",
         },
         http.NOT_FOUND,
       );
@@ -76,7 +76,7 @@ export const acceptWorkspaceInvitesHandler: AppRouteHandler<
       return c.json(
         {
           error:
-            "No pending invites for users with specified IDs have been found.",
+            "No pending invites for users with specified IDs have been found",
         },
         http.NOT_FOUND,
       );
