@@ -1,4 +1,5 @@
 export const runtime = "edge";
+export const fetchCache = "default-no-store";
 
 import { handle } from "hono/vercel";
 import { app } from "@/server/app";
