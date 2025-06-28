@@ -41,6 +41,7 @@ export const sessionMiddleware = createMiddleware<{
       id: payload.id,
       name: payload.name,
     });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   } catch (e) {
     const refreshTokenCookie = getCookie(c, REFRESH_TOKEN);
     if (!refreshTokenCookie)

@@ -20,3 +20,4 @@ export function createApp() {
 export function createTestApp<R extends AppOpenAPI>(router: R) {
   return createApp().route("/", router);
 }
+export type CreateTestAppReturnT = ReturnType<typeof createTestApp>;

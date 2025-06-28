@@ -12,7 +12,7 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { JoinWorkspaceRoute } from "../workspaces.routes";
+import type { JoinWorkspaceRoute } from "./join-workspace.route";
 
 export const joinWorkspaceHandler: AppRouteHandler<
   JoinWorkspaceRoute,
@@ -31,8 +31,8 @@ export const joinWorkspaceHandler: AppRouteHandler<
         userId: workspacesMembers.userId,
       })
       .from(workspaces)
-      .where(eq(workspaces.id, workspaceId))
-      .innerJoin(workspacesMembers, eq(workspacesMembers.userId, user.id));
+      .innerJoin(workspacesMembers, eq(workspacesMembers.userId, user.id))
+      .where(eq(workspaces.id, workspaceId));
 
     if (!existingWorkspace)
       return c.json({ error: "Not found" }, http.NOT_FOUND);
@@ -53,7 +53,7 @@ export const joinWorkspaceHandler: AppRouteHandler<
     if (typeof existingMember !== "undefined") {
       return c.json(
         {
-          error: `You are already a member of workspace - ${existingWorkspace.name}.`,
+          error: `You are already a member of workspace - ${existingWorkspace.name}`,
         },
         http.UNAUTHORIZED,
       );
@@ -61,7 +61,12 @@ export const joinWorkspaceHandler: AppRouteHandler<
 
     await db
       .delete(workspacesRequests)
-      .where(eq(workspacesRequests.userId, user.id));
+      .where(
+        and(
+          eq(workspacesRequests.userId, user.id),
+          eq(workspacesRequests.workspaceId, workspaceId),
+        ),
+      );
 
     await db
       .insert(workspacesRequests)

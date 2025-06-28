@@ -8,7 +8,7 @@ import type {
   AppRouteHandler,
 } from "@/server/lib/types";
 import type { SessionMiddlewareVariables } from "@/server/middlewares/session";
-import type { GetWorkspacesRoute } from "../workspaces.routes";
+import type { GetWorkspacesRoute } from "./get-workspaces.route";
 
 export const getWorkspacesHandler: AppRouteHandler<
   GetWorkspacesRoute,
