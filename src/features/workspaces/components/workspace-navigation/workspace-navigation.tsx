@@ -24,6 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { WorkspaceRoles } from "@/server/db/schemas";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UsersIcon } from "lucide-react";
 
 const routes = [
   {
@@ -31,6 +32,12 @@ const routes = [
     href: "",
     icon: GoHome,
     activeIcon: GoHomeFill,
+  },
+  {
+    label: "Members",
+    href: "/members",
+    icon: UsersIcon,
+    activeIcon: UsersIcon,
   },
   {
     label: "Settings",
@@ -45,12 +52,6 @@ const routes = [
     icon: RiUserAddLine,
     activeIcon: RiUserAddFill,
   },
-  // {
-  //   label: "Dolor",
-  //   href: "/Dolor",
-  //   icon: UsersIcon,
-  //   activeIcon: UsersIcon,
-  // },
 ];
 
 export function WorkspaceNavigation() {

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-const ALLOWED_SWITCH_PATH = new Set(["invites"]);
+const ALLOWED_SWITCH_PATH = new Set(["invites", "members"]);
 
 export function useSwitchWorkspace() {
   const router = useRouter();

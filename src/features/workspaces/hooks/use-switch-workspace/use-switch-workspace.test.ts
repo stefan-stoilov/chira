@@ -92,5 +92,19 @@ describe("useSwitchWorkspace", () => {
 
       expect(push).toHaveBeenCalledWith(`/dashboard/workspaces/${id}/invites`);
     });
+
+    it('should preserve the "members" sub-path when switching', () => {
+      mockedUsePathname.mockReturnValue(
+        `/dashboard/workspaces/${crypto.randomUUID()}/members`,
+      );
+      const { result } = renderHook(() => useSwitchWorkspace());
+
+      const id = crypto.randomUUID();
+      act(() => {
+        result.current.switchWorkspace(id);
+      });
+
+      expect(push).toHaveBeenCalledWith(`/dashboard/workspaces/${id}/members`);
+    });
   });
 });
