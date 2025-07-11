@@ -38,12 +38,12 @@ describe("useMembers hook test", () => {
     await waitFor(() => {
       expect(result.current.isError).toBe(false);
       expect(result.current.isSuccess).toBe(true);
-      expect(result.current.data).toStrictEqual(data.success);
+      expect(result.current.data).toStrictEqual(data.success());
 
       // Check that the correct query key is associated with the data
       expect(
         qcResult.current.getQueryData(workspacesKeys.members(MOCK_ID)),
-      ).toStrictEqual(data.success);
+      ).toStrictEqual(data.success());
     });
   });
 });

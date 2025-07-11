@@ -1,15 +1,20 @@
 import { http, HttpResponse, delay } from "msw";
 import * as data from "../data";
+import type { SuccessDataProps } from "../data";
 
 const API_ENDPOINT = `${process.env.NEXT_PUBLIC_APP_URL}/api/workspaces/:id/members`;
 
-export const success = (loadTime?: number | "infinite") =>
+type SuccessHandlerProps = SuccessDataProps & {
+  loadTime?: number | "infinite";
+};
+
+export const success = ({ loadTime, firstMember }: SuccessHandlerProps = {}) =>
   http.get<{ id: string }>(API_ENDPOINT, async () => {
     if (loadTime) {
       await delay(loadTime);
     }
 
-    return HttpResponse.json(data.success, data.successStatus);
+    return HttpResponse.json(data.success({ firstMember }), data.successStatus);
   });
 
 export const error = ({
