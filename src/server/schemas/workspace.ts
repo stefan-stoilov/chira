@@ -25,7 +25,7 @@ export const workspaceIdSchema = z.object({
 export const workspaceParamsSchema = z.object({
   id: z
     .string()
-    .max(36)
+    .uuid()
     .openapi({
       param: {
         name: "id",

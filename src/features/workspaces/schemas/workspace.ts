@@ -46,3 +46,5 @@ export const updateWorkspaceServerSchema = z.object({
 export type UpdateWorkspaceServerSchema = z.infer<
   typeof updateWorkspaceServerSchema
 >;
+
+export type WorkspacePageParams = { params: { workspaceId: string } };

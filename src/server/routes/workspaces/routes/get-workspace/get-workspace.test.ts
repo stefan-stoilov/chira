@@ -74,7 +74,7 @@ describe("GET /api/workspaces/{id}", () => {
   it("should return 404 Not Found if user is not a member or workspace does not exist", async () => {
     db.innerJoin.mockResolvedValue([]);
 
-    const res = await app.request(`/api/workspaces/non-existent-id`);
+    const res = await app.request(`/api/workspaces/${crypto.randomUUID()}`);
 
     expect(res.status).toBe(http.NOT_FOUND);
     expect(await res.json()).toEqual({ error: "Not found" });

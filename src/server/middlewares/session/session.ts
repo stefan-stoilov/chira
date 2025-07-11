@@ -1,6 +1,7 @@
 import { verify, sign } from "hono/jwt";
 import { getCookie, setCookie } from "hono/cookie";
 import { createMiddleware } from "hono/factory";
+import { getContext } from "hono/context-storage";
 import { eq } from "drizzle-orm";
 
 import { db } from "@/server/db";
@@ -117,3 +118,15 @@ export const sessionMiddleware = createMiddleware<{
 
   await next();
 });
+
+export function getUserCtx() {
+  try {
+    return getContext<{
+      Variables: SessionMiddlewareVariables;
+    }>().var.user;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  } catch (error) {
+    console.error("Attempted to access undefined session middleware variables");
+    return undefined;
+  }
+}
