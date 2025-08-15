@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import { db } from "@/server/db";
 import {
   workspaces,
@@ -24,13 +24,16 @@ export const deleteWorkspaceHandler: AppRouteHandler<
   try {
     const [workspace] = await db
       .select({
-        id: workspaces.id,
-        name: workspaces.name,
+        id: workspacesMembers.workspaceId,
         role: workspacesMembers.role,
       })
       .from(workspacesMembers)
-      .innerJoin(workspaces, eq(workspaces.id, workspaceId))
-      .where(eq(workspacesMembers.userId, user.id));
+      .where(
+        and(
+          eq(workspacesMembers.userId, user.id),
+          eq(workspacesMembers.workspaceId, workspaceId),
+        ),
+      );
 
     if (!workspace) return c.json({ error: "Not found" }, http.NOT_FOUND);
 

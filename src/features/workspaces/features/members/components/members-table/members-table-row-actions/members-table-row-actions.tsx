@@ -9,6 +9,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { WorkspaceRoles } from "@/server/db/schemas";
+import { usePromoteMember } from "@/features/workspaces/features/members/api/use-promote-member";
+import { useDemoteMember } from "@/features/workspaces/features/members/api/use-demote-member";
+import { useDeleteMember } from "@/features/workspaces/features/members/api/use-delete-member";
 
 type MembersTableRowActionsProps = {
   userId: string;
@@ -124,8 +127,14 @@ function PromoteMember({
   userId,
   workspaceId,
 }: Omit<ActionsProps, "memberRole">) {
+  const { mutate } = usePromoteMember();
+
   return (
-    <DropdownMenuItem onClick={() => console.log({ userId, workspaceId })}>
+    <DropdownMenuItem
+      onClick={() =>
+        mutate({ param: { id: workspaceId, ["user-id"]: userId } })
+      }
+    >
       <UserPlus /> Promote
     </DropdownMenuItem>
   );
@@ -135,8 +144,14 @@ function DemoteMember({
   userId,
   workspaceId,
 }: Omit<ActionsProps, "memberRole">) {
+  const { mutate } = useDemoteMember();
+
   return (
-    <DropdownMenuItem onClick={() => console.log({ userId, workspaceId })}>
+    <DropdownMenuItem
+      onClick={() =>
+        mutate({ param: { id: workspaceId, ["user-id"]: userId } })
+      }
+    >
       <UserMinus /> Demote
     </DropdownMenuItem>
   );
@@ -146,10 +161,15 @@ function RemoveMember({
   userId,
   workspaceId,
 }: Omit<ActionsProps, "memberRole">) {
+  console.log("Remove member");
+  const { mutate } = useDeleteMember();
+
   return (
     <DropdownMenuItem
       variant="destructive"
-      onClick={() => console.log({ userId, workspaceId })}
+      onClick={() =>
+        mutate({ param: { id: workspaceId, ["user-id"]: userId } })
+      }
     >
       <Trash2 className="text-destructive" />
       Remove
