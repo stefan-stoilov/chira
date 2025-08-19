@@ -22,7 +22,7 @@ describe("useMembers hook test", () => {
     });
   });
 
-  it("Should NOT throw when server responds with an error.", async () => {
+  it("Should NOT throw when server responds with success.", async () => {
     server.use(handlers.success());
 
     const queryClient = createTestQueryClient();

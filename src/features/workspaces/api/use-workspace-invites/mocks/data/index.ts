@@ -1,5 +1,9 @@
+import type { InferResponseType } from "hono";
 import { getMockIteratedDate } from "@/tests/utils";
-import type { UseWorkspaceInvitesData } from "../../use-workspace-invites";
+import type {
+  UseWorkspaceInvitesData,
+  WorkspaceInvitesRpc,
+} from "../../use-workspace-invites";
 import * as http from "@/server/lib/http-status-codes";
 
 const TOTAL_INVITES = 20 * 5 - 5;
@@ -51,4 +55,14 @@ export const noResults = (page: number): UseWorkspaceInvitesData => ({
   invites: [],
   totalPages: 0,
   currentPage: page,
+});
+
+export const error = (
+  message?: string,
+): InferResponseType<WorkspaceInvitesRpc, 401 | 404 | 422 | 500> => ({
+  error: message ?? "Error",
+});
+
+export const errorStatus = (status?: 401 | 404 | 422 | 500) => ({
+  status: status ?? http.INTERNAL_SERVER_ERROR,
 });

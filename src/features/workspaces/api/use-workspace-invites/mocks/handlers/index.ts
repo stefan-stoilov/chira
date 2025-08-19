@@ -6,7 +6,6 @@ const API_ENDPOINT = `${process.env.NEXT_PUBLIC_APP_URL}/api/workspaces/:id/invi
 export const success = http.get<{ id: string }>(
   API_ENDPOINT,
   async ({ request }) => {
-    await delay(1000);
     const url = new URL(request.url);
     const pageParam = url.searchParams.get("page");
 
@@ -34,3 +33,14 @@ export const noResults = http.get(API_ENDPOINT, async ({ request }) => {
 
   return HttpResponse.json(data.noResults(page), data.successStatus);
 });
+
+export const error = ({
+  message,
+  status,
+}: {
+  message?: string;
+  status?: 401 | 404 | 422 | 500;
+} = {}) =>
+  http.get<{ id: string }>(API_ENDPOINT, () => {
+    return HttpResponse.json(data.error(message), data.errorStatus(status));
+  });

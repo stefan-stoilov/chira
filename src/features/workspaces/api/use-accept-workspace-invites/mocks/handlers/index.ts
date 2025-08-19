@@ -14,3 +14,7 @@ export const success = http.post<{ id: string }, { userIds: string[] }>(
     return HttpResponse.json(res, { status: 200 });
   },
 );
+
+export const error = http.post(API_ENDPOINT, () => {
+  return HttpResponse.json({ error: "Internal server error" }, { status: 500 });
+});

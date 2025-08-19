@@ -21,10 +21,9 @@ type RequestType = InferRequestType<UseAcceptWorkspaceInvitesRpc> & {
 };
 type ResponseType = InferResponseType<UseAcceptWorkspaceInvitesRpc, 200>;
 
-type UseAcceptWorkspaceInvitesOptions = UseMutationOptions<
-  ResponseType,
-  Error,
-  RequestType
+type UseAcceptWorkspaceInvitesOptions = Omit<
+  UseMutationOptions<ResponseType, Error, RequestType>,
+  "mutationFn"
 >;
 
 type UseAcceptWorkspaceInvitesResult = UseMutationResult<
@@ -85,8 +84,15 @@ export function useAcceptWorkspaceInvites(
         workspaceInvitesQuery({ page, id }).queryKey,
         newCache,
       );
+
+      options?.onMutate?.({ param: { id }, page, json });
     },
-    onError: (error, { param: { id }, page }) => {
+    onError: (error, variables, context) => {
+      const {
+        param: { id },
+        page,
+      } = variables;
+
       queryClient.invalidateQueries({
         queryKey: workspaceInvitesQuery({ page, id }).queryKey,
       });
@@ -94,8 +100,15 @@ export function useAcceptWorkspaceInvites(
       toast.error(
         "Something went wrong when trying to accept user request to join workspace",
       );
+
+      options?.onError?.(error, variables, context);
     },
-    onSuccess: ({ members }, { param: { id }, page }) => {
+    onSuccess: (data, variables, context) => {
+      const {
+        param: { id },
+        page,
+      } = variables;
+      const { members } = data;
       const errors = members?.filter((member) => "error" in member);
 
       if (errors.length > 0) {
@@ -106,6 +119,8 @@ export function useAcceptWorkspaceInvites(
           "Something went wrong when trying to accept some of the user requests to join workspace",
         );
       }
+
+      options?.onSuccess?.(data, variables, context);
     },
   });
 }

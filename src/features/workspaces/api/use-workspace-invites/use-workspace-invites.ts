@@ -20,7 +20,7 @@ export type UseWorkspaceInvitesData = InferResponseType<
 
 type UseWorkspaceInvitesQueryOptions = Omit<
   UseQueryOptions<UseWorkspaceInvitesData, Error>,
-  "queryKey"
+  "queryKey" | "queryFn"
 >;
 
 enum Errors {
@@ -29,7 +29,7 @@ enum Errors {
   INTERNAL_SERVER_ERROR = "Internal Server Error",
 }
 
-type WorkspaceInvitesQueryProps = {
+export type WorkspaceInvitesQueryProps = {
   id: string;
   page: number;
 };
@@ -89,7 +89,7 @@ export function useWorkspaceInvites({
   page,
   options,
 }: WorkspaceInvitesQueryProps & {
-  options?: Omit<UseWorkspaceInvitesQueryOptions, "queryKey">;
+  options?: UseWorkspaceInvitesQueryOptions;
 }) {
   return useQuery(
     options
