@@ -14,3 +14,7 @@ export const success = http.patch<{ id: string }, { userIds: string[] }>(
     return HttpResponse.json(res, { status: 200 });
   },
 );
+
+export const error = http.patch(API_ENDPOINT, () =>
+  HttpResponse.json({ error: "Internal server error" }, { status: 500 }),
+);

@@ -2,7 +2,10 @@ import type { StoryObj, Meta } from "@storybook/react";
 
 import { QueryWrapper, withMswHandlers } from "@/tests/utils";
 import { MembersTable } from "./members-table";
-import { handlers } from "@/features/workspaces/features/members/api/use-members/mocks";
+import { handlers as getMembers } from "@/features/workspaces/features/members/api/use-members/mocks";
+import { handlers as deleteMember } from "@/features/workspaces/features/members/api/use-delete-member/mocks";
+import { handlers as demoteMember } from "@/features/workspaces/features/members/api/use-demote-member/mocks";
+import { handlers as promoteMember } from "@/features/workspaces/features/members/api/use-promote-member/mocks";
 import { WorkspaceRoles } from "@/server/db/schemas";
 
 const MOCK_USER_ID = crypto.randomUUID();
@@ -33,9 +36,12 @@ export const Default: Story = {
     currentUserId: MOCK_USER_ID,
   },
   ...withMswHandlers([
-    handlers.success({
+    getMembers.success({
       firstMember: { id: MOCK_USER_ID, role: WorkspaceRoles.owner },
     }),
+    deleteMember.success,
+    demoteMember.success,
+    promoteMember.success,
   ]),
 };
 
@@ -45,9 +51,12 @@ export const AdminView: Story = {
     currentUserId: MOCK_USER_ID,
   },
   ...withMswHandlers([
-    handlers.success({
+    getMembers.success({
       firstMember: { id: MOCK_USER_ID, role: WorkspaceRoles.admin },
     }),
+    deleteMember.success,
+    demoteMember.success,
+    promoteMember.success,
   ]),
 };
 
@@ -57,7 +66,7 @@ export const UserView: Story = {
     currentUserId: MOCK_USER_ID,
   },
   ...withMswHandlers([
-    handlers.success({
+    getMembers.success({
       firstMember: { id: MOCK_USER_ID, role: WorkspaceRoles.user },
     }),
   ]),
@@ -68,7 +77,7 @@ export const Loading: Story = {
     role: WorkspaceRoles.owner,
     currentUserId: MOCK_USER_ID,
   },
-  ...withMswHandlers([handlers.success({ loadTime: "infinite" })]),
+  ...withMswHandlers([getMembers.success({ loadTime: "infinite" })]),
 };
 
 export const Error: Story = {
@@ -76,5 +85,5 @@ export const Error: Story = {
     role: WorkspaceRoles.owner,
     currentUserId: MOCK_USER_ID,
   },
-  ...withMswHandlers([handlers.error()]),
+  ...withMswHandlers([getMembers.error()]),
 };

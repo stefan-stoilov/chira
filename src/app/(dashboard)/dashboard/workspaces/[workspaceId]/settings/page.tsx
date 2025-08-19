@@ -10,8 +10,11 @@ function Page({ params }: { params: { workspaceId: string } }) {
   const { data, isLoading, isError, error } = useWorkspace(params.workspaceId);
 
   const deleteWorkspaceCard = useMemo(
-    () => (data?.id ? <DeleteWorkspaceCard workspaceId={data.id} /> : null),
-    [data?.id],
+    () =>
+      data?.id && data?.role === WorkspaceRoles.owner ? (
+        <DeleteWorkspaceCard workspaceId={data.id} />
+      ) : null,
+    [data?.id, data?.role],
   );
 
   if (isLoading) return <PageLoader />;

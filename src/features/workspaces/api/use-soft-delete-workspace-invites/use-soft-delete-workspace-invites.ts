@@ -85,15 +85,28 @@ export function useSoftDeleteWorkspaceInvites(
         workspaceInvitesQuery({ page, id }).queryKey,
         newCache,
       );
+
+      options?.onMutate?.({ param: { id }, page, json });
     },
-    onError: (error, { param: { id }, page }) => {
+    onError: (error, variables, context) => {
+      const {
+        param: { id },
+        page,
+      } = variables;
       queryClient.invalidateQueries({
         queryKey: workspaceInvitesQuery({ page, id }).queryKey,
       });
 
       toast.error("Something went wrong deleting workspace invites.");
+
+      options?.onError?.(error, variables, context);
     },
-    onSuccess: ({ deletedInvites }, { param: { id }, page }) => {
+    onSuccess: (data, variables, context) => {
+      const { deletedInvites } = data;
+      const {
+        param: { id },
+        page,
+      } = variables;
       const errors = deletedInvites?.filter((invite) => "error" in invite);
 
       if (errors.length > 0) {
@@ -104,6 +117,8 @@ export function useSoftDeleteWorkspaceInvites(
           "Something went wrong when trying to delete some of the workspace invites.",
         );
       }
+
+      options?.onSuccess?.(data, variables, context);
     },
   });
 }

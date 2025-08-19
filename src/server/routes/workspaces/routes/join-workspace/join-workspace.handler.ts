@@ -28,10 +28,8 @@ export const joinWorkspaceHandler: AppRouteHandler<
         id: workspaces.id,
         name: workspaces.name,
         inviteCode: workspaces.inviteCode,
-        userId: workspacesMembers.userId,
       })
       .from(workspaces)
-      .innerJoin(workspacesMembers, eq(workspacesMembers.userId, user.id))
       .where(eq(workspaces.id, workspaceId));
 
     if (!existingWorkspace)
