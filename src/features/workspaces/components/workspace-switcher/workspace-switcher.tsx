@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils";
 
 export function WorkspaceSwitcher() {
   const { workspaceId, switchWorkspace } = useSwitchWorkspace();
-  const { data, isFetching, isError, isLoading } = useWorkspaces();
+  const { data, isFetching, isError, error, isLoading } = useWorkspaces();
 
   return (
     <div className={"mt-1.5 flex flex-col gap-y-2"}>
@@ -39,7 +39,7 @@ export function WorkspaceSwitcher() {
               <SelectValue placeholder="No workspace selected" />
             )
           ) : (
-            "Failed to load workspaces"
+            error.message
           )}
         </SelectTrigger>
 

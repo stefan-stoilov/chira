@@ -56,6 +56,7 @@ export const workspaces = pgTable("workspaces", {
 
 export const workspacesRelations = relations(workspaces, ({ many }) => ({
   workspaceRequests: many(workspacesRequests),
+  projects: many(projects),
 }));
 
 export enum WorkspaceRoles {
@@ -141,3 +142,20 @@ export const workspacesRequestsRelations = relations(
     }),
   }),
 );
+
+export const projects = pgTable("projects", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  workspaceId: uuid("workspace_id")
+    .notNull()
+    .references(() => workspaces.id, { onDelete: "cascade" }),
+  name: varchar("name", { length: 255 }).notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const projectsRelations = relations(projects, ({ one }) => ({
+  workspace: one(workspaces, {
+    fields: [projects.workspaceId],
+    references: [workspaces.id],
+  }),
+}));

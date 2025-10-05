@@ -29,6 +29,13 @@
       "when": 1750442575501,
       "tag": "0003_opposite_madrox",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1755612619411,
+      "tag": "0004_majestic_northstar",
+      "breakpoints": true
     }
   ]
 }

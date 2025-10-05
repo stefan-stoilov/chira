@@ -12,6 +12,7 @@ import { Logo } from "../logo";
 import { WorkspaceNavigation } from "@/features/workspaces/components/workspace-navigation";
 import { WorkspaceSwitcher } from "@/features/workspaces/components/workspace-switcher";
 import { CreateWorkspaceButton } from "@/features/workspaces/components/create-workspace-modal";
+import { ProjectsNavigation } from "@/features/workspaces/features/projects/components/projects-navigation";
 
 export function AppSidebar() {
   return (
@@ -39,6 +40,8 @@ export function AppSidebar() {
         </SidebarGroup>
 
         <WorkspaceNavigation />
+
+        <ProjectsNavigation />
       </SidebarContent>
     </Sidebar>
   );

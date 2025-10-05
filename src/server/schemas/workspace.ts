@@ -24,5 +24,21 @@ export const userIdParamsSchema = z.object({
     }),
 });
 
+export const projectIdParamsSchema = z.object({
+  ["project-id"]: z
+    .string()
+    .uuid()
+    .openapi({
+      param: {
+        name: "project-id",
+        in: "path",
+      },
+    }),
+});
+
 export const workspaceMemberParamsSchema =
   workspaceParamsSchema.merge(userIdParamsSchema);
+
+export const workspaceProjectParamsSchema = workspaceParamsSchema.merge(
+  projectIdParamsSchema,
+);

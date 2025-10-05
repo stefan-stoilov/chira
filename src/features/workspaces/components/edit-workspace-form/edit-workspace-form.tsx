@@ -26,16 +26,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { BackButton } from "@/components/shared/back-button";
-import {
-  SubmitButton,
-  type SubmitButtonProps,
-} from "@/components/shared/submit-button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { SubmitTooltipButton } from "@/components/shared/submit-tooltip-button";
 
 type EditWorkspaceFormProps = {
   onCancel?: () => void;
@@ -201,9 +192,11 @@ export function EditWorkspaceForm({
                   Cancel
                 </Button>
 
-                <SubmitButtonWithTooltip
+                <SubmitTooltipButton
                   isPending={isPending}
                   isDirty={form.formState.isDirty}
+                  label="Save changes"
+                  tooltip="No changes made to workspace"
                 />
               </div>
             </form>
@@ -213,27 +206,5 @@ export function EditWorkspaceForm({
 
       {deleteWorkspaceCard}
     </div>
-  );
-}
-
-function SubmitButtonWithTooltip({
-  isPending,
-  isDirty,
-  ...props
-}: SubmitButtonProps) {
-  return (
-    <TooltipProvider>
-      <Tooltip open={isPending || isDirty ? false : undefined}>
-        <TooltipTrigger asChild disabled={isPending || isDirty}>
-          <div>
-            <SubmitButton isPending={isPending} isDirty={isDirty} {...props}>
-              Save changes
-            </SubmitButton>
-          </div>
-        </TooltipTrigger>
-
-        <TooltipContent>No changes made to workspace</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
   );
 }

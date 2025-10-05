@@ -18,4 +18,7 @@ export const workspacesKeys = {
   invites: ({ id, page = 0 }: { id: string; page: number }) =>
     [...workspacesKeys.detail(id), "invites", page] as const,
   members: (id: string) => [...workspacesKeys.detail(id), "members"] as const,
+  projects: (id: string) => [...workspacesKeys.detail(id), "projects"] as const,
+  projectDetail: (workspaceId: string, projectId: string) =>
+    [...workspacesKeys.projects(workspaceId), projectId] as const,
 };
