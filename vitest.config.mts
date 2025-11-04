@@ -28,5 +28,28 @@ export default defineConfig({
         },
       },
     ],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "json-summary", "html"],
+      reportOnFailure: true,
+      include: [
+        "src/components/shared/**",
+        "src/features/**",
+        "src/hooks/**",
+        "src/server/routes",
+      ],
+      exclude: [
+        "**/index.ts",
+        "**/*.stories.tsx",
+        "**/schemas/**",
+        "**/mocks/**",
+      ],
+      thresholds: {
+        lines: 50,
+        functions: 50,
+        branches: 50,
+        statements: 50,
+      },
+    },
   },
 });
