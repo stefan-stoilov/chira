@@ -120,4 +120,5 @@ jobs:
           json-summary-path: pr-coverage/coverage-summary.json
           json-summary-compare-path: main-coverage/coverage-summary.json
           json-final-path: pr-coverage/coverage-final.json
+          vite-config-path: pr-coverage/vitest.thresholds.js
           comment-on: pr
