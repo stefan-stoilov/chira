@@ -8,6 +8,5 @@ export function hcInit<T extends OpenAPIHono<AppBindings, {}, "/">>() {
       ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
       : `${process.env.NEXT_PUBLIC_APP_URL}`,
   );
-
   return { rpc };
 }

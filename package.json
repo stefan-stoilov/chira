@@ -16,6 +16,7 @@
     "storybook:test": "test-storybook --watch",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
+    "lint-staged": "lint-staged",
     "preview": "next build && next start",
     "start": "next start",
     "typecheck": "tsc --noEmit",
@@ -24,7 +25,8 @@
     "db:generate": "npx drizzle-kit generate",
     "db:migrate": "npx drizzle-kit migrate",
     "db:push": "npx drizzle-kit push",
-    "db:studio": "npx drizzle-kit studio --host localhost --port 3001 --verbose --config drizzle.config.ts"
+    "db:studio": "npx drizzle-kit studio --host localhost --port 3001 --verbose --config drizzle.config.ts",
+    "prepare": "husky"
   },
   "dependencies": {
     "@hono/zod-openapi": "^0.18.3",
@@ -109,7 +111,9 @@
     "eslint-config-next": "^15.0.1",
     "eslint-plugin-jsx-a11y": "^6.10.2",
     "eslint-plugin-storybook": "^0.11.3",
+    "husky": "^9.1.7",
     "jsdom": "^25.0.1",
+    "lint-staged": "^16.2.6",
     "msw": "^2.7.0",
     "msw-storybook-addon": "^2.0.4",
     "postcss": "^8.4.39",
@@ -130,6 +134,12 @@
   "msw": {
     "workerDirectory": [
       "public"
+    ]
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,ts,tsx}": [
+      "eslint --config .eslintrc.cjs --fix",
+      "prettier --write \"**/*.{ts,tsx,js,jsx,mdx}\" --cache"
     ]
   }
 }
