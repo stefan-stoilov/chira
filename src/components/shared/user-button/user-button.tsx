@@ -35,7 +35,7 @@ export function UserButton() {
     return (
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger className="relative">
-          <div className="border-destructive-border flex size-10 items-center justify-center rounded-full border bg-destructive-subtle">
+          <div className="flex size-10 items-center justify-center rounded-full border border-destructive-border bg-destructive-subtle">
             <UserRoundX className="size-1/2" data-testid="user-error-icon" />
           </div>
           <VisuallyHidden>Error - failed to load user data</VisuallyHidden>
@@ -44,7 +44,7 @@ export function UserButton() {
         <DropdownMenuContent
           align="end"
           side="bottom"
-          className="border-destructive-border w-60 bg-destructive-subtle"
+          className="w-60 border-destructive-border bg-destructive-subtle"
           sideOffset={10}
         >
           <div className="flex flex-col items-center justify-center gap-2 rounded px-2.5 py-4">
