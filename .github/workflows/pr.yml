@@ -77,7 +77,7 @@ jobs:
 
       # Run tests with coverage with summary in json format
       - name: Run tests with coverage
-        run: pnpm cross-env NODE_ENV=test vitest run --coverage.reporter=json --coverage.reporter=json-summary --coverage.reporter=lcov
+        run: pnpm cross-env NODE_ENV=test vitest run --coverage --coverage.reporter=json --coverage.reporter=json-summary --coverage.reporter=lcov
 
       - name: Copy thresholds config (if exists)
         run: |
