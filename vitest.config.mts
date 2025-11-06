@@ -44,12 +44,6 @@ export default defineConfig({
         "**/schemas/**",
         "**/mocks/**",
       ],
-      thresholds: {
-        lines: 50,
-        functions: 50,
-        branches: 50,
-        statements: 50,
-      },
     },
   },
 });

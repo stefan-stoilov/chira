@@ -50,28 +50,12 @@ jobs:
       - name: Run unit tests
         run: pnpm test
 
-  storybook:
-    name: Build Storybook
-    runs-on: ubuntu-latest
-    if: github.ref != 'refs/heads/main'
-
-    steps:
-      - name: Checkout branch
-        uses: actions/checkout@v4
-
-      - name: Setup
-        uses: ./.github/actions/setup
-
-      - name: Build Storybook
-        run: pnpm storybook:build
-
   storybook-deployment:
     name: Build and deploy Storybook
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
     env:
       NEXT_PUBLIC_APP_URL: ${{ vars.STORYBOOK_URL }}
     steps:
