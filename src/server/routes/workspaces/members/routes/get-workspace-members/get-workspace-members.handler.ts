@@ -29,7 +29,7 @@ export const getWorkspaceMembersHandler: AppRouteHandler<
 
     return c.json({ members }, http.OK);
   } catch (error) {
-    console.error(error);
+    c.var.logger.error(error, "Get workspace members handler failed");
 
     return c.json(
       { error: "Internal server error" },

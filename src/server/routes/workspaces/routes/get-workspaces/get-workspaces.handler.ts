@@ -29,7 +29,7 @@ export const getWorkspacesHandler: AppRouteHandler<
 
     return c.json({ workspaces: userWorkspaces }, http.OK);
   } catch (error) {
-    console.log(error);
+    c.var?.logger?.error(error, "Get workspaces handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

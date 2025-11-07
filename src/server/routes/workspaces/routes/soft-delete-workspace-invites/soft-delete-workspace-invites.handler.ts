@@ -118,7 +118,8 @@ export const softDeleteWorkspaceInvitesHandler: AppRouteHandler<
       http.OK,
     );
   } catch (error) {
-    console.error("Error deleting workspace invites:", error);
+    c.var.logger.error(error, "Soft delete workspace invites handler failed");
+
     return c.json(
       { error: "Internal Server Error" },
       http.INTERNAL_SERVER_ERROR,

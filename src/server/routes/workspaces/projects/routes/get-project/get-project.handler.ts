@@ -30,7 +30,7 @@ export const getProjectHandler: AppRouteHandler<
 
     return c.json(project, http.OK);
   } catch (error) {
-    console.log(error);
+    c.var.logger.error(error, "Get project handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

@@ -26,7 +26,7 @@ export const createProjectHandler: AppRouteHandler<
 
     return c.json({ id, name, workspaceId }, http.CREATED);
   } catch (error) {
-    console.log(error);
+    c.var.logger.error(error, "Workspace could not be created");
 
     return c.json(
       { error: "Internal Server Error" },

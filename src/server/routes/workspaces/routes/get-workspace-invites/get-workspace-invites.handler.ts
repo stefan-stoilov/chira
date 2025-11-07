@@ -81,8 +81,8 @@ export const getWorkspaceInvitesHandler: AppRouteHandler<
       .limit(RESULTS_PER_PAGE);
 
     return c.json({ invites, totalPages, currentPage }, http.OK);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    c.var?.logger?.error(error, "Get workspace invites handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

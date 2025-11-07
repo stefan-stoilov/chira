@@ -57,7 +57,7 @@ export const updateInviteCodeHandler: AppRouteHandler<
       return c.json({ id: workspaceId, inviteCode }, http.OK);
     }
   } catch (error) {
-    console.log(error);
+    c.var?.logger?.error(error, "Update invite code handler failed");
 
     return c.json(
       { error: "Internal Server Error" },
