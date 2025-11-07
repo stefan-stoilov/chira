@@ -125,7 +125,7 @@ export const acceptWorkspaceInvitesHandler: AppRouteHandler<
       http.OK,
     );
   } catch (error) {
-    console.error("Error accepting workspace invites:", error);
+    c.var.logger.error(error, "Accepts workspace invites handler failed");
     return c.json(
       { error: "Internal Server Error" },
       http.INTERNAL_SERVER_ERROR,

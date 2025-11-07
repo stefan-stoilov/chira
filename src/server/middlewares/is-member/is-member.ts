@@ -1,5 +1,6 @@
 import { createMiddleware } from "hono/factory";
 import { eq, and } from "drizzle-orm";
+import type { PinoLogger } from "hono-pino";
 
 import { db } from "@/server/db";
 import {
@@ -18,7 +19,7 @@ export type IsMemberMiddlewareVariables = {
     createdAt: Date;
     updatedAt: Date;
   };
-} & SessionMiddlewareVariables;
+} & SessionMiddlewareVariables & { logger: PinoLogger["_logger"] };
 
 export const isMemberMiddleware = createMiddleware<{
   Variables: IsMemberMiddlewareVariables;
@@ -26,7 +27,7 @@ export const isMemberMiddleware = createMiddleware<{
   const workspaceId = c.req.param("id");
 
   if (!workspaceId) {
-    console.error(
+    c.var.logger.error(
       `Workspace params schema not applied to route with path ${c.req.path}`,
     );
     return c.json(
@@ -61,7 +62,7 @@ export const isMemberMiddleware = createMiddleware<{
 
     c.set("member", member);
   } catch (error) {
-    console.error(error);
+    c.var.logger.error(error, "Member middleware error");
 
     return c.json(
       { error: "Internal server error" },

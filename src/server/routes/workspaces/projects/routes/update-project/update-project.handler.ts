@@ -40,7 +40,7 @@ export const updateProjectHandler: AppRouteHandler<
       http.OK,
     );
   } catch (error) {
-    console.log(error);
+    c.var.logger.error(error, "Update project handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

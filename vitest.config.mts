@@ -22,7 +22,7 @@ export default defineConfig({
         extends: true,
         test: {
           name: "BE",
-          environment: "edge-runtime",
+          environment: "node",
           include: ["src/server/**/**.test.ts"],
           env: loadEnv("test", process.cwd(), ""),
         },

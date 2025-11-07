@@ -71,8 +71,8 @@ export const joinWorkspaceHandler: AppRouteHandler<
       .values({ userId: user.id, workspaceId });
 
     return c.json({ name: existingWorkspace.name }, http.OK);
-  } catch (e) {
-    console.log(e);
+  } catch (error) {
+    c.var?.logger?.error(error, "Join workspace handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

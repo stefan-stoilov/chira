@@ -71,7 +71,7 @@ export const demoteWorkspaceMemberHandler: AppRouteHandler<
 
     return c.json({ success: true }, http.OK);
   } catch (error) {
-    console.error(error);
+    c.var.logger.error(error, "Demote workspace member handler failed");
 
     return c.json(
       { error: "Internal server error" },

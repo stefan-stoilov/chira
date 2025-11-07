@@ -70,7 +70,7 @@ export const deleteWorkspaceMemberHandler: AppRouteHandler<
 
     return c.json({ success: true }, http.OK);
   } catch (error) {
-    console.error(error);
+    c.var.logger.error(error, "Delete workspace member handler failed");
 
     return c.json(
       { error: "Internal server error" },

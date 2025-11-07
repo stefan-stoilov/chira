@@ -44,7 +44,7 @@ export const deleteWorkspaceHandler: AppRouteHandler<
 
     return c.json({ id: workspaceId }, http.OK);
   } catch (error) {
-    console.log(error);
+    c.var?.logger?.error(error, "Delete workspace handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

@@ -42,7 +42,7 @@ export const createWorkspaceHandler: AppRouteHandler<
       http.CREATED,
     );
   } catch (error) {
-    console.log(error);
+    c.var?.logger?.error(error, "Create workspace handler failed");
 
     return c.json(
       { error: "Internal Server Error" },

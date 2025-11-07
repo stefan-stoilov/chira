@@ -35,7 +35,7 @@ export const deleteProjectHandler: AppRouteHandler<
 
     return c.json({ id: project.id }, http.OK);
   } catch (error) {
-    console.log(error);
+    c.var.logger.error(error, "Delete project handler failed");
 
     return c.json(
       { error: "Internal Server Error" },
