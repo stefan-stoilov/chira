@@ -76,6 +76,9 @@ jobs:
 
       - name: Run Playwright tests
         run: pnpm test:e2e
+        env:
+          DATABASE_URL: "${{ steps.create_neon_branch.outputs.db_url_pooled }}"
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
 
       - uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
