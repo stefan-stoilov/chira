@@ -62,8 +62,8 @@ jobs:
       - name: Generate drizzle migrations
         run: pnpm db:generate
 
-      - name: Apply drizzle migrations
-        run: pnpm db:migrate
+      - name: Push drizzle migrations
+        run: pnpm db:push
         env:
           DATABASE_URL: "${{ steps.create_neon_branch.outputs.db_url_pooled }}"
 
