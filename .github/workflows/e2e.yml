@@ -75,7 +75,7 @@ jobs:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
 
       - name: Run Playwright tests
-        run: pnpm test:e2e --reporter=json
+        run: pnpm cross-env PLAYWRIGHT_JSON_OUTPUT_NAME=results.json playwright test --reporter=json
         env:
           DATABASE_URL: "${{ steps.create_neon_branch.outputs.db_url_pooled }}"
           NEXT_PUBLIC_APP_URL: http://localhost:3000

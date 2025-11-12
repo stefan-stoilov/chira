@@ -9,7 +9,7 @@
     "dev": "next dev --turbo",
     "test": "cross-env NODE_ENV=test vitest",
     "test:coverage": "cross-env NODE_ENV=test vitest run --coverage",
-    "test:e2e": "cross-env NODE_ENV=test pnpm playwright test",
+    "test:e2e": "cross-env NODE_ENV=test playwright test",
     "storybook": "storybook dev -p 6006",
     "storybook:build": "storybook build",
     "storybook:test": "test-storybook --watch",
