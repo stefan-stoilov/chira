@@ -57,7 +57,7 @@ jobs:
         uses: ./.github/actions/setup
 
       - name: Install Playwright Browsers
-        run: pnpm playwright install --with-deps
+        run: pnpm playwright install --with-deps chromium --only-shell
 
       - name: Generate drizzle migrations
         run: pnpm db:generate
@@ -75,17 +75,15 @@ jobs:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
 
       - name: Run Playwright tests
-        run: pnpm test:e2e
+        run: pnpm test:e2e --reporter=json
         env:
           DATABASE_URL: "${{ steps.create_neon_branch.outputs.db_url_pooled }}"
           NEXT_PUBLIC_APP_URL: http://localhost:3000
 
-      - uses: actions/upload-artifact@v4
-        if: ${{ !cancelled() }}
+      - uses: daun/playwright-report-summary@v3
+        if: always()
         with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+          report-file: results.json
 
       - name: Post Schema Diff Comment to PR
         uses: neondatabase/schema-diff-action@v1
