@@ -27,7 +27,12 @@ function ModalButton() {
   const { open } = useCreateWorkspaceModal();
 
   return (
-    <Button variant={"ghost"} className="px-3" onClick={() => open()}>
+    <Button
+      variant={"ghost"}
+      className="px-3"
+      onClick={() => open()}
+      data-testid="create-workspace-button"
+    >
       <CreateWorkspaceIcon />
       <VisuallyHidden>Create Workspace</VisuallyHidden>
     </Button>

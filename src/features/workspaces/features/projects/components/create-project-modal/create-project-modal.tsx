@@ -27,7 +27,12 @@ function ModalButton() {
   const { open } = useCreateProjectModal();
 
   return (
-    <Button variant={"ghost"} className="px-3" onClick={() => open()}>
+    <Button
+      variant={"ghost"}
+      className="px-3"
+      onClick={() => open()}
+      data-testid="create-project-button"
+    >
       <CreateProjectIcon />
       <VisuallyHidden>Create Project</VisuallyHidden>
     </Button>

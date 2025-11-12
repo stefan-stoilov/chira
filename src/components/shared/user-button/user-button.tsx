@@ -64,7 +64,7 @@ export function UserButton() {
 
   return (
     <DropdownMenu modal={false}>
-      <DropdownMenuTrigger className="relative">
+      <DropdownMenuTrigger className="relative" data-testid="user-button">
         <Avatar className="size-10 border border-border">
           <AvatarFallback className="flex items-center justify-center bg-muted font-medium text-foreground-muted hover:bg-muted-hovered">
             {avatarFallback}
@@ -95,7 +95,12 @@ export function UserButton() {
           <Separator className="mb-1" />
 
           <DropdownMenuItem asChild>
-            <Button variant="secondary" size="lg" onClick={() => signOut()}>
+            <Button
+              variant="secondary"
+              size="lg"
+              onClick={() => signOut()}
+              data-testid="sign-out-button"
+            >
               <LogOut />
               Sign Out
             </Button>
